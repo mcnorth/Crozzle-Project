@@ -1,0 +1,10 @@
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\bin\Debug\Crozzle-Project.exe.config
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\bin\Debug\Crozzle-Project.exe
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\bin\Debug\Crozzle-Project.pdb
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle-Project.csprojResolveAssemblyReference.cache
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.FrmMenu.resources
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.Properties.Resources.resources
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle-Project.csproj.GenerateResource.Cache
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle-Project.exe
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle-Project.pdb
+D:\Kellie Personal Docs\VS-projects-examples\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.CrozzlePage.resources
