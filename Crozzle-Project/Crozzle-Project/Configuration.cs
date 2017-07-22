@@ -35,6 +35,9 @@ namespace Crozzle_Project
         private int MAXIMUM_NUMBER_OF_THE_SAME_WORD;
         private int MINIMUM_NUMBER_OF_GROUPS;
         private int MAXIMUM_NUMBER_OF_GROUPS;
+        private int POINTS_PER_WORD;
+        private Hashtable INTERSECTING_POINTS_PER_LETTER;
+        private Hashtable NON_INTERSECTING_POINTS_PER_LETTER;
 
         public string LogfileName
         {
@@ -180,7 +183,25 @@ namespace Crozzle_Project
             set { MAXIMUM_NUMBER_OF_GROUPS = value; }
         }
 
-        public Configuration CreateConfig(Configuration obj, Hashtable HtObj)
+        public int PointsPerWord
+        {
+            get { return POINTS_PER_WORD; }
+            set { POINTS_PER_WORD = value; }
+        }
+
+        public Hashtable IntersectingPointsPerLetter
+        {
+            get { return INTERSECTING_POINTS_PER_LETTER; }
+            set { INTERSECTING_POINTS_PER_LETTER = value; }
+        }
+
+        public Hashtable NonIntersectingPointsPerLetter
+        {
+            get { return NON_INTERSECTING_POINTS_PER_LETTER; }
+            set { NON_INTERSECTING_POINTS_PER_LETTER = value; }
+        }
+
+        public Configuration CreateConfig(Configuration obj, Hashtable HtObj, Hashtable IPObj, Hashtable NIPObj)
         {
             obj.LogfileName = Convert.ToString(HtObj["LOGFILE_NAME"]);
             obj.MinimumNumberOfUniqueWords = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_UNIQUE_WORDS"]);
@@ -206,6 +227,9 @@ namespace Crozzle_Project
             obj.MaximumNumberOfTheSameWord = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_THE_SAME_WORD"]);
             obj.MinimumNumberOfGroups = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_GROUPS"]);
             obj.MaximumNumberOfGroups = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_GROUPS"]);
+            obj.PointsPerWord = Convert.ToInt32(HtObj["POINTS_PER_WORD"]);
+            obj.IntersectingPointsPerLetter = IPObj;
+            obj.NonIntersectingPointsPerLetter = NIPObj;
 
 
             return obj;
