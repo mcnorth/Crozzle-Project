@@ -5,19 +5,6 @@ VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crozzle-Project", "Crozzle-Project\Crozzle-Project.csproj", "{331236D2-4FE0-483B-9A1C-F617604E172C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9280306E-A27A-4618-92BE-3B4297D06267}"
-	ProjectSection(SolutionItems) = preProject
-		Crozzle-Project\Test 1 Configuration.txt = Crozzle-Project\Test 1 Configuration.txt
-		Crozzle-Project\Test 1 Crozzle.txt = Crozzle-Project\Test 1 Crozzle.txt
-		Crozzle-Project\Test 1 Wordlist.txt = Crozzle-Project\Test 1 Wordlist.txt
-		Crozzle-Project\Test 2 Configuration.txt = Crozzle-Project\Test 2 Configuration.txt
-		Crozzle-Project\Test 2 Crozzle.txt = Crozzle-Project\Test 2 Crozzle.txt
-		Crozzle-Project\Test 2 Wordlist.txt = Crozzle-Project\Test 2 Wordlist.txt
-		Crozzle-Project\Test 3 Configuration.txt = Crozzle-Project\Test 3 Configuration.txt
-		Crozzle-Project\Test 3 Crozzle.txt = Crozzle-Project\Test 3 Crozzle.txt
-		Crozzle-Project\Test 3 Wordlist.txt = Crozzle-Project\Test 3 Wordlist.txt
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
