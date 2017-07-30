@@ -25,12 +25,12 @@ namespace Crozzle_Project
         private void CrozzlePage_Load(object sender, EventArgs e)
         {
             // string cPath = @"../../txtFiles/Test 1 Configuration.txt";
-            string cPath = @".\Test 1 Configuration.txt";
-            Hashtable ht = GetFile(cPath);
-            Hashtable IPscoreHt = GetIPScoreFile(cPath);
-            Hashtable NIPscoreHt = GetNIPScoreFile(cPath);
-            Configuration config = new Configuration();
-            config.CreateConfig(config, ht, IPscoreHt, NIPscoreHt);
+           // string cPath = 
+           // Hashtable ht = GetFile(cPath);
+           // Hashtable IPscoreHt = GetIPScoreFile(cPath);
+           // Hashtable NIPscoreHt = GetNIPScoreFile(cPath);
+            //Configuration config = new Configuration();
+            //config.CreateConfig(config, ht, IPscoreHt, NIPscoreHt);
 
             //string wPath = 
             //CreateDataGridView = new DataGridView();
