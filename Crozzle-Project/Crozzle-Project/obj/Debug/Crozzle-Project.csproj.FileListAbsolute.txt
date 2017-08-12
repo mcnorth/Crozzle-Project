@@ -12,7 +12,6 @@ D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\bin
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\bin\Debug\Crozzle-Project.exe
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\bin\Debug\Crozzle-Project.pdb
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle-Project.csprojResolveAssemblyReference.cache
-D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.CrozzlePage.resources
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.FrmMenu.resources
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.Properties.Resources.resources
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle-Project.csproj.GenerateResource.Cache
