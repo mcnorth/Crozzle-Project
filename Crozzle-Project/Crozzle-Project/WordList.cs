@@ -12,23 +12,39 @@ namespace Crozzle_Project
     class WordList
     {
 
-        private List<string> _Words = new List<string>();
-
-        public List<string> Words
-        {
-            get { return _Words; }
-            set { _Words = value; }
-        }
+        
 
         public WordList()
         {
 
         }
 
-        public void AddWords(string value)
+        public WordList CreateWordlist(string path, WordList obj)
         {
-            _Words.Add(value);
+            
+            List<string> words = GetFile(path);
+            
+            return obj;
         }
+
+        public List<string> GetFile(string path)
+        {
+            var pathToFile = path;
+            string[] file = File.ReadAllText(pathToFile).Split(',');
+            List<string> wds = new List<string>();
+
+            foreach(string w in file)
+            {
+                wds.Add(w);
+            }
+
+            return wds;
+            
+        }
+
+        
+
+        
         
     }
 }

@@ -201,6 +201,299 @@ namespace Crozzle_Project
             set { NON_INTERSECTING_POINTS_PER_LETTER = value; }
         }
 
+        public Configuration CreateConfigObj(string file, Configuration obj)
+        {
+            Hashtable ht = GetFile(file);
+            Hashtable IPscoreHt = GetIPScoreFile(file);
+            Hashtable NIPscoreHt = GetNIPScoreFile(file);
+            CreateConfig(obj, ht, IPscoreHt, NIPscoreHt);
+            return obj;
+        }
+
+        public Hashtable GetNIPScoreFile(string path)
+        {
+            var pathToFile = path;
+            var file = File.ReadAllLines(pathToFile);
+            List<string> configFile1 = new List<string>();
+            List<string> configFile2 = new List<string>();
+            List<string> configFile3 = new List<string>();
+            List<string> ScoreConfigFile = new List<string>();
+            string[] IPScoreArray = new string[0];
+
+            string result;
+
+            Hashtable NonIntersectingPoints = new Hashtable();
+
+            foreach (var line in file)
+            {
+                if (line.Contains(" "))
+                {
+                    var newLine = line.Replace(" ", "");
+                    configFile1.Add(newLine);
+                }
+                else if (line.Contains("\""))
+                {
+                    string s = line.Replace("\"", "");
+                    configFile1.Add(s);
+                }
+                else
+                {
+                    configFile1.Add(line);
+                }
+
+            }
+
+            foreach (var r in configFile1)
+            {
+                if (r.StartsWith("//") || r == String.Empty)
+                {
+                    continue;
+                }
+                else if (r.Contains("//"))
+                {
+
+                    int index = r.IndexOf("//");
+                    result = r.Substring(0, index);
+                    configFile2.Add(result);
+                }
+                else if (r.Contains("\""))
+                {
+                    string s = r.Replace("\"", "");
+                    configFile2.Add(s);
+                }
+                else
+                {
+                    configFile2.Add(r);
+                }
+            }
+
+            foreach (var r in configFile2)
+            {
+
+                if (r.Contains("\""))
+                {
+                    string s = r.Replace("\"", "");
+                    configFile3.Add(s);
+                }
+                else
+                {
+                    configFile3.Add(r);
+                }
+            }
+
+
+            int remove = Math.Max(0, configFile3.Count - 1);
+            configFile3.RemoveRange(0, remove);
+
+            foreach (var res in configFile3)
+            {
+
+                int index = res.IndexOf('=');
+                var val = res.Substring(index + 1);
+                ScoreConfigFile.Add(val);
+            }
+
+
+            foreach (string s in ScoreConfigFile)
+            {
+
+                IPScoreArray = s.Split(',');
+
+            }
+
+            foreach (string str in IPScoreArray)
+            {
+                int index = str.IndexOf("=");
+                var key = str.Substring(0, index);
+                var val = str.Substring(index + 1);
+                NonIntersectingPoints.Add(key, val);
+            }
+
+            return NonIntersectingPoints;
+        }
+
+        public Hashtable GetIPScoreFile(string path)
+        {
+            var pathToFile = path;
+            var file = File.ReadAllLines(pathToFile);
+            List<string> configFile1 = new List<string>();
+            List<string> configFile2 = new List<string>();
+            List<string> configFile3 = new List<string>();
+            List<string> ScoreConfigFile = new List<string>();
+            string[] IPScoreArray = new string[0];
+
+            string result;
+
+            Hashtable intersectingPoints = new Hashtable();
+
+            foreach (var line in file)
+            {
+                if (line.Contains(" "))
+                {
+                    var newLine = line.Replace(" ", "");
+                    configFile1.Add(newLine);
+                }
+                else if (line.Contains("\""))
+                {
+                    string s = line.Replace("\"", "");
+                    configFile1.Add(s);
+                }
+                else
+                {
+                    configFile1.Add(line);
+                }
+
+            }
+
+            foreach (var r in configFile1)
+            {
+                if (r.StartsWith("//") || r == String.Empty)
+                {
+                    continue;
+                }
+                else if (r.Contains("//"))
+                {
+
+                    int index = r.IndexOf("//");
+                    result = r.Substring(0, index);
+                    configFile2.Add(result);
+                }
+                else if (r.Contains("\""))
+                {
+                    string s = r.Replace("\"", "");
+                    configFile2.Add(s);
+                }
+                else
+                {
+                    configFile2.Add(r);
+                }
+            }
+
+            foreach (var r in configFile2)
+            {
+
+                if (r.Contains("\""))
+                {
+                    string s = r.Replace("\"", "");
+                    configFile3.Add(s);
+                }
+                else
+                {
+                    configFile3.Add(r);
+                }
+            }
+
+            int remove = Math.Max(0, configFile3.Count - 2);
+            configFile3.RemoveRange(0, remove);
+
+            foreach (var res in configFile3)
+            {
+
+                int index = res.IndexOf('=');
+                var val = res.Substring(index + 1);
+                ScoreConfigFile.Add(val);
+            }
+
+            ScoreConfigFile.RemoveAt(1);
+            foreach (string s in ScoreConfigFile)
+            {
+
+                IPScoreArray = s.Split(',');
+
+            }
+
+            foreach (string str in IPScoreArray)
+            {
+                int index = str.IndexOf("=");
+                var key = str.Substring(0, index);
+                var val = str.Substring(index + 1);
+                intersectingPoints.Add(key, val);
+            }
+
+            return intersectingPoints;
+        }
+
+        public Hashtable GetFile(string path)
+        {
+            var pathToFile = path;
+            var file = File.ReadAllLines(pathToFile);
+            List<string> configFile1 = new List<string>();
+            List<string> configFile2 = new List<string>();
+            List<string> configFile3 = new List<string>();
+            string result;
+
+            Hashtable htConfig = new Hashtable();
+
+            foreach (var line in file)
+            {
+                if (line.Contains(" "))
+                {
+                    var newLine = line.Replace(" ", "");
+                    configFile1.Add(newLine);
+                }
+                else if (line.Contains("\""))
+                {
+                    string s = line.Replace("\"", "");
+                    configFile1.Add(s);
+                }
+                else
+                {
+                    configFile1.Add(line);
+                }
+
+            }
+
+            foreach (var r in configFile1)
+            {
+                if (r.StartsWith("//") || r == String.Empty)
+                {
+                    continue;
+                }
+                else if (r.Contains("//"))
+                {
+
+                    int index = r.IndexOf("//");
+                    result = r.Substring(0, index);
+                    configFile2.Add(result);
+                }
+                else if (r.Contains("\""))
+                {
+                    string s = r.Replace("\"", "");
+                    configFile2.Add(s);
+                }
+                else
+                {
+                    configFile2.Add(r);
+                }
+            }
+
+            foreach (var r in configFile2)
+            {
+
+                if (r.Contains("\""))
+                {
+                    string s = r.Replace("\"", "");
+                    configFile3.Add(s);
+                }
+                else
+                {
+                    configFile3.Add(r);
+                }
+            }
+
+            foreach (var res in configFile3)
+            {
+
+                int index = res.IndexOf("=");
+                var key = res.Substring(0, index);
+                var val = res.Substring(index + 1);
+                htConfig.Add(key, val);
+            }
+
+
+            return htConfig;
+        }
+
         public Configuration CreateConfig(Configuration obj, Hashtable HtObj, Hashtable IPObj, Hashtable NIPObj)
         {
             obj.LogfileName = Convert.ToString(HtObj["LOGFILE_NAME"]);
