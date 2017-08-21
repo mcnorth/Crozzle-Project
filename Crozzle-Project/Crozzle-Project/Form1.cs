@@ -43,8 +43,11 @@ namespace Crozzle_Project
         {
             string cPath = txtFile.Text;
 
-            WordList words = new WordList();
-            words.CreateWordlist(cPath, words);
+            CrozzleTest test = new CrozzleTest();
+            test.CreateCrozzleTest(cPath, test);
+
+            //WordList words = new WordList();
+            //words.CreateWordlist(cPath, words);
             
 
 
