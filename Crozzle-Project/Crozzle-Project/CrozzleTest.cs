@@ -16,8 +16,20 @@ namespace Crozzle_Project
         private string WORDLIST_FILE;
         private int GRID_ROWS;
         private int GRID_COLUMNS;
+        private List<RowData> ROW_DATA;
+        private List<ColumnData> COLUMN_DATA;
 
+        public List<RowData> RowData
+        {
+            get { return ROW_DATA; }
+            set { ROW_DATA = value; }
+        }
 
+        public List<ColumnData> ColumnData
+        {
+            get { return COLUMN_DATA; }
+            set { COLUMN_DATA = value; }
+        }
 
 
         public string ConfigurationFile
@@ -55,9 +67,93 @@ namespace Crozzle_Project
             List<string> words = GetFile(path);
             Hashtable fileLoc = GetFileNames(words);
             List<RowData> rData = GetRowData(words);
-            CrozzleTestObj(obj, fileLoc);
+            List<ColumnData> cData = GetColumnData(words);
+            Hashtable grid = GetGrid(words);
+            CrozzleTestObj(obj, fileLoc, rData, cData, grid);
 
             return obj;
+        }
+
+        public Hashtable GetGrid(List<string> data)
+        {
+            Hashtable result = new Hashtable();
+            List<string> temp = new List<string>();
+
+            foreach(var d in data)
+            {
+                if(d.Contains(","))
+                {
+                    continue;
+                }
+                else if (d.Contains("FILE"))
+                {
+                    continue;
+                }
+                else
+                {
+                    temp.Add(d);
+                }
+            }
+
+            foreach (var res in temp)
+            {
+                //string a = res.Replace(@".\\", @".\");
+                int index = res.IndexOf("=");
+                var key = res.Substring(0, index);
+                var val = res.Substring(index + 1);
+                result.Add(key, val);
+            }
+
+
+
+            return result; 
+        }
+
+        public List<ColumnData> GetColumnData(List<string> data)
+        {
+            List<ColumnData> res = new List<ColumnData>();
+            List<string> temp = new List<string>();
+            List<string> t = new List<string>();
+
+            foreach (var r in data)
+            {
+                if (r.Contains("COLUMN") && r.Contains(","))
+                {
+                    temp.Add(r);
+                }
+                else
+                {
+                    continue;
+                }
+
+            }
+
+            string pattern = @"^COLUMN|=|,";
+
+            foreach (var o in temp)
+            {
+
+                string[] tem = Regex.Split(o, pattern);
+                foreach (string c in tem)
+                {
+                    if (!string.IsNullOrEmpty(c))
+                    {
+                        t.Add(c);
+                    }
+
+
+                }
+
+                ColumnData d = new ColumnData();
+                d.Row = Convert.ToInt32(t[0]);
+                d.Name = t[1];
+                d.Column = Convert.ToInt32(t[2]);
+                res.Add(d);
+
+
+
+            }
+            return res;
         }
 
         public List<RowData> GetRowData(List<string> data)
@@ -107,9 +203,14 @@ namespace Crozzle_Project
             return res;
         }
 
-        public CrozzleTest CrozzleTestObj(CrozzleTest obj, Hashtable files)
+        public CrozzleTest CrozzleTestObj(CrozzleTest obj, Hashtable files, List<RowData> rowData, List<ColumnData> columnData, Hashtable gridLayout)
         {
             obj.ConfigurationFile = Convert.ToString(files["CONFIGURATION_FILE"]);
+            obj.WordlistFile = Convert.ToString(files["WORDLIST_FILE"]);
+            obj.GridRows = Convert.ToInt32(gridLayout["ROWS"]);
+            obj.GridColumns = Convert.ToInt32(gridLayout["COLUMNS"]);
+            obj.RowData = rowData;
+            obj.ColumnData = columnData;
             return obj;
         }
 
