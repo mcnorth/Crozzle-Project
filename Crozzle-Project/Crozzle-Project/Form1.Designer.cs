@@ -29,19 +29,21 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMenu));
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.boardPanel = new System.Windows.Forms.Panel();
             this.btnGetFile = new System.Windows.Forms.Button();
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.txtFile = new System.Windows.Forms.TextBox();
             this.btnLoadWords = new System.Windows.Forms.Button();
+            this.errorPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
-            // panel1
+            // boardPanel
             // 
-            this.panel1.Location = new System.Drawing.Point(12, 82);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(978, 461);
-            this.panel1.TabIndex = 2;
+            this.boardPanel.BackColor = System.Drawing.Color.White;
+            this.boardPanel.Location = new System.Drawing.Point(12, 82);
+            this.boardPanel.Name = "boardPanel";
+            this.boardPanel.Size = new System.Drawing.Size(620, 461);
+            this.boardPanel.TabIndex = 2;
             // 
             // btnGetFile
             // 
@@ -80,6 +82,13 @@
             this.btnLoadWords.UseVisualStyleBackColor = true;
             this.btnLoadWords.Click += new System.EventHandler(this.btnLoadWords_Click);
             // 
+            // errorPanel
+            // 
+            this.errorPanel.Location = new System.Drawing.Point(654, 82);
+            this.errorPanel.Name = "errorPanel";
+            this.errorPanel.Size = new System.Drawing.Size(336, 461);
+            this.errorPanel.TabIndex = 7;
+            // 
             // FrmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -87,11 +96,12 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(1002, 555);
+            this.Controls.Add(this.errorPanel);
             this.Controls.Add(this.btnLoadWords);
             this.Controls.Add(this.txtFile);
             this.Controls.Add(this.btnLoadFile);
             this.Controls.Add(this.btnGetFile);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.boardPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FrmMenu";
             this.Text = "Crozzle - Home";
@@ -101,11 +111,12 @@
         }
 
         #endregion
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel boardPanel;
         private System.Windows.Forms.Button btnGetFile;
         private System.Windows.Forms.Button btnLoadFile;
         private System.Windows.Forms.TextBox txtFile;
         private System.Windows.Forms.Button btnLoadWords;
+        private System.Windows.Forms.Panel errorPanel;
     }
 }
 

@@ -411,24 +411,34 @@ namespace Crozzle_Project
             }
 
             //check for groups
-            List<string> intersectedWords = new List<string>();
-            List<string> aloneWords = new List<string>();
+            //List<string> horizontalWords = new List<string>();
+            //List<string> aloneWords = new List<string>();
+            //List<RowData> hWords = obj.RowData;
+            //List<ColumnData> vWords = obj.ColumnData;
 
-            foreach (var r in obj.RowData)
-            {
-                foreach (var c in obj.ColumnData)
-                {
-                    if (r.Row == c.Row || r.Column == c.Column)
-                    {
-                        intersectedWords.Add(r.Name);
-                    }
-                    else
-                    {
-                        continue;
-                        //aloneWords.Add(r.Name);
-                    }
-                }
-            }
+            
+
+            
+
+            //foreach (var r in hWords.ToArray())
+            //{
+                
+            //    foreach (var c in vWords)
+            //    {
+            //        if (r.Row == c.Row || r.Column == c.Column)
+            //        {
+            //            horizontalWords.Add(r.Name);
+            //            hWords.Remove(r);
+            //            break;
+
+            //        }
+            //        else
+            //        {
+            //            continue;
+            //            //aloneWords.Add(r.Name);
+            //        }
+            //    }
+            //}
 
 
             return true;

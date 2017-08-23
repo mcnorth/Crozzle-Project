@@ -52,36 +52,45 @@ namespace Crozzle_Project
             test.CreateCrozzleTest(cPath, test);
             test.TestCrozzle(test, configPath);
 
-            //HtmlGenericControl table = new HtmlGenericControl("TABLE");
-            //HtmlTable table = new HtmlTable();
-            //for (int i = 0; i < test.GridRows; i++)
-            //{
-            //    HtmlTableRow r = new HtmlTableRow();
-            //    table.Rows.Add(r);
-
-            //    for (int j = 0; j < test.GridColumns; j++)
-            //    {
-            //        HtmlTableCell c = new HtmlTableCell();
-            //        r.Cells.Add(c);
-            //    }
-            //}
-            //panel1.Controls.Add(new LiteralControl(table));
-
-
-
-            DataGridView crozzlePanel = new DataGridView();
-            crozzlePanel.Location = new System.Drawing.Point(33, 22);
-            crozzlePanel.ColumnCount = test.GridColumns;
-            crozzlePanel.RowCount = test.GridRows;
-            crozzlePanel.Height = (crozzlePanel.RowCount + 1) * 22;
-            crozzlePanel.Width = (crozzlePanel.ColumnCount + 1) * 22;
-            for (int i = 0; i < crozzlePanel.ColumnCount; i++)
+            if(false)
             {
-                crozzlePanel.Columns[i].Width = 22;
+
             }
-            crozzlePanel.ColumnHeadersVisible = false;
-            crozzlePanel.RowHeadersVisible = false;
-            panel1.Controls.Add(crozzlePanel);
+
+            if(true)
+            {
+                DataGridView crozzlePanel = new DataGridView();
+                crozzlePanel.Dock = DockStyle.Fill;
+                crozzlePanel.ScrollBars = ScrollBars.None;
+                crozzlePanel.BackgroundColor = Color.Black;
+                crozzlePanel.DefaultCellStyle.BackColor = Color.Black;
+               
+                for(int i = 0; i < test.GridColumns; i++)
+                {
+                    crozzlePanel.Columns.Add("", "");
+                }
+                for(int j = 0; j < test.GridRows; j++)
+                {
+                    crozzlePanel.Rows.Add();
+                }
+                
+                foreach(DataGridViewColumn col in crozzlePanel.Columns)
+                {
+                    col.Width = boardPanel.Width / test.GridColumns;
+                }
+
+                foreach (DataGridViewRow row in crozzlePanel.Rows)
+                {
+                    row.Height = boardPanel.Height / test.GridRows;
+                }
+                crozzlePanel.ColumnHeadersVisible = false;
+                crozzlePanel.RowHeadersVisible = false;
+                boardPanel.Controls.Add(crozzlePanel);
+            }
+
+
+
+            
 
             //TableLayoutPanel crozzlePanel = new TableLayoutPanel();
             //crozzlePanel.ColumnCount = test.GridColumns;
