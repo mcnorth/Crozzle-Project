@@ -113,12 +113,14 @@ namespace Crozzle_Project
         {
             List<ColumnData> res = new List<ColumnData>();
             List<string> temp = new List<string>();
-            List<string> t = new List<string>();
+            List<string> temp2 = new List<string>();
+            string result;
 
             foreach (var r in data)
             {
                 if (r.Contains("COLUMN") && r.Contains(","))
                 {
+                    ColumnData c = new ColumnData();
                     temp.Add(r);
                 }
                 else
@@ -128,76 +130,76 @@ namespace Crozzle_Project
 
             }
 
-            string pattern = @"^COLUMN|=|,";
-
             foreach (var o in temp)
             {
-
-                string[] tem = Regex.Split(o, pattern);
-                foreach (string c in tem)
+                if (o.Contains("="))
                 {
-                    if (!string.IsNullOrEmpty(c))
-                    {
-                        t.Add(c);
-                    }
-
-
+                    int index = o.IndexOf("=");
+                    result = o.Substring(index + 1);
+                    temp2.Add(result);
                 }
+            }
 
-                ColumnData d = new ColumnData();
-                d.Row = Convert.ToInt32(t[0]);
-                d.Name = t[1];
-                d.Column = Convert.ToInt32(t[2]);
-                res.Add(d);
+            foreach (var a in temp2)
+            {
+                string[] y = a.Split(',');
+
+                ColumnData ob = new ColumnData();
+                ob.Column = Convert.ToInt32(y[0]);
+                ob.Name = Convert.ToString(y[1]);
+                ob.Row = Convert.ToInt32(y[2]);
+                res.Add(ob);
 
 
 
             }
+            
             return res;
+            
         }
 
         public List<RowData> GetRowData(List<string> data)
         {
             List<RowData> res = new List<RowData>();
             List<string> temp = new List<string>();
-            List<string> t = new List<string>();
+            List<string> temp2 = new List<string>();
+            string result;
 
             foreach (var r in data)
             {
                 if (r.Contains("ROW") && r.Contains(","))
                 {
+                    RowData c = new RowData();
                     temp.Add(r);
                 }
                 else
                 {
                     continue;
                 }
-                
+
             }
 
-            string pattern = @"^ROW|=|,";
-            
             foreach (var o in temp)
             {
-                
-                string[] tem = Regex.Split(o, pattern);
-                foreach (string c in tem)
+                if (o.Contains("="))
                 {
-                    if(!string.IsNullOrEmpty(c))
-                    {
-                        t.Add(c);
-                    }
-
-                    
+                    int index = o.IndexOf("=");
+                    result = o.Substring(index + 1);
+                    temp2.Add(result);
                 }
+            }
 
-                RowData d = new RowData();
-                d.Row = Convert.ToInt32(t[0]);
-                d.Name = t[1];
-                d.Column = Convert.ToInt32(t[2]);
-                res.Add(d);
+            foreach (var a in temp2)
+            {
+                string[] y = a.Split(',');
 
-                
+                RowData ob = new RowData();
+                ob.Row = Convert.ToInt32(y[0]);
+                ob.Name = Convert.ToString(y[1]);
+                ob.Column = Convert.ToInt32(y[2]);
+                res.Add(ob);
+
+
 
             }
             return res;
@@ -219,6 +221,8 @@ namespace Crozzle_Project
             //string pat = "FILE";
             Hashtable result = new Hashtable();
             List<string> temp = new List<string>();
+            List<string> t = new List<string>();
+            List<string> cor = new List<string>();
 
             foreach (var r in loc)
             {
@@ -230,7 +234,25 @@ namespace Crozzle_Project
                 }
             }
 
-            foreach (var res in temp)
+            foreach(var s in temp)
+            {
+                if(s.Contains('"'))
+                {
+                    string str = s.Replace("\"", "");
+                    t.Add(str);
+                }
+            }
+
+            //foreach(var c in t)
+            //{
+            //    if(c.Contains(" "))
+            //    {
+            //        string st = c.Replace(" ", "");
+            //        cor.Add(st);
+            //    }
+            //}
+
+            foreach (var res in t)
             {
                 //string a = res.Replace(@".\\", @".\");
                 int index = res.IndexOf("=");
@@ -245,8 +267,10 @@ namespace Crozzle_Project
 
         public List<string> GetFile(string path)
         {
+            
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
+            
             List<string> testFile1 = new List<string>();
             List<string> testFile2 = new List<string>();
             List<string> testFile3 = new List<string>();
@@ -296,6 +320,118 @@ namespace Crozzle_Project
             //}
 
             return testFile2;
+        }
+
+        public bool TestCrozzle(CrozzleTest obj, string rPath)
+        {
+            string cFile = rPath + "\\" + Convert.ToString(obj.ConfigurationFile);
+            Configuration config = new Configuration();           
+            config.CreateConfigObj(cFile, config);
+
+            string wFile = rPath + "\\" + Convert.ToString(obj.WordlistFile);
+            WordList wList = new WordList();
+            wList.CreateWordlist(wFile, wList);
+
+            //
+            if(wList.Count < config.MinimumNumberOfUniqueWords || wList.Count > config.MaximumNumberOfUniqueWords)
+            {
+                return false;
+            }
+
+            if(obj.GridRows < config.MinimumNumberOfRows || obj.GridRows > config.MaximumNumberOfRows)
+            {
+                return false;
+            }
+
+            if(obj.GridColumns < config.MinimumNumberOfColumns || obj.GridColumns > config.MaximumNumberOfColumns)
+            {
+                return false;
+            }
+
+            if(obj.RowData.Count < config.MinimumHorizontalWords || obj.RowData.Count > config.MaximumHorizontalWords)
+            {
+                return false;
+            }
+
+            if(obj.ColumnData.Count < config.MinimumVerticalWords || obj.ColumnData.Count > config.MaximumVerticalWords)
+            {
+                return false;
+            }
+
+            int count = 0;
+            foreach (var r in obj.RowData)
+            {
+                foreach(var c in obj.ColumnData)
+                {                   
+                    if(r.Column == c.Column)
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            if(count < config.MinimumIntersectionsInHorizontalWords || count > config.MaximumIntersectionsInHorizontalWords)
+            {
+                return false;
+            }
+
+            int counter = 0;
+            foreach (var r in obj.ColumnData)
+            {
+                foreach (var c in obj.RowData)
+                {
+                    if (r.Row == c.Row)
+                    {
+                        counter++;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            if (counter < config.MinimumIntersectionsInVerticalWords || counter > config.MaximumIntersectionsInVerticalWords)
+            {
+                return false;
+            }
+
+            List<String> sameWords = wList.GroupBy(x => x)
+                                    .Where(gb => gb.Count() > 1)
+                                    .Select(gb => gb.Key)
+                                    .ToList();
+
+            if(sameWords.Count > config.MinimumNumberOfTheSameWord || sameWords.Count > config.MaximumNumberOfTheSameWord)
+            {
+                return false;
+            }
+
+            //check for groups
+            List<string> intersectedWords = new List<string>();
+            List<string> aloneWords = new List<string>();
+
+            foreach (var r in obj.RowData)
+            {
+                foreach (var c in obj.ColumnData)
+                {
+                    if (r.Row == c.Row || r.Column == c.Column)
+                    {
+                        intersectedWords.Add(r.Name);
+                    }
+                    else
+                    {
+                        continue;
+                        //aloneWords.Add(r.Name);
+                    }
+                }
+            }
+
+
+            return true;
         }
 
 

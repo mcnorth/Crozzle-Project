@@ -9,10 +9,18 @@ using System.Collections;
 
 namespace Crozzle_Project
 {
-    class WordList
+    class WordList : List<string>
     {
 
-        
+        private List<string> WORDS;
+
+        public List<string> Words
+        {
+            get { return WORDS; }
+            set { WORDS = value; }
+        }
+
+
 
         public WordList()
         {
@@ -22,19 +30,20 @@ namespace Crozzle_Project
         public WordList CreateWordlist(string path, WordList obj)
         {
             
-            List<string> words = GetFile(path);
+             obj.GetFile(path, obj);
             
             return obj;
         }
 
-        public List<string> GetFile(string path)
+        public WordList GetFile(string path, WordList wds)
         {
             var pathToFile = path;
             string[] file = File.ReadAllText(pathToFile).Split(',');
-            List<string> wds = new List<string>();
+            
 
             foreach(string w in file)
             {
+                
                 wds.Add(w);
             }
 

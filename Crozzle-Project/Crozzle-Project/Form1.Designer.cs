@@ -34,16 +34,13 @@
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.txtFile = new System.Windows.Forms.TextBox();
             this.btnLoadWords = new System.Windows.Forms.Button();
-            this.txtResult = new System.Windows.Forms.TextBox();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.txtResult);
             this.panel1.Location = new System.Drawing.Point(12, 82);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(630, 367);
+            this.panel1.Size = new System.Drawing.Size(978, 461);
             this.panel1.TabIndex = 2;
             // 
             // btnGetFile
@@ -83,21 +80,13 @@
             this.btnLoadWords.UseVisualStyleBackColor = true;
             this.btnLoadWords.Click += new System.EventHandler(this.btnLoadWords_Click);
             // 
-            // txtResult
-            // 
-            this.txtResult.Location = new System.Drawing.Point(81, 51);
-            this.txtResult.Multiline = true;
-            this.txtResult.Name = "txtResult";
-            this.txtResult.Size = new System.Drawing.Size(472, 255);
-            this.txtResult.TabIndex = 0;
-            // 
             // FrmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(695, 461);
+            this.ClientSize = new System.Drawing.Size(1002, 555);
             this.Controls.Add(this.btnLoadWords);
             this.Controls.Add(this.txtFile);
             this.Controls.Add(this.btnLoadFile);
@@ -106,8 +95,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FrmMenu";
             this.Text = "Crozzle - Home";
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -119,7 +106,6 @@
         private System.Windows.Forms.Button btnLoadFile;
         private System.Windows.Forms.TextBox txtFile;
         private System.Windows.Forms.Button btnLoadWords;
-        private System.Windows.Forms.TextBox txtResult;
     }
 }
 
