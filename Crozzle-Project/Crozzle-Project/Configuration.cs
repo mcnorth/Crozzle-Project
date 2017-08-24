@@ -203,10 +203,12 @@ namespace Crozzle_Project
 
         public Configuration CreateConfigObj(string file, Configuration obj)
         {
+           
             Hashtable ht = GetFile(file);
             Hashtable IPscoreHt = GetIPScoreFile(file);
             Hashtable NIPscoreHt = GetNIPScoreFile(file);
-            CreateConfig(obj, ht, IPscoreHt, NIPscoreHt);
+            //Hashtable hashT = ValidateHt(ht);
+            //CreateConfig(obj, ht, IPscoreHt, NIPscoreHt);
             return obj;
         }
 
@@ -319,96 +321,65 @@ namespace Crozzle_Project
             List<string> configFile1 = new List<string>();
             List<string> configFile2 = new List<string>();
             List<string> configFile3 = new List<string>();
+            List<string> configFile4 = new List<string>();
+            List<string> configFile5 = new List<string>();
             List<string> ScoreConfigFile = new List<string>();
             string[] IPScoreArray = new string[0];
-
             string result;
 
-            Hashtable intersectingPoints = new Hashtable();
+            Hashtable intersectingPoints = new Hashtable();            
 
             foreach (var line in file)
             {
-                if (line.Contains(" "))
-                {
-                    var newLine = line.Replace(" ", "");
-                    configFile1.Add(newLine);
-                }
-                else if (line.Contains("\""))
-                {
-                    string s = line.Replace("\"", "");
-                    configFile1.Add(s);
-                }
-                else
-                {
-                    configFile1.Add(line);
-                }
-
+                configFile1.Add(line);
             }
 
-            foreach (var r in configFile1)
+            foreach (var line in configFile1)
             {
-                if (r.StartsWith("//") || r == String.Empty)
+                Regex reg = new Regex(@"^INTERSECTING");
+                if (reg.IsMatch(line))
                 {
-                    continue;
+                    configFile2.Add(line);
                 }
-                else if (r.Contains("//"))
-                {
-
-                    int index = r.IndexOf("//");
-                    result = r.Substring(0, index);
-                    configFile2.Add(result);
-                }
-                else if (r.Contains("\""))
-                {
-                    string s = r.Replace("\"", "");
-                    configFile2.Add(s);
-                }
-                else
-                {
-                    configFile2.Add(r);
-                }
+                
             }
 
-            foreach (var r in configFile2)
-            {
-
-                if (r.Contains("\""))
-                {
-                    string s = r.Replace("\"", "");
-                    configFile3.Add(s);
-                }
-                else
-                {
-                    configFile3.Add(r);
-                }
-            }
-
-            int remove = Math.Max(0, configFile3.Count - 2);
-            configFile3.RemoveRange(0, remove);
-
-            foreach (var res in configFile3)
+            foreach (var res in configFile2)
             {
 
                 int index = res.IndexOf('=');
                 var val = res.Substring(index + 1);
-                ScoreConfigFile.Add(val);
+                configFile3.Add(val);
             }
 
-            ScoreConfigFile.RemoveAt(1);
-            foreach (string s in ScoreConfigFile)
+            foreach (var line in configFile3)
             {
+                if(line.Contains('"'))
+                {
+                    string res = line.Replace("\"", "");
+                    configFile4.Add(res);
+                }
+            }
 
+            foreach (string s in configFile4)
+            {
                 IPScoreArray = s.Split(',');
-
             }
 
-            foreach (string str in IPScoreArray)
+            foreach(var line in IPScoreArray)
             {
-                int index = str.IndexOf("=");
-                var key = str.Substring(0, index);
-                var val = str.Substring(index + 1);
-                intersectingPoints.Add(key, val);
+                configFile5.Add(line);
             }
+
+
+
+            //foreach (string str in IPScoreArray)
+            //{
+            //    int index = str.IndexOf("=");
+            //    var key = str.Substring(0, index);
+            //    var val = str.Substring(index + 1);
+            //    intersectingPoints.Add(key, val);
+            //}
 
             return intersectingPoints;
         }
@@ -420,78 +391,180 @@ namespace Crozzle_Project
             List<string> configFile1 = new List<string>();
             List<string> configFile2 = new List<string>();
             List<string> configFile3 = new List<string>();
+            List<string> configFile4 = new List<string>();
+            List<string> configFile5 = new List<string>();
+            List<string> configFile6 = new List<string>();
+            List<ErrorLog> configErrors = new List<ErrorLog>();
+
             string result;
 
             Hashtable htConfig = new Hashtable();
 
             foreach (var line in file)
             {
-                if (line.Contains(" "))
-                {
-                    var newLine = line.Replace(" ", "");
-                    configFile1.Add(newLine);
-                }
-                else if (line.Contains("\""))
-                {
-                    string s = line.Replace("\"", "");
-                    configFile1.Add(s);
-                }
-                else
-                {
-                    configFile1.Add(line);
-                }
-
+                configFile1.Add(line);
+               
             }
 
-            foreach (var r in configFile1)
+            foreach (var line in configFile1)
             {
-                if (r.StartsWith("//") || r == String.Empty)
+                var myRegex = new Regex(@"\w+=");
+                if (myRegex.IsMatch(line))
                 {
-                    continue;
-                }
-                else if (r.Contains("//"))
-                {
-
-                    int index = r.IndexOf("//");
-                    result = r.Substring(0, index);
-                    configFile2.Add(result);
-                }
-                else if (r.Contains("\""))
-                {
-                    string s = r.Replace("\"", "");
-                    configFile2.Add(s);
-                }
-                else
-                {
-                    configFile2.Add(r);
-                }
+                    configFile2.Add(line);
+                }                
             }
 
-            foreach (var r in configFile2)
+            foreach (var line in configFile2.ToArray())
             {
-
-                if (r.Contains("\""))
+                var myRegex = new Regex(@"^[A-Z]");
+                if (myRegex.IsMatch(line))
                 {
-                    string s = r.Replace("\"", "");
-                    configFile3.Add(s);
+                    configFile3.Add(line);
                 }
                 else
                 {
-                    configFile3.Add(r);
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = line;
+                    string des = "Keyword missing";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
+                    configFile2.Remove(line);
                 }
             }
 
-            foreach (var res in configFile3)
+            foreach (var line in configFile3)
+            {
+                if (line.Contains("//"))
+                {
+                    int index = line.IndexOf("//");
+                    result = line.Substring(0, index);
+                    string trim = result.Trim();
+                    configFile4.Add(trim);
+                }
+                else
+                {
+                    configFile4.Add(line);
+                }
+            }
+
+            foreach (var line in configFile4)
+            {
+                var myRegex = new Regex(@"MAXIMUM|MINIMUM|POINTS");
+                var myReg = new Regex(@"\w+=\d");
+                if (myRegex.IsMatch(line))
+                {
+                    if(myReg.IsMatch(line))
+                    {
+                        configFile5.Add(line);
+                    }
+                    else
+                    {
+                        string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                        string linerr = line;
+                        string des = "Must be an integer";
+                        ErrorLog err = new ErrorLog(name, linerr, des);
+                        configErrors.Add(err);
+                        
+                    }
+                }
+                else
+                {
+                    configFile5.Add(line);
+                }
+            }
+
+            foreach(var line in configFile5)
+            {
+                var myRegex = new Regex(@"BGCOLOUR");
+                var myReg = new Regex(@"\w+=#\w{6}$");
+                if (myRegex.IsMatch(line))
+                {
+                    if (myReg.IsMatch(line))
+                    {
+                        configFile6.Add(line);
+                    }
+                    else
+                    {
+                        string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                        string linerr = line;
+                        string des = "Invalid hex colour";
+                        ErrorLog err = new ErrorLog(name, linerr, des);
+                        configErrors.Add(err);
+
+                    }
+                }
+                else
+                {
+                    configFile6.Add(line);
+                }
+
+            }
+
+            foreach (var res in configFile6)
             {
 
                 int index = res.IndexOf("=");
                 var key = res.Substring(0, index);
                 var val = res.Substring(index + 1);
+                if (htConfig.ContainsKey(key))
+                {
+                    htConfig.Remove(key);
+                }
                 htConfig.Add(key, val);
             }
 
-
+            string fPath = Directory.GetCurrentDirectory();
+            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append:true);
+            
+            foreach(var e in configErrors)
+            {
+                wtr.WriteLine("File Name: " + e.File_Name);
+                wtr.WriteLine("Line: " + e.Line);
+                wtr.WriteLine("Description: " + e.Description);
+                
+            }
+            wtr.Close();
             return htConfig;
+        }
+
+        public Hashtable ValidateHt(List<string> obj)
+        {
+            Hashtable Ht = new Hashtable();
+            List<string> temp = new List<string>();
+
+            var myRegex = new Regex(@"\w+");
+            //List<string> resultList = obj.FindAll(delegate (string s) { return myRegex.IsMatch(s); });
+
+            foreach(var r in obj)
+            {
+                if(myRegex.IsMatch(r))
+                {
+                    temp.Add(r);
+                }
+                else
+                {
+                    obj.Remove(r);
+                }
+            }
+
+            //foreach (var res in resultList)
+            //{
+
+            //    int index = res.IndexOf("=");
+            //    var key = res.Substring(0, index);
+            //    var val = res.Substring(index + 1);
+            //    if (Ht.ContainsKey(key))
+            //    {
+            //        Ht.Remove(key);
+            //    }
+            //    Ht.Add(key, val);
+            //}
+
+
+
+            return Ht;
         }
 
         public Configuration CreateConfig(Configuration obj, Hashtable HtObj, Hashtable IPObj, Hashtable NIPObj)

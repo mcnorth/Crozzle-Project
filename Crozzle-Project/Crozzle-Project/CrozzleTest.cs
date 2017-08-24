@@ -79,9 +79,10 @@ namespace Crozzle_Project
             Hashtable result = new Hashtable();
             List<string> temp = new List<string>();
 
-            foreach(var d in data)
+            foreach (var d in data)
             {
-                if(d.Contains(","))
+
+                if (d.Contains(","))
                 {
                     continue;
                 }
@@ -114,6 +115,8 @@ namespace Crozzle_Project
             List<ColumnData> res = new List<ColumnData>();
             List<string> temp = new List<string>();
             List<string> temp2 = new List<string>();
+            List<string> temp3 = new List<string>();
+            var myRegex = new Regex(@"\w+=\d+,\w+,\d+[^.]");
             string result;
 
             foreach (var r in data)
@@ -130,7 +133,9 @@ namespace Crozzle_Project
 
             }
 
-            foreach (var o in temp)
+            temp3 = temp.FindAll(delegate (string s) { return myRegex.IsMatch(s); });
+
+            foreach (var o in temp3)
             {
                 if (o.Contains("="))
                 {
@@ -163,7 +168,9 @@ namespace Crozzle_Project
             List<RowData> res = new List<RowData>();
             List<string> temp = new List<string>();
             List<string> temp2 = new List<string>();
+            List<string> temp3 = new List<string>();
             string result;
+            var myRegex = new Regex(@"\w+=\d+,\w+,\d+");
 
             foreach (var r in data)
             {
@@ -179,7 +186,9 @@ namespace Crozzle_Project
 
             }
 
-            foreach (var o in temp)
+            temp3 = temp.FindAll(delegate (string s) { return myRegex.IsMatch(s); });
+
+            foreach (var o in temp3)
             {
                 if (o.Contains("="))
                 {
@@ -241,20 +250,11 @@ namespace Crozzle_Project
                     string str = s.Replace("\"", "");
                     t.Add(str);
                 }
-            }
-
-            //foreach(var c in t)
-            //{
-            //    if(c.Contains(" "))
-            //    {
-            //        string st = c.Replace(" ", "");
-            //        cor.Add(st);
-            //    }
-            //}
+            }          
 
             foreach (var res in t)
             {
-                //string a = res.Replace(@".\\", @".\");
+                
                 int index = res.IndexOf("=");
                 var key = res.Substring(0, index);
                 var val = res.Substring(index + 1);
