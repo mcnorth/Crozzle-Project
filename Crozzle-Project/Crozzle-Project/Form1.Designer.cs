@@ -35,6 +35,10 @@
             this.txtFile = new System.Windows.Forms.TextBox();
             this.btnLoadWords = new System.Windows.Forms.Button();
             this.errorPanel = new System.Windows.Forms.Panel();
+            this.invtxt1 = new System.Windows.Forms.TextBox();
+            this.invtxt2 = new System.Windows.Forms.TextBox();
+            this.errTxt = new System.Windows.Forms.RichTextBox();
+            this.errorPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // boardPanel
@@ -84,10 +88,36 @@
             // 
             // errorPanel
             // 
+            this.errorPanel.Controls.Add(this.errTxt);
+            this.errorPanel.Controls.Add(this.invtxt2);
+            this.errorPanel.Controls.Add(this.invtxt1);
             this.errorPanel.Location = new System.Drawing.Point(654, 82);
             this.errorPanel.Name = "errorPanel";
-            this.errorPanel.Size = new System.Drawing.Size(336, 461);
+            this.errorPanel.Padding = new System.Windows.Forms.Padding(5);
+            this.errorPanel.Size = new System.Drawing.Size(740, 461);
             this.errorPanel.TabIndex = 7;
+            // 
+            // invtxt1
+            // 
+            this.invtxt1.Location = new System.Drawing.Point(9, 9);
+            this.invtxt1.Name = "invtxt1";
+            this.invtxt1.Size = new System.Drawing.Size(723, 20);
+            this.invtxt1.TabIndex = 0;
+            // 
+            // invtxt2
+            // 
+            this.invtxt2.Location = new System.Drawing.Point(9, 35);
+            this.invtxt2.Name = "invtxt2";
+            this.invtxt2.Size = new System.Drawing.Size(723, 20);
+            this.invtxt2.TabIndex = 1;
+            // 
+            // errTxt
+            // 
+            this.errTxt.Location = new System.Drawing.Point(9, 61);
+            this.errTxt.Name = "errTxt";
+            this.errTxt.Size = new System.Drawing.Size(723, 392);
+            this.errTxt.TabIndex = 3;
+            this.errTxt.Text = "";
             // 
             // FrmMenu
             // 
@@ -95,7 +125,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(1002, 555);
+            this.ClientSize = new System.Drawing.Size(1406, 555);
             this.Controls.Add(this.errorPanel);
             this.Controls.Add(this.btnLoadWords);
             this.Controls.Add(this.txtFile);
@@ -105,6 +135,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FrmMenu";
             this.Text = "Crozzle - Home";
+            this.errorPanel.ResumeLayout(false);
+            this.errorPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -117,6 +149,9 @@
         private System.Windows.Forms.TextBox txtFile;
         private System.Windows.Forms.Button btnLoadWords;
         private System.Windows.Forms.Panel errorPanel;
+        private System.Windows.Forms.TextBox invtxt1;
+        private System.Windows.Forms.TextBox invtxt2;
+        private System.Windows.Forms.RichTextBox errTxt;
     }
 }
 

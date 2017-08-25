@@ -18,6 +18,20 @@ namespace Crozzle_Project
         private int GRID_COLUMNS;
         private List<RowData> ROW_DATA;
         private List<ColumnData> COLUMN_DATA;
+        private bool ISVALID;
+        private bool ISCROZZLEVALID;
+
+        public bool IsValid
+        {
+            get { return ISVALID; }
+            set { ISVALID = value; }
+        }
+
+        public bool IsCrozzleValid
+        {
+            get { return ISCROZZLEVALID; }
+            set { ISCROZZLEVALID = value; }
+        }
 
         public List<RowData> RowData
         {
@@ -61,18 +75,7 @@ namespace Crozzle_Project
 
         }
 
-        public CrozzleTest CreateCrozzleTest(string path, CrozzleTest obj)
-        {
-
-            List<string> words = GetFile(path);
-            Hashtable fileLoc = GetFileNames(words);
-            List<RowData> rData = GetRowData(words);
-            List<ColumnData> cData = GetColumnData(words);
-            Hashtable grid = GetGrid(words);
-            CrozzleTestObj(obj, fileLoc, rData, cData, grid);
-
-            return obj;
-        }
+        
 
         public Hashtable GetGrid(List<string> data)
         {
@@ -110,95 +113,262 @@ namespace Crozzle_Project
             return result; 
         }
 
-        public List<ColumnData> GetColumnData(List<string> data)
+        public Tuple<List<ColumnData>, string> GetColumnData(string path)
         {
+            var pathToFile = path;
+            var file = File.ReadAllLines(pathToFile);
             List<ColumnData> res = new List<ColumnData>();
             List<string> temp = new List<string>();
             List<string> temp2 = new List<string>();
             List<string> temp3 = new List<string>();
-            var myRegex = new Regex(@"\w+=\d+,\w+,\d+[^.]");
+            List<string> temp4 = new List<string>();
+            List<string> temp5 = new List<string>();
+            List<string> temp6 = new List<string>();
+            List<ErrorLog> columnDataErrors = new List<ErrorLog>();
             string result;
+            var myRegex = new Regex(@"\w+=\d+,\w+,\d+");
+            var reg = new Regex(@"// The horizontal rows containing words.");
+            var reg2 = new Regex(@"// The vertical rows containing words.");
+            var reg3 = new Regex(@"ROW=\d+,\w+,\d+");
 
-            foreach (var r in data)
+
+            foreach (var line in file)
             {
-                if (r.Contains("COLUMN") && r.Contains(","))
+                temp.Add(line);
+            }
+            foreach (var line in temp.ToArray())
+            {
+                if (reg.IsMatch(line))
                 {
-                    ColumnData c = new ColumnData();
-                    temp.Add(r);
+                    break;
                 }
-                else
+
+                temp.Remove(line);
+            }
+
+            foreach (var line in temp.ToArray())
+            {
+                if (reg2.IsMatch(line))
+                {
+                    break;
+                }
+
+                temp2.Add(line);
+            }
+
+            foreach (var line in temp2)
+            {
+                if (line.StartsWith("//") || line == String.Empty)
                 {
                     continue;
                 }
-
-            }
-
-            temp3 = temp.FindAll(delegate (string s) { return myRegex.IsMatch(s); });
-
-            foreach (var o in temp3)
-            {
-                if (o.Contains("="))
+                else
                 {
-                    int index = o.IndexOf("=");
-                    result = o.Substring(index + 1);
-                    temp2.Add(result);
+
+                    temp3.Add(line);
                 }
             }
 
-            foreach (var a in temp2)
+            foreach (var line in temp3)
+            {
+                if (line.Contains(" ") && line.Contains("//"))
+                {
+                    int index = line.IndexOf(" ");
+                    result = line.Substring(0, index);
+                    temp4.Add(result);
+                }
+                else
+                {
+                    temp4.Add(line);
+                }
+            }
+
+            if (temp4.Count != temp4.Distinct().Count())
+            {
+                string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                string linerr = "RowData";
+                string des = "Wordlist contains duplicates";
+                ErrorLog err = new ErrorLog(name, linerr, des);
+                columnDataErrors.Add(err);
+            }
+
+            foreach (var line in temp4)
+            {
+                if (reg3.IsMatch(line))
+                {
+                    temp5.Add(line);
+                }
+                else
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = line;
+                    string des = "Row Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    columnDataErrors.Add(err);
+                }
+
+            }
+
+            foreach (var line in temp5)
+            {
+                if (line.Contains("="))
+                {
+                    int index = line.IndexOf("=");
+                    result = line.Substring(index + 1);
+                    temp6.Add(result);
+                }
+            }
+
+            foreach (var a in temp6)
             {
                 string[] y = a.Split(',');
 
                 ColumnData ob = new ColumnData();
-                ob.Column = Convert.ToInt32(y[0]);
+                ob.Row = Convert.ToInt32(y[0]);
                 ob.Name = Convert.ToString(y[1]);
-                ob.Row = Convert.ToInt32(y[2]);
+                ob.Column = Convert.ToInt32(y[2]);
                 res.Add(ob);
 
+            }
 
+            string fPath = Directory.GetCurrentDirectory();
+            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+
+            foreach (var e in columnDataErrors)
+            {
+                wtr.WriteLine("File Name: " + e.File_Name);
+                wtr.WriteLine("Line: " + e.Line);
+                wtr.WriteLine("Description: " + e.Description);
 
             }
-            
-            return res;
-            
-        }
+            wtr.Close();
 
-        public List<RowData> GetRowData(List<string> data)
+            string invalid = "Invalid";
+            string valid = "Valid";
+            Tuple<List<ColumnData>, string> tuple;
+
+            if (columnDataErrors.Count > 0)
+            {
+
+                tuple = new Tuple<List<ColumnData>, string>(res, invalid);
+            }
+            else
+            {
+                tuple = new Tuple<List<ColumnData>, string>(res, valid);
+            }
+            return tuple;
+            
+
+        }
+        
+        public Tuple<List<RowData>, string> GetRowData(string path)
         {
+            var pathToFile = path;
+            var file = File.ReadAllLines(pathToFile);
             List<RowData> res = new List<RowData>();
             List<string> temp = new List<string>();
             List<string> temp2 = new List<string>();
             List<string> temp3 = new List<string>();
+            List<string> temp4 = new List<string>();
+            List<string> temp5 = new List<string>();
+            List<string> temp6 = new List<string>();
+            List<ErrorLog> rowDataErrors = new List<ErrorLog>();
             string result;
             var myRegex = new Regex(@"\w+=\d+,\w+,\d+");
+            var reg = new Regex(@"// The horizontal rows containing words.");
+            var reg2 = new Regex(@"// The vertical rows containing words.");
+            var reg3 = new Regex(@"ROW=\d+,\w+,\d+");
+            
 
-            foreach (var r in data)
+            foreach (var line in file)
             {
-                if (r.Contains("ROW") && r.Contains(","))
+                temp.Add(line);
+            }
+            foreach (var line in temp.ToArray())
+            {              
+                if (reg.IsMatch(line))
                 {
-                    RowData c = new RowData();
-                    temp.Add(r);
+                    break;
                 }
-                else
+
+                temp.Remove(line);
+            }
+
+            foreach (var line in temp.ToArray())
+            {
+                if (reg2.IsMatch(line))
+                {
+                    break;
+                }
+
+                temp2.Add(line);
+            }
+
+            foreach (var line in temp2)
+            {
+                if (line.StartsWith("//") || line == String.Empty)
                 {
                     continue;
                 }
-
-            }
-
-            temp3 = temp.FindAll(delegate (string s) { return myRegex.IsMatch(s); });
-
-            foreach (var o in temp3)
-            {
-                if (o.Contains("="))
+                else
                 {
-                    int index = o.IndexOf("=");
-                    result = o.Substring(index + 1);
-                    temp2.Add(result);
+
+                    temp3.Add(line);
                 }
             }
 
-            foreach (var a in temp2)
+            foreach (var line in temp3)
+            {
+                if (line.Contains(" ") && line.Contains("//"))
+                {
+                    int index = line.IndexOf(" ");
+                    result = line.Substring(0, index);
+                    temp4.Add(result);
+                }
+                else
+                {
+                    temp4.Add(line);
+                }
+            }
+
+            if (temp4.Count != temp4.Distinct().Count())
+            {
+                string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                string linerr = "RowData";
+                string des = "Wordlist contains duplicates";
+                ErrorLog err = new ErrorLog(name, linerr, des);
+                rowDataErrors.Add(err);
+            }
+
+            foreach (var line in temp4)
+            {
+                if (reg3.IsMatch(line))
+                {
+                    temp5.Add(line);
+                }
+                else
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = line;
+                    string des = "Row Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    rowDataErrors.Add(err);
+                }
+                
+            }
+
+            foreach(var line in temp5)
+            {
+                if (line.Contains("="))
+                {
+                    int index = line.IndexOf("=");
+                    result = line.Substring(index + 1);
+                    temp6.Add(result);
+                }
+            }
+
+            foreach (var a in temp6)
             {
                 string[] y = a.Split(',');
 
@@ -208,39 +378,56 @@ namespace Crozzle_Project
                 ob.Column = Convert.ToInt32(y[2]);
                 res.Add(ob);
 
+            }
 
+            string fPath = Directory.GetCurrentDirectory();
+            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+
+            foreach (var e in rowDataErrors)
+            {
+                wtr.WriteLine("File Name: " + e.File_Name);
+                wtr.WriteLine("Line: " + e.Line);
+                wtr.WriteLine("Description: " + e.Description);
 
             }
-            return res;
-        }
+            wtr.Close();
 
-        public CrozzleTest CrozzleTestObj(CrozzleTest obj, Hashtable files, List<RowData> rowData, List<ColumnData> columnData, Hashtable gridLayout)
-        {
-            obj.ConfigurationFile = Convert.ToString(files["CONFIGURATION_FILE"]);
-            obj.WordlistFile = Convert.ToString(files["WORDLIST_FILE"]);
-            obj.GridRows = Convert.ToInt32(gridLayout["ROWS"]);
-            obj.GridColumns = Convert.ToInt32(gridLayout["COLUMNS"]);
-            obj.RowData = rowData;
-            obj.ColumnData = columnData;
-            return obj;
-        }
+            string invalid = "Invalid";
+            string valid = "Valid";
+            Tuple<List<RowData>, string> tuple;
 
-        public Hashtable GetFileNames(List<string> loc)
+            if (rowDataErrors.Count > 0)
+            {
+
+                tuple = new Tuple<List<RowData>, string>(res, invalid);
+            }
+            else
+            {
+                tuple = new Tuple<List<RowData>, string>(res, valid);
+            }
+            return tuple;
+            
+        }       
+
+        public Tuple<Hashtable, string> GetFileNames(List<string> loc)
         {
             //string pat = "FILE";
             Hashtable result = new Hashtable();
             List<string> temp = new List<string>();
             List<string> t = new List<string>();
             List<string> cor = new List<string>();
+            List<ErrorLog> crozzleErrors = new List<ErrorLog>();
+            string invalid = "Invalid";
+            string valid = "Valid";
 
-            foreach (var r in loc)
+            foreach (var line in loc)
             {
-                 if(r.Contains("FILE"))
-                {
-                    //
-                    temp.Add(r);
-                    
+                if(line.Contains("FILE"))
+                {                    //
+                    temp.Add(line);  
                 }
+                
             }
 
             foreach(var s in temp)
@@ -261,16 +448,37 @@ namespace Crozzle_Project
                 result.Add(key, val);
             }
 
-            return result;
             
+
+            
+            Tuple<Hashtable, string> tuple;
+
+            if (result.Count > 0)
+            {
+
+                tuple = new Tuple<Hashtable, string>(result, valid);
+            }
+            else
+            {
+                tuple = new Tuple<Hashtable, string>(result, invalid);
+                string fPath = Directory.GetCurrentDirectory();
+                string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+
+                wtr.WriteLine("File Name: CrozzleTest.cs" );
+                wtr.WriteLine("Line: File name");
+                wtr.WriteLine("Description: No configuration file or wordlist file exist");
+
+                wtr.Close();
+            }
+            return tuple;
+
         }
 
         public List<string> GetFile(string path)
-        {
-            
+        {            
             var pathToFile = path;
-            var file = File.ReadAllLines(pathToFile);
-            
+            var file = File.ReadAllLines(pathToFile);            
             List<string> testFile1 = new List<string>();
             List<string> testFile2 = new List<string>();
             List<string> testFile3 = new List<string>();
@@ -305,24 +513,56 @@ namespace Crozzle_Project
                 }
             }
 
-            //foreach (var r in testFile2)
-            //{
-
-            //    if (r.Contains("\""))
-            //    {
-            //        string s = r.Replace("\"", "");
-            //        testFile3.Add(s);
-            //    }
-            //    else
-            //    {
-            //        testFile3.Add(r);
-            //    }
-            //}
-
             return testFile2;
         }
 
-        public bool TestCrozzle(CrozzleTest obj, string rPath)
+        public CrozzleTest CreateCrozzleTest(string path, CrozzleTest obj)
+        {
+
+            List<string> words = GetFile(path);
+            Tuple<Hashtable, string> fileLoc = GetFileNames(words);
+            Tuple<List<RowData>, string> rData = GetRowData(path);
+            Tuple<List<ColumnData>, string> cData = GetColumnData(path);
+            Hashtable grid = GetGrid(words);
+            CrozzleTestObj(obj, fileLoc, rData, cData, grid);
+
+            return obj;
+        }
+
+        public CrozzleTest CrozzleTestObj(CrozzleTest obj, Tuple<Hashtable, string> filesTuple, Tuple<List<RowData>, string> rowDataTuple, Tuple<List<ColumnData>, string> columnDataTuple, Hashtable gridLayout)
+        {
+            Hashtable files = filesTuple.Item1;
+            string isvalid = filesTuple.Item2;
+            List<RowData> rowData = rowDataTuple.Item1;
+            string isvalid2 = rowDataTuple.Item2;
+            List<ColumnData> columnData = columnDataTuple.Item1;
+            string isvalid3 = columnDataTuple.Item2;
+
+            if(isvalid == "Invalid" || isvalid2 == "Invalid" || isvalid3 == "Invalid")
+            {
+                obj.IsValid = false;
+                obj.ConfigurationFile = Convert.ToString(files["CONFIGURATION_FILE"]);
+                obj.WordlistFile = Convert.ToString(files["WORDLIST_FILE"]);
+                obj.GridRows = Convert.ToInt32(gridLayout["ROWS"]);
+                obj.GridColumns = Convert.ToInt32(gridLayout["COLUMNS"]);
+                obj.RowData = rowData;
+                obj.ColumnData = columnData;
+            }
+            else
+            {
+                obj.IsValid = true;
+                obj.ConfigurationFile = Convert.ToString(files["CONFIGURATION_FILE"]);
+                obj.WordlistFile = Convert.ToString(files["WORDLIST_FILE"]);
+                obj.GridRows = Convert.ToInt32(gridLayout["ROWS"]);
+                obj.GridColumns = Convert.ToInt32(gridLayout["COLUMNS"]);
+                obj.RowData = rowData;
+                obj.ColumnData = columnData;
+            }
+            
+            return obj;
+        }
+
+        public CrozzleTest TestCrozzle(CrozzleTest obj, string rPath)
         {
             string cFile = rPath + "\\" + Convert.ToString(obj.ConfigurationFile);
             Configuration config = new Configuration();           
@@ -332,116 +572,103 @@ namespace Crozzle_Project
             WordList wList = new WordList();
             wList.CreateWordlist(wFile, wList);
 
-            //
-            if(wList.Count < config.MinimumNumberOfUniqueWords || wList.Count > config.MaximumNumberOfUniqueWords)
+            if (config.IsValid == false)
             {
-                return false;
+                obj.IsCrozzleValid = false;
+                return obj;
             }
-
-            if(obj.GridRows < config.MinimumNumberOfRows || obj.GridRows > config.MaximumNumberOfRows)
+            else
             {
-                return false;
-            }
-
-            if(obj.GridColumns < config.MinimumNumberOfColumns || obj.GridColumns > config.MaximumNumberOfColumns)
-            {
-                return false;
-            }
-
-            if(obj.RowData.Count < config.MinimumHorizontalWords || obj.RowData.Count > config.MaximumHorizontalWords)
-            {
-                return false;
-            }
-
-            if(obj.ColumnData.Count < config.MinimumVerticalWords || obj.ColumnData.Count > config.MaximumVerticalWords)
-            {
-                return false;
-            }
-
-            int count = 0;
-            foreach (var r in obj.RowData)
-            {
-                foreach(var c in obj.ColumnData)
-                {                   
-                    if(r.Column == c.Column)
-                    {
-                        count++;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
-
-            if(count < config.MinimumIntersectionsInHorizontalWords || count > config.MaximumIntersectionsInHorizontalWords)
-            {
-                return false;
-            }
-
-            int counter = 0;
-            foreach (var r in obj.ColumnData)
-            {
-                foreach (var c in obj.RowData)
+                if (wList.Count < config.MinimumNumberOfUniqueWords || wList.Count > config.MaximumNumberOfUniqueWords)
                 {
-                    if (r.Row == c.Row)
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                if (obj.GridRows < config.MinimumNumberOfRows || obj.GridRows > config.MaximumNumberOfRows)
+                {
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                if (obj.GridColumns < config.MinimumNumberOfColumns || obj.GridColumns > config.MaximumNumberOfColumns)
+                {
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                if (obj.RowData.Count < config.MinimumHorizontalWords || obj.RowData.Count > config.MaximumHorizontalWords)
+                {
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                if (obj.ColumnData.Count < config.MinimumVerticalWords || obj.ColumnData.Count > config.MaximumVerticalWords)
+                {
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                int count = 0;
+                foreach (var r in obj.RowData)
+                {
+                    foreach (var c in obj.ColumnData)
                     {
-                        counter++;
-                    }
-                    else
-                    {
-                        continue;
+                        if (r.Column == c.Column)
+                        {
+                            count++;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                 }
+
+                if (count < config.MinimumIntersectionsInHorizontalWords || count > config.MaximumIntersectionsInHorizontalWords)
+                {
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                int counter = 0;
+                foreach (var r in obj.ColumnData)
+                {
+                    foreach (var c in obj.RowData)
+                    {
+                        if (r.Row == c.Row)
+                        {
+                            counter++;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+
+                if (counter < config.MinimumIntersectionsInVerticalWords || counter > config.MaximumIntersectionsInVerticalWords)
+                {
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                List<String> sameWords = wList.GroupBy(x => x)
+                                        .Where(gb => gb.Count() > 1)
+                                        .Select(gb => gb.Key)
+                                        .ToList();
+
+                if (sameWords.Count > config.MinimumNumberOfTheSameWord || sameWords.Count > config.MaximumNumberOfTheSameWord)
+                {
+                    obj.IsCrozzleValid = false;
+                    return obj;
+                }
+
+                obj.IsCrozzleValid = true;
+                return obj;
             }
-
-            if (counter < config.MinimumIntersectionsInVerticalWords || counter > config.MaximumIntersectionsInVerticalWords)
-            {
-                return false;
-            }
-
-            List<String> sameWords = wList.GroupBy(x => x)
-                                    .Where(gb => gb.Count() > 1)
-                                    .Select(gb => gb.Key)
-                                    .ToList();
-
-            if(sameWords.Count > config.MinimumNumberOfTheSameWord || sameWords.Count > config.MaximumNumberOfTheSameWord)
-            {
-                return false;
-            }
-
-            //check for groups
-            //List<string> horizontalWords = new List<string>();
-            //List<string> aloneWords = new List<string>();
-            //List<RowData> hWords = obj.RowData;
-            //List<ColumnData> vWords = obj.ColumnData;
-
             
-
             
-
-            //foreach (var r in hWords.ToArray())
-            //{
-                
-            //    foreach (var c in vWords)
-            //    {
-            //        if (r.Row == c.Row || r.Column == c.Column)
-            //        {
-            //            horizontalWords.Add(r.Name);
-            //            hWords.Remove(r);
-            //            break;
-
-            //        }
-            //        else
-            //        {
-            //            continue;
-            //            //aloneWords.Add(r.Name);
-            //        }
-            //    }
-            //}
-
-
-            return true;
         }
 
 

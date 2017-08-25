@@ -20,6 +20,14 @@ namespace Crozzle_Project
             set { WORDS = value; }
         }
 
+        private bool ISVALID;
+
+        public bool IsValid
+        {
+            get { return ISVALID; }
+            set { ISVALID = value; }
+        }
+
 
 
         public WordList()
@@ -39,21 +47,74 @@ namespace Crozzle_Project
         {
             var pathToFile = path;
             string[] file = File.ReadAllText(pathToFile).Split(',');
+            List<string> wrdsList1 = new List<string>();
+            List<ErrorLog> wordlistErrors = new List<ErrorLog>();
             
-
-            foreach(string w in file)
+            if (file.Length != file.Distinct().Count())
             {
+                string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                string linerr = "WordList";
+                string des = "Wordlist contains duplicates";
+                ErrorLog err = new ErrorLog(name, linerr, des);
+                wordlistErrors.Add(err);
                 
-                wds.Add(w);
             }
 
-            return wds;
+            foreach (string w in file)
+            {
+
+                wrdsList1.Add(w);
+            }
+
+
+
+
+            foreach (var line in wrdsList1)
+            {
+                var myReg = new Regex(@"\w+");
+                if (myReg.IsMatch(line))
+                {
+                    wds.Add(line);
+                    wds.IsValid = true;
+                }
+                else
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = line;
+                    string des = "Must be a word that does nnot contain numbers";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    wordlistErrors.Add(err);
+                    wds.IsValid = false;
+
+                }
+            }
+
+            if(wordlistErrors.Count > 0)
+            {
+                string fPath = Directory.GetCurrentDirectory();
+                string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+
+                foreach (var e in wordlistErrors)
+                {
+                    wtr.WriteLine("File Name: " + e.File_Name);
+                    wtr.WriteLine("Line: " + e.Line);
+                    wtr.WriteLine("Description: " + e.Description);
+
+                }
+                wtr.Close();
+                wds.IsValid = false;
+                return wds;
+            }
+            else
+            {
+                wds.IsValid = true;
+                return wds;
+            }
+
             
         }
-
-        
-
-        
+ 
         
     }
 }

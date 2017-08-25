@@ -38,7 +38,13 @@ namespace Crozzle_Project
         private int POINTS_PER_WORD;
         private Hashtable INTERSECTING_POINTS_PER_LETTER;
         private Hashtable NON_INTERSECTING_POINTS_PER_LETTER;
+        private bool ISVALID;
 
+        public bool IsValid
+        {
+            get { return ISVALID; }
+            set { ISVALID = value; }
+        }
         public string LogfileName
         {
             get { return LOGFILE_NAME; }
@@ -203,118 +209,16 @@ namespace Crozzle_Project
 
         public Configuration CreateConfigObj(string file, Configuration obj)
         {
-           
-            Hashtable ht = GetFile(file);
-            Hashtable IPscoreHt = GetIPScoreFile(file);
-            Hashtable NIPscoreHt = GetNIPScoreFile(file);
+
+            Tuple<Hashtable, string> ht = GetFile(file);
+            Tuple<Hashtable, string> IPscoreHt = GetIPScoreFile(file);
+            Tuple<Hashtable, string> NIPscoreHt = GetNIPScoreFile(file);
             //Hashtable hashT = ValidateHt(ht);
-            //CreateConfig(obj, ht, IPscoreHt, NIPscoreHt);
+            CreateConfig(obj, ht, IPscoreHt, NIPscoreHt);
             return obj;
         }
 
-        public Hashtable GetNIPScoreFile(string path)
-        {
-            var pathToFile = path;
-            var file = File.ReadAllLines(pathToFile);
-            List<string> configFile1 = new List<string>();
-            List<string> configFile2 = new List<string>();
-            List<string> configFile3 = new List<string>();
-            List<string> ScoreConfigFile = new List<string>();
-            string[] IPScoreArray = new string[0];
-
-            string result;
-
-            Hashtable NonIntersectingPoints = new Hashtable();
-
-            foreach (var line in file)
-            {
-                if (line.Contains(" "))
-                {
-                    var newLine = line.Replace(" ", "");
-                    configFile1.Add(newLine);
-                }
-                else if (line.Contains("\""))
-                {
-                    string s = line.Replace("\"", "");
-                    configFile1.Add(s);
-                }
-                else
-                {
-                    configFile1.Add(line);
-                }
-
-            }
-
-            foreach (var r in configFile1)
-            {
-                if (r.StartsWith("//") || r == String.Empty)
-                {
-                    continue;
-                }
-                else if (r.Contains("//"))
-                {
-
-                    int index = r.IndexOf("//");
-                    result = r.Substring(0, index);
-                    configFile2.Add(result);
-                }
-                else if (r.Contains("\""))
-                {
-                    string s = r.Replace("\"", "");
-                    configFile2.Add(s);
-                }
-                else
-                {
-                    configFile2.Add(r);
-                }
-            }
-
-            foreach (var r in configFile2)
-            {
-
-                if (r.Contains("\""))
-                {
-                    string s = r.Replace("\"", "");
-                    configFile3.Add(s);
-                }
-                else
-                {
-                    configFile3.Add(r);
-                }
-            }
-
-
-            int remove = Math.Max(0, configFile3.Count - 1);
-            configFile3.RemoveRange(0, remove);
-
-            foreach (var res in configFile3)
-            {
-
-                int index = res.IndexOf('=');
-                var val = res.Substring(index + 1);
-                ScoreConfigFile.Add(val);
-            }
-
-
-            foreach (string s in ScoreConfigFile)
-            {
-
-                IPScoreArray = s.Split(',');
-
-            }
-
-            foreach (string str in IPScoreArray)
-            {
-                int index = str.IndexOf("=");
-                var key = str.Substring(0, index);
-                var val = str.Substring(index + 1);
-                NonIntersectingPoints.Add(key, val);
-            }
-
-            return NonIntersectingPoints;
-        }
-
-        public Hashtable GetIPScoreFile(string path)
+        public Tuple<Hashtable, string> GetNIPScoreFile(string path)
         {
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
@@ -325,7 +229,153 @@ namespace Crozzle_Project
             List<string> configFile5 = new List<string>();
             List<string> ScoreConfigFile = new List<string>();
             string[] IPScoreArray = new string[0];
-            string result;
+
+            List<ErrorLog> configErrors = new List<ErrorLog>();
+
+            Hashtable NonintersectingPoints = new Hashtable();
+
+            foreach (var line in file)
+            {
+                configFile1.Add(line);
+            }
+
+            foreach (var line in configFile1)
+            {
+                Regex reg = new Regex(@"^NON");
+                if (reg.IsMatch(line))
+                {
+                    configFile2.Add(line);
+                }
+
+            }
+
+            foreach (var res in configFile2)
+            {
+
+                int index = res.IndexOf('=');
+                var val = res.Substring(index + 1);
+                configFile3.Add(val);
+            }
+
+            foreach (var line in configFile3)
+            {
+                if (line.Contains('"'))
+                {
+                    string res = line.Replace("\"", "");
+                    configFile4.Add(res);
+                }
+            }
+
+            foreach (string s in configFile4)
+            {
+                IPScoreArray = s.Split(',');
+            }
+
+            foreach (var line in IPScoreArray)
+            {
+                configFile5.Add(line);
+            }
+
+            foreach (string str in IPScoreArray)
+            {
+                int index = str.IndexOf("=");
+                var key = str.Substring(0, index);
+                var val = str.Substring(index + 1);
+                if (NonintersectingPoints.ContainsKey(key))
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Hashtable Intersecting Points";
+                    string des = "Duplicate key";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
+                    NonintersectingPoints.Remove(key);
+                }
+
+                NonintersectingPoints.Add(key, val);
+            }
+
+            //string [] alphabet = new string[] {"A", "B", "C", "D", "E", "F", "G", "H",  };
+
+            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            foreach (char letter in alphabet)
+            {
+                if (NonintersectingPoints.ContainsKey(Convert.ToString(letter)))
+                {
+                    continue;
+                }
+                else
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Hashtable";
+                    string des = "Letter " + letter + " missing from Intersecting Points hashtable";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
+
+                }
+            }
+
+            Regex r = new Regex(@"\d+");
+
+            foreach (string num in NonintersectingPoints.Values)
+            {
+                if (r.IsMatch(num))
+                {
+                    continue;
+                }
+                else
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Hashtable Value";
+                    string des = "Values must equal a number";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
+                }
+            }
+
+            string fPath = Directory.GetCurrentDirectory();
+            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+
+            foreach (var e in configErrors)
+            {
+                wtr.WriteLine("File Name: " + e.File_Name);
+                wtr.WriteLine("Line: " + e.Line);
+                wtr.WriteLine("Description: " + e.Description);
+
+            }
+            wtr.Close();
+
+            string invalid = "Invalid";
+            string valid = "Valid";
+            Tuple<Hashtable, string> tuple;
+
+            if (configErrors.Count > 0)
+            {
+
+                tuple = new Tuple<Hashtable, string>(NonintersectingPoints, invalid);
+            }
+            else
+            {
+                tuple = new Tuple<Hashtable, string>(NonintersectingPoints, valid);
+            }
+            return tuple;
+            
+        }
+
+        public Tuple<Hashtable, string> GetIPScoreFile(string path)
+        {
+            var pathToFile = path;
+            var file = File.ReadAllLines(pathToFile);
+            List<string> configFile1 = new List<string>();
+            List<string> configFile2 = new List<string>();
+            List<string> configFile3 = new List<string>();
+            List<string> configFile4 = new List<string>();
+            List<string> configFile5 = new List<string>();
+            List<string> ScoreConfigFile = new List<string>();
+            string[] IPScoreArray = new string[0];
+            
+            List<ErrorLog> configErrors = new List<ErrorLog>();
 
             Hashtable intersectingPoints = new Hashtable();            
 
@@ -371,20 +421,93 @@ namespace Crozzle_Project
                 configFile5.Add(line);
             }
 
+            foreach (string str in IPScoreArray)
+            {
+                int index = str.IndexOf("=");
+                var key = str.Substring(0, index);
+                var val = str.Substring(index + 1);
+                if (intersectingPoints.ContainsKey(key))
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Hashtable Intersecting Points";
+                    string des = "Duplicate key";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
+                    intersectingPoints.Remove(key);
+                }
+                intersectingPoints.Add(key, val);
+            }
 
+            //string [] alphabet = new string[] {"A", "B", "C", "D", "E", "F", "G", "H",  };
 
-            //foreach (string str in IPScoreArray)
-            //{
-            //    int index = str.IndexOf("=");
-            //    var key = str.Substring(0, index);
-            //    var val = str.Substring(index + 1);
-            //    intersectingPoints.Add(key, val);
-            //}
+            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-            return intersectingPoints;
+            foreach(char letter in alphabet)
+            {
+                if(intersectingPoints.ContainsKey(Convert.ToString(letter)))
+                {
+                    continue;
+                }
+                else
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Hashtable";
+                    string des = "Letter " + letter + " missing from Intersecting Points hashtable";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
+                    
+                }
+            }
+
+            Regex r = new Regex(@"\d+");
+
+            foreach(string num in intersectingPoints.Values)
+            {
+                if(r.IsMatch(num))
+                {
+                    continue;
+                }
+                else
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Hashtable Value";
+                    string des = "Values must equal a number";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
+                }
+            }
+            
+            string fPath = Directory.GetCurrentDirectory();
+            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+
+            foreach (var e in configErrors)
+            {
+                wtr.WriteLine("File Name: " + e.File_Name);
+                wtr.WriteLine("Line: " + e.Line);
+                wtr.WriteLine("Description: " + e.Description);
+
+            }
+            wtr.Close();
+
+            string invalid = "Invalid";
+            string valid = "Valid";
+            Tuple<Hashtable, string> tuple;
+
+            if (configErrors.Count > 0)
+            {
+
+                tuple = new Tuple<Hashtable, string>(intersectingPoints, invalid);
+            }
+            else
+            {
+                tuple = new Tuple<Hashtable, string>(intersectingPoints, valid);
+            }
+            return tuple;
+            
         }
 
-        public Hashtable GetFile(string path)
+        public Tuple<Hashtable, string> GetFile(string path)
         {
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
@@ -394,6 +517,7 @@ namespace Crozzle_Project
             List<string> configFile4 = new List<string>();
             List<string> configFile5 = new List<string>();
             List<string> configFile6 = new List<string>();
+            List<string> configFile7 = new List<string>();
             List<ErrorLog> configErrors = new List<ErrorLog>();
 
             string result;
@@ -501,7 +625,34 @@ namespace Crozzle_Project
 
             }
 
-            foreach (var res in configFile6)
+            foreach (var line in configFile6.ToArray())
+            {
+                var myRegex = new Regex(@"UPPERCASE");
+                var myReg = new Regex(@"true|false");
+                if (myRegex.IsMatch(line))
+                {
+                    if (myReg.IsMatch(line))
+                    {
+                        configFile7.Add(line);
+                    }
+                    else
+                    {
+                        string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                        string linerr = line;
+                        string des = "Invalid boolean";
+                        ErrorLog err = new ErrorLog(name, linerr, des);
+                        configErrors.Add(err);
+                        configFile6.Remove(line);
+                    }
+                }
+                else
+                {
+                    configFile7.Add(line);
+                }
+
+            }
+
+            foreach (var res in configFile7)
             {
 
                 int index = res.IndexOf("=");
@@ -509,6 +660,11 @@ namespace Crozzle_Project
                 var val = res.Substring(index + 1);
                 if (htConfig.ContainsKey(key))
                 {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Hashtable Config";
+                    string des = "Duplicate key";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    configErrors.Add(err);
                     htConfig.Remove(key);
                 }
                 htConfig.Add(key, val);
@@ -526,76 +682,70 @@ namespace Crozzle_Project
                 
             }
             wtr.Close();
-            return htConfig;
-        }
 
-        public Hashtable ValidateHt(List<string> obj)
-        {
-            Hashtable Ht = new Hashtable();
-            List<string> temp = new List<string>();
+            string invalid = "Invalid";
+            string valid = "Valid";
+            Tuple<Hashtable, string> tuple;
 
-            var myRegex = new Regex(@"\w+");
-            //List<string> resultList = obj.FindAll(delegate (string s) { return myRegex.IsMatch(s); });
-
-            foreach(var r in obj)
+            if (configErrors.Count > 0)
             {
-                if(myRegex.IsMatch(r))
-                {
-                    temp.Add(r);
-                }
-                else
-                {
-                    obj.Remove(r);
-                }
+
+                tuple = new Tuple<Hashtable, string>(htConfig, invalid);
             }
-
-            //foreach (var res in resultList)
-            //{
-
-            //    int index = res.IndexOf("=");
-            //    var key = res.Substring(0, index);
-            //    var val = res.Substring(index + 1);
-            //    if (Ht.ContainsKey(key))
-            //    {
-            //        Ht.Remove(key);
-            //    }
-            //    Ht.Add(key, val);
-            //}
-
-
-
-            return Ht;
+            else
+            {
+                tuple = new Tuple<Hashtable, string>(htConfig, valid);
+            }
+            return tuple;
         }
 
-        public Configuration CreateConfig(Configuration obj, Hashtable HtObj, Hashtable IPObj, Hashtable NIPObj)
+        
+
+        public Configuration CreateConfig(Configuration obj, Tuple<Hashtable, string> HtTuple, Tuple<Hashtable, string> IPTuple, Tuple<Hashtable, string> NIPTuple)
         {
-            obj.LogfileName = Convert.ToString(HtObj["LOGFILE_NAME"]);
-            obj.MinimumNumberOfUniqueWords = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_UNIQUE_WORDS"]);
-            obj.MaximumNumberOfUniqueWords = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_UNIQUE_WORDS"]);
-            obj.InvalidCrozzleScore = Convert.ToString(HtObj["INVALID_CROZZLE_SCORE"]);
-            obj.UpperCase = Convert.ToBoolean(HtObj["UPPERCASE"]);
-            obj.Style = Convert.ToString(HtObj["STYLE"]);
-            obj.BgColourEmptyTd = Convert.ToString(HtObj["BGCOLOUR_EMPTY_TD"]);
-            obj.BgColourNonEmptyTd = Convert.ToString(HtObj["BGCOLOUR_NON_EMPTY_TD"]);
-            obj.MinimumNumberOfRows = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_ROWS"]);
-            obj.MaximumNumberOfRows = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_ROWS"]);
-            obj.MinimumNumberOfColumns = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_COLUMNS"]);
-            obj.MaximumNumberOfColumns = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_COLUMNS"]);
-            obj.MinimumHorizontalWords = Convert.ToInt32(HtObj["MINIMUM_HORIZONTAL_WORDS"]);
-            obj.MaximumHorizontalWords = Convert.ToInt32(HtObj["MAXIMUM_HORIZONTAL_WORDS"]);
-            obj.MinimumVerticalWords = Convert.ToInt32(HtObj["MINIMUM_VERTICAL_WORDS"]);
-            obj.MaximumVerticalWords = Convert.ToInt32(HtObj["MAXIMUM_VERTICAL_WORDS"]);
-            obj.MinimumIntersectionsInHorizontalWords = Convert.ToInt32(HtObj["MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS"]);
-            obj.MaximumIntersectionsInHorizontalWords = Convert.ToInt32(HtObj["MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS"]);
-            obj.MinimumIntersectionsInVerticalWords = Convert.ToInt32(HtObj["MINIMUM_INTERSECTIONS_IN_VERTICAL_WORDS"]);
-            obj.MaximumIntersectionsInVerticalWords = Convert.ToInt32(HtObj["MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS"]);
-            obj.MinimumNumberOfTheSameWord = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_THE_SAME_WORD"]);
-            obj.MaximumNumberOfTheSameWord = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_THE_SAME_WORD"]);
-            obj.MinimumNumberOfGroups = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_GROUPS"]);
-            obj.MaximumNumberOfGroups = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_GROUPS"]);
-            obj.PointsPerWord = Convert.ToInt32(HtObj["POINTS_PER_WORD"]);
-            obj.IntersectingPointsPerLetter = IPObj;
-            obj.NonIntersectingPointsPerLetter = NIPObj;
+            Hashtable HtObj = HtTuple.Item1;
+            string result = HtTuple.Item2;
+            Hashtable IPObj = IPTuple.Item1;
+            string result2 = IPTuple.Item2;
+            Hashtable NIPObj = NIPTuple.Item1;
+            string result3 = NIPTuple.Item2;
+
+            if (result == "Valid" || result2 == "Valid" || result3 == "Valid")
+            {
+                obj.IsValid = true;
+                obj.LogfileName = Convert.ToString(HtObj["LOGFILE_NAME"]);
+                obj.MinimumNumberOfUniqueWords = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_UNIQUE_WORDS"]);
+                obj.MaximumNumberOfUniqueWords = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_UNIQUE_WORDS"]);
+                obj.InvalidCrozzleScore = Convert.ToString(HtObj["INVALID_CROZZLE_SCORE"]);
+                obj.UpperCase = Convert.ToBoolean(HtObj["UPPERCASE"]);
+                obj.Style = Convert.ToString(HtObj["STYLE"]);
+                obj.BgColourEmptyTd = Convert.ToString(HtObj["BGCOLOUR_EMPTY_TD"]);
+                obj.BgColourNonEmptyTd = Convert.ToString(HtObj["BGCOLOUR_NON_EMPTY_TD"]);
+                obj.MinimumNumberOfRows = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_ROWS"]);
+                obj.MaximumNumberOfRows = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_ROWS"]);
+                obj.MinimumNumberOfColumns = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_COLUMNS"]);
+                obj.MaximumNumberOfColumns = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_COLUMNS"]);
+                obj.MinimumHorizontalWords = Convert.ToInt32(HtObj["MINIMUM_HORIZONTAL_WORDS"]);
+                obj.MaximumHorizontalWords = Convert.ToInt32(HtObj["MAXIMUM_HORIZONTAL_WORDS"]);
+                obj.MinimumVerticalWords = Convert.ToInt32(HtObj["MINIMUM_VERTICAL_WORDS"]);
+                obj.MaximumVerticalWords = Convert.ToInt32(HtObj["MAXIMUM_VERTICAL_WORDS"]);
+                obj.MinimumIntersectionsInHorizontalWords = Convert.ToInt32(HtObj["MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS"]);
+                obj.MaximumIntersectionsInHorizontalWords = Convert.ToInt32(HtObj["MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS"]);
+                obj.MinimumIntersectionsInVerticalWords = Convert.ToInt32(HtObj["MINIMUM_INTERSECTIONS_IN_VERTICAL_WORDS"]);
+                obj.MaximumIntersectionsInVerticalWords = Convert.ToInt32(HtObj["MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS"]);
+                obj.MinimumNumberOfTheSameWord = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_THE_SAME_WORD"]);
+                obj.MaximumNumberOfTheSameWord = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_THE_SAME_WORD"]);
+                obj.MinimumNumberOfGroups = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_GROUPS"]);
+                obj.MaximumNumberOfGroups = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_GROUPS"]);
+                obj.PointsPerWord = Convert.ToInt32(HtObj["POINTS_PER_WORD"]);
+                obj.IntersectingPointsPerLetter = IPObj;
+                obj.NonIntersectingPointsPerLetter = NIPObj;
+            }
+            else
+            {
+                obj.IsValid = false;
+            }
+            
 
 
             return obj;
