@@ -33,7 +33,6 @@
             this.btnGetFile = new System.Windows.Forms.Button();
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.txtFile = new System.Windows.Forms.TextBox();
-            this.btnLoadWords = new System.Windows.Forms.Button();
             this.errorPanel = new System.Windows.Forms.Panel();
             this.invtxt1 = new System.Windows.Forms.TextBox();
             this.invtxt2 = new System.Windows.Forms.TextBox();
@@ -76,16 +75,6 @@
             this.txtFile.Size = new System.Drawing.Size(489, 20);
             this.txtFile.TabIndex = 5;
             // 
-            // btnLoadWords
-            // 
-            this.btnLoadWords.Location = new System.Drawing.Point(304, 43);
-            this.btnLoadWords.Name = "btnLoadWords";
-            this.btnLoadWords.Size = new System.Drawing.Size(117, 33);
-            this.btnLoadWords.TabIndex = 6;
-            this.btnLoadWords.Text = "Load word list";
-            this.btnLoadWords.UseVisualStyleBackColor = true;
-            this.btnLoadWords.Click += new System.EventHandler(this.btnLoadWords_Click);
-            // 
             // errorPanel
             // 
             this.errorPanel.Controls.Add(this.errTxt);
@@ -127,7 +116,6 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(1406, 555);
             this.Controls.Add(this.errorPanel);
-            this.Controls.Add(this.btnLoadWords);
             this.Controls.Add(this.txtFile);
             this.Controls.Add(this.btnLoadFile);
             this.Controls.Add(this.btnGetFile);
@@ -147,7 +135,6 @@
         private System.Windows.Forms.Button btnGetFile;
         private System.Windows.Forms.Button btnLoadFile;
         private System.Windows.Forms.TextBox txtFile;
-        private System.Windows.Forms.Button btnLoadWords;
         private System.Windows.Forms.Panel errorPanel;
         private System.Windows.Forms.TextBox invtxt1;
         private System.Windows.Forms.TextBox invtxt2;

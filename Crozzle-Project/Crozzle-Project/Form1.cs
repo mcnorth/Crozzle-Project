@@ -17,7 +17,7 @@ namespace Crozzle_Project
 {
     public partial class FrmMenu : Form
     {
-        
+        DataGridView crozzlePanel = new DataGridView();
 
         public FrmMenu()
         {
@@ -27,7 +27,6 @@ namespace Crozzle_Project
             FileStream fS = File.Open(fPath + '\\' + filname, FileMode.Open);
             fS.SetLength(0);
             fS.Close();
-
         }
 
         OpenFileDialog ofd = new OpenFileDialog();
@@ -59,55 +58,38 @@ namespace Crozzle_Project
             test.CreateCrozzleTest(cPath, test);
             
             if(test.IsValid == false)
-            {
-                //Label lbl = new Label();
-                //lbl.AutoSize = true;
-                //lbl.Location = new Point(x, y);
-                //lbl.Font = new Font("Arial", 12, FontStyle.Bold);
-                //lbl.Text = "Crozzle file are invalid";
-                //errorPanel.Controls.Add(lbl);
-
+            {               
                 invtxt1.Text = "Crozzle files are invalid";
 
                 test.TestCrozzle(test, configPath);
 
                 if (test.IsCrozzleValid == false)
-                {
-                    //Label lab = new Label();
-                    //lab.AutoSize = true;
-                    //lab.Location = new Point(x + 20, y);
-                    //lab.Font = new Font("Arial", 12, FontStyle.Bold);
-                    //lab.Text = "Crozzle test file are invalid";
-                    //errorPanel.Controls.Add(lab);
+                {                   
                     invtxt2.Text = "Crozzle test file is invalid";
-
                 }
-
-
             }
 
             if(test.IsValid == true)
             {
-
                 test.TestCrozzle(test, configPath);
 
                 if (test.IsCrozzleValid == false)
-                {
-                    //Label lbl = new Label();
-                    //lbl.AutoSize = true;                   
-                    //lbl.Text = "Crozzle test file are invalid";
-                    //errorPanel.Controls.Add(lbl);
+                {                   
                     invtxt2.Text = "Crozzle test file is invalid";
                 }
 
                 if (test.IsCrozzleValid == true)
                 {
                     invtxt1.Text = "All Crozzle files are valid";
-                    DataGridView crozzlePanel = new DataGridView();
                     crozzlePanel.Dock = DockStyle.Fill;
                     crozzlePanel.ScrollBars = ScrollBars.None;
                     crozzlePanel.BackgroundColor = Color.Black;
                     crozzlePanel.DefaultCellStyle.BackColor = Color.Black;
+                    crozzlePanel.DefaultCellStyle.ForeColor = Color.Black;
+                    crozzlePanel.Font = new Font("Arial", 12);
+                    crozzlePanel.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    crozzlePanel.Enabled = false;
+                    crozzlePanel.RowsDefaultCellStyle.SelectionBackColor = Color.Black;
 
                     for (int i = 0; i < test.GridColumns; i++)
                     {
@@ -130,6 +112,30 @@ namespace Crozzle_Project
                     crozzlePanel.ColumnHeadersVisible = false;
                     crozzlePanel.RowHeadersVisible = false;
                     boardPanel.Controls.Add(crozzlePanel);
+
+                    foreach (var obj in test.RowData)
+                    {
+                        int beginCol = obj.Column - 1;
+                        int beginRow = obj.Row - 1;
+                        char[] name = obj.Name.ToCharArray();
+
+                        for (int j = 0; j < name.Length; j++)
+                        {
+                            GetCell(beginRow, beginCol + j, name[j].ToString());
+                        }
+                    }
+
+                    foreach (var obj in test.ColumnData)
+                    {
+                        int beginCol = obj.Column - 1;
+                        int beginRow = obj.Row - 1;
+                        char[] name = obj.Name.ToCharArray();
+
+                        for (int j = 0; j < name.Length; j++)
+                        {
+                            GetCell(beginRow + j, beginCol, name[j].ToString());
+                        }
+                    }
                 }
 
             }
@@ -139,27 +145,21 @@ namespace Crozzle_Project
             string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
             var pathToFile = fPath + '\\' + filname;
             var file = File.ReadAllLines(pathToFile);
-            //Label errorLbl = new Label();
-            //errorLbl.AutoSize = true;
-            //errorLbl.Location = new Point(x + 40, y);
-            //errorLbl.Font = new Font("Arial", 12, FontStyle.Bold);
-            //errorLbl.Text = file;
-            //errorPanel.Controls.Add(errorLbl);
+            
             foreach (var line in file)
             {
-                //errTxt.Text = string.Join(" ", line);
                 errTxt.Text += line.ToString() + "\r\n";
             }
             
-
-
         }
 
-
-
-        private void btnLoadWords_Click(object sender, EventArgs e)
+        public void GetCell(int row, int col, string letter)
         {
-
+            DataGridViewCell cell = crozzlePanel[col, row];
+            cell.ReadOnly = false;
+            cell.Style.BackColor = Color.White;           
+            cell.Value = letter;
+            
         }
     }
 }

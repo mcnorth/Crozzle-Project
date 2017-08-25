@@ -127,9 +127,8 @@ namespace Crozzle_Project
             List<ErrorLog> columnDataErrors = new List<ErrorLog>();
             string result;
             var myRegex = new Regex(@"\w+=\d+,\w+,\d+");
-            var reg = new Regex(@"// The horizontal rows containing words.");
-            var reg2 = new Regex(@"// The vertical rows containing words.");
-            var reg3 = new Regex(@"ROW=\d+,\w+,\d+");
+            var reg = new Regex(@"// The vertical rows containing words.");
+            var reg2 = new Regex(@"COLUMN=\d+,\w+,\d+");
 
 
             foreach (var line in file)
@@ -148,16 +147,6 @@ namespace Crozzle_Project
 
             foreach (var line in temp.ToArray())
             {
-                if (reg2.IsMatch(line))
-                {
-                    break;
-                }
-
-                temp2.Add(line);
-            }
-
-            foreach (var line in temp2)
-            {
                 if (line.StartsWith("//") || line == String.Empty)
                 {
                     continue;
@@ -165,68 +154,54 @@ namespace Crozzle_Project
                 else
                 {
 
-                    temp3.Add(line);
+                    temp2.Add(line);
                 }
             }
-
-            foreach (var line in temp3)
-            {
-                if (line.Contains(" ") && line.Contains("//"))
-                {
-                    int index = line.IndexOf(" ");
-                    result = line.Substring(0, index);
-                    temp4.Add(result);
-                }
-                else
-                {
-                    temp4.Add(line);
-                }
-            }
-
-            if (temp4.Count != temp4.Distinct().Count())
+         
+            if (temp2.Count != temp2.Distinct().Count())
             {
                 string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                string linerr = "RowData";
+                string linerr = "ColumnData";
                 string des = "Wordlist contains duplicates";
                 ErrorLog err = new ErrorLog(name, linerr, des);
                 columnDataErrors.Add(err);
             }
 
-            foreach (var line in temp4)
+            foreach (var line in temp2)
             {
-                if (reg3.IsMatch(line))
+                if (reg2.IsMatch(line))
                 {
-                    temp5.Add(line);
+                    temp3.Add(line);
                 }
                 else
                 {
                     string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
                     string linerr = line;
-                    string des = "Row Data is invalid";
+                    string des = "Column Data is invalid";
                     ErrorLog err = new ErrorLog(name, linerr, des);
                     columnDataErrors.Add(err);
                 }
 
             }
 
-            foreach (var line in temp5)
+            foreach (var line in temp3)
             {
                 if (line.Contains("="))
                 {
                     int index = line.IndexOf("=");
                     result = line.Substring(index + 1);
-                    temp6.Add(result);
+                    temp4.Add(result);
                 }
             }
 
-            foreach (var a in temp6)
+            foreach (var a in temp4)
             {
                 string[] y = a.Split(',');
 
                 ColumnData ob = new ColumnData();
-                ob.Row = Convert.ToInt32(y[0]);
+                ob.Column = Convert.ToInt32(y[0]);
                 ob.Name = Convert.ToString(y[1]);
-                ob.Column = Convert.ToInt32(y[2]);
+                ob.Row = Convert.ToInt32(y[2]);
                 res.Add(ob);
 
             }
