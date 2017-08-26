@@ -138,11 +138,13 @@ namespace Crozzle_Project
             List<string> temp4 = new List<string>();
             List<string> temp5 = new List<string>();
             List<string> temp6 = new List<string>();
+            List<string> temp7 = new List<string>();
             List<ErrorLog> columnDataErrors = new List<ErrorLog>();
             string result;
             var myRegex = new Regex(@"\w+=\d+,\w+,\d+");
             var reg = new Regex(@"// The vertical rows containing words.");
             var reg2 = new Regex(@"COLUMN=\d+,\w+,\d+");
+            var reg3 = new Regex(@"\.");
 
 
             foreach (var line in file)
@@ -200,15 +202,33 @@ namespace Crozzle_Project
 
             foreach (var line in temp3)
             {
+                if (reg3.IsMatch(line))
+                {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = line;
+                    string des = "Column Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    columnDataErrors.Add(err);
+                }
+                else
+                {
+                    temp4.Add(line);
+                }
+
+
+            }
+
+            foreach (var line in temp4)
+            {
                 if (line.Contains("="))
                 {
                     int index = line.IndexOf("=");
                     result = line.Substring(index + 1);
-                    temp4.Add(result);
+                    temp5.Add(result);
                 }
             }
 
-            foreach (var a in temp4)
+            foreach (var a in temp5)
             {
                 string[] y = a.Split(',');
 
@@ -556,7 +576,9 @@ namespace Crozzle_Project
             string cFile = rPath + "\\" + Convert.ToString(obj.ConfigurationFile);
             Configuration config = new Configuration();           
             config.CreateConfigObj(cFile, config);
-
+            List<ErrorLog> testErrors = new List<ErrorLog>();
+            
+        
             obj.IpTable = config.IntersectingPointsPerLetter;
             obj.NIpTable = config.NonIntersectingPointsPerLetter;
 
@@ -564,43 +586,67 @@ namespace Crozzle_Project
             WordList wList = new WordList();
             wList.CreateWordlist(wFile, wList);
 
-            if (config.IsValid == false)
-            {
-                obj.IsCrozzleValid = false;
-                return obj;
-            }
-            else
+            int countErrors = 0;
+            if (config.IsValid == true && wList.IsValid == true)
             {
                 if (wList.Count < config.MinimumNumberOfUniqueWords || wList.Count > config.MaximumNumberOfUniqueWords)
                 {
-                    obj.IsCrozzleValid = false;
-                    return obj;
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Wordlist is greater or lesser than Number of Unique Words";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
+                    
                 }
+                
 
                 if (obj.GridRows < config.MinimumNumberOfRows || obj.GridRows > config.MaximumNumberOfRows)
                 {
-                    obj.IsCrozzleValid = false;
-                    return obj;
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Grid Rows is greater or lesser than Number of Rows";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
+
                 }
+                
 
                 if (obj.GridColumns < config.MinimumNumberOfColumns || obj.GridColumns > config.MaximumNumberOfColumns)
                 {
-                    obj.IsCrozzleValid = false;
-                    return obj;
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Grid Columns is greater or lesser than Number of Columns";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
+
                 }
+                
 
                 if (obj.RowData.Count < config.MinimumHorizontalWords || obj.RowData.Count > config.MaximumHorizontalWords)
                 {
-                    obj.IsCrozzleValid = false;
-                    return obj;
-                }
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Row data is greater or lesser than Horizontal words";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
 
+                }
+               
                 if (obj.ColumnData.Count < config.MinimumVerticalWords || obj.ColumnData.Count > config.MaximumVerticalWords)
                 {
-                    obj.IsCrozzleValid = false;
-                    return obj;
-                }
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Column data is greater or lesser than Vertical words";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
 
+                }
+                
                 int count = 0;
                 foreach (var r in obj.RowData)
                 {
@@ -619,9 +665,15 @@ namespace Crozzle_Project
 
                 if (count < config.MinimumIntersectionsInHorizontalWords || count > config.MaximumIntersectionsInHorizontalWords)
                 {
-                    obj.IsCrozzleValid = false;
-                    return obj;
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Row data is greater or lesser than Intersections Horizontal words";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
+
                 }
+                
 
                 int counter = 0;
                 foreach (var r in obj.ColumnData)
@@ -641,9 +693,15 @@ namespace Crozzle_Project
 
                 if (counter < config.MinimumIntersectionsInVerticalWords || counter > config.MaximumIntersectionsInVerticalWords)
                 {
-                    obj.IsCrozzleValid = false;
-                    return obj;
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Column data is greater or lesser than Intersections Vertical words";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
+
                 }
+                
 
                 List<String> sameWords = wList.GroupBy(x => x)
                                         .Where(gb => gb.Count() > 1)
@@ -652,15 +710,64 @@ namespace Crozzle_Project
 
                 if (sameWords.Count > config.MinimumNumberOfTheSameWord || sameWords.Count > config.MaximumNumberOfTheSameWord)
                 {
+                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    string linerr = "Duplicates in the word list";
+                    string des = "Test Data is invalid";
+                    ErrorLog err = new ErrorLog(name, linerr, des);
+                    testErrors.Add(err);
+                    countErrors++;
+
+                }
+                
+
+                if (countErrors > 0)
+                {
+                    string fPath = Directory.GetCurrentDirectory();
+                    string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                    StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+
+                    foreach (var e in testErrors)
+                    {
+                        wtr.WriteLine("File Name: " + e.File_Name);
+                        wtr.WriteLine("Line: " + e.Line);
+                        wtr.WriteLine("Description: " + e.Description);
+
+                    }
+                    wtr.Close();
                     obj.IsCrozzleValid = false;
-                    return obj;
+                    
+                }
+                else
+                {
+                    obj.IsCrozzleValid = true;
+                    
                 }
 
+                
+            }
+            else
+            {
+                obj.IsCrozzleValid = false;
+                
+            }
+
+            if (obj.IsCrozzleValid == false)
+            {
+                return obj;
+            }
+            else
+            {
                 obj.IsCrozzleValid = true;
                 return obj;
             }
-            
-            
+
+
+
+
+
+
+
+
         }
 
 

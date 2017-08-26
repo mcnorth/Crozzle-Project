@@ -60,25 +60,36 @@ namespace Crozzle_Project
             if(test.IsValid == false)
             {               
                 invtxt1.Text = "Crozzle files are invalid";
+                string fPath = Directory.GetCurrentDirectory();
+                string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                var pathToFile = fPath + '\\' + filname;
+                var file = File.ReadAllLines(pathToFile);
 
-                test.TestCrozzle(test, configPath);
-
-                if (test.IsCrozzleValid == false)
-                {                   
-                    invtxt2.Text = "Crozzle test file is invalid";
+                foreach (var line in file)
+                {
+                    errTxt.Text += line.ToString() + "\r\n";
                 }
-            }
 
-            if(test.IsValid == true)
+
+            }            
+            else
             {
                 test.TestCrozzle(test, configPath);
 
                 if (test.IsCrozzleValid == false)
-                {                   
+                {
                     invtxt2.Text = "Crozzle test file is invalid";
-                }
+                    string fPath = Directory.GetCurrentDirectory();
+                    string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                    var pathToFile = fPath + '\\' + filname;
+                    var file = File.ReadAllLines(pathToFile);
 
-                if (test.IsCrozzleValid == true)
+                    foreach (var line in file)
+                    {
+                        errTxt.Text += line.ToString() + "\r\n";
+                    }
+                }
+                else
                 {
                     invtxt1.Text = "All Crozzle files are valid";
                     crozzlePanel.Dock = DockStyle.Fill;
@@ -142,7 +153,7 @@ namespace Crozzle_Project
                     {
                         //int colNo = r.Column - 1;
                         for (int colNo = r.Column - 1; colNo <= (r.Column - 1) + (r.Name.Length - 1); colNo++)
-                        {                             
+                        {
                             foreach (var c in test.ColumnData)
                             {
                                 for (int rowNo = c.Row - 1; rowNo <= (c.Row - 1) + (c.Name.Length - 1); rowNo++)
@@ -151,24 +162,24 @@ namespace Crozzle_Project
                                     {
                                         string lett = Convert.ToString(crozzlePanel.Rows[rowNo].Cells[colNo].Value);
                                         letters.Add(lett);
-                                        
+
                                     }
 
-                                   
+
                                 }
-                                    
-                                
+
+
                             }
                         }
-                        
+
                     }
 
-                    
-                    
+
+
                     var score = 0;
                     foreach (var ltr in letters)
                     {
-                        if(test.IpTable.ContainsKey(ltr))
+                        if (test.IpTable.ContainsKey(ltr))
                         {
                             int s = Convert.ToInt32(test.IpTable[ltr]);
                             score = score + s;
@@ -177,19 +188,10 @@ namespace Crozzle_Project
 
                     errTxt.Text = "Score: " + score;
                 }
-
+                
             }
 
             
-            string fPath = Directory.GetCurrentDirectory();
-            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            var pathToFile = fPath + '\\' + filname;
-            var file = File.ReadAllLines(pathToFile);
-            
-            foreach (var line in file)
-            {
-                errTxt.Text += line.ToString() + "\r\n";
-            }
             
         }
 
