@@ -85,7 +85,7 @@ namespace Crozzle_Project
                     crozzlePanel.ScrollBars = ScrollBars.None;
                     crozzlePanel.BackgroundColor = Color.Black;
                     crozzlePanel.DefaultCellStyle.BackColor = Color.Black;
-                    crozzlePanel.DefaultCellStyle.ForeColor = Color.Black;
+                    //crozzlePanel.DefaultCellStyle.ForeColor = Color.Black;
                     crozzlePanel.Font = new Font("Arial", 12);
                     crozzlePanel.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     crozzlePanel.Enabled = false;
@@ -136,6 +136,46 @@ namespace Crozzle_Project
                             GetCell(beginRow + j, beginCol, name[j].ToString());
                         }
                     }
+
+                    List<string> letters = new List<string>();
+                    foreach (var r in test.RowData)
+                    {
+                        //int colNo = r.Column - 1;
+                        for (int colNo = r.Column - 1; colNo <= (r.Column - 1) + (r.Name.Length - 1); colNo++)
+                        {                             
+                            foreach (var c in test.ColumnData)
+                            {
+                                for (int rowNo = c.Row - 1; rowNo <= (c.Row - 1) + (c.Name.Length - 1); rowNo++)
+                                {
+                                    if (colNo == c.Column - 1 && r.Row - 1 == rowNo)
+                                    {
+                                        string lett = Convert.ToString(crozzlePanel.Rows[rowNo].Cells[colNo].Value);
+                                        letters.Add(lett);
+                                        
+                                    }
+
+                                   
+                                }
+                                    
+                                
+                            }
+                        }
+                        
+                    }
+
+                    
+                    
+                    var score = 0;
+                    foreach (var ltr in letters)
+                    {
+                        if(test.IpTable.ContainsKey(ltr))
+                        {
+                            int s = Convert.ToInt32(test.IpTable[ltr]);
+                            score = score + s;
+                        }
+                    }
+
+                    errTxt.Text = "Score: " + score;
                 }
 
             }
@@ -157,7 +197,8 @@ namespace Crozzle_Project
         {
             DataGridViewCell cell = crozzlePanel[col, row];
             cell.ReadOnly = false;
-            cell.Style.BackColor = Color.White;           
+            cell.Style.BackColor = Color.White;
+            cell.Style.ForeColor = Color.Tomato;
             cell.Value = letter;
             
         }

@@ -20,6 +20,20 @@ namespace Crozzle_Project
         private List<ColumnData> COLUMN_DATA;
         private bool ISVALID;
         private bool ISCROZZLEVALID;
+        private Hashtable IP_TABLE;
+        private Hashtable NIP_TABLE;
+
+        public Hashtable IpTable
+        {
+            get { return IP_TABLE; }
+            set { IP_TABLE = value; }
+        }
+
+        public Hashtable NIpTable
+        {
+            get { return NIP_TABLE; }
+            set { NIP_TABLE = value; }
+        }
 
         public bool IsValid
         {
@@ -542,6 +556,9 @@ namespace Crozzle_Project
             string cFile = rPath + "\\" + Convert.ToString(obj.ConfigurationFile);
             Configuration config = new Configuration();           
             config.CreateConfigObj(cFile, config);
+
+            obj.IpTable = config.IntersectingPointsPerLetter;
+            obj.NIpTable = config.NonIntersectingPointsPerLetter;
 
             string wFile = rPath + "\\" + Convert.ToString(obj.WordlistFile);
             WordList wList = new WordList();
