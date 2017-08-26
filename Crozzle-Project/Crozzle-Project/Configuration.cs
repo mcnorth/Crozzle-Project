@@ -207,6 +207,7 @@ namespace Crozzle_Project
             set { NON_INTERSECTING_POINTS_PER_LETTER = value; }
         }
 
+        //error check lines from file
         public Configuration CreateConfigObj(string file, Configuration obj)
         {
 
@@ -217,6 +218,7 @@ namespace Crozzle_Project
             CreateConfig(obj, ht, IPscoreHt, NIPscoreHt);
             return obj;
         }
+
 
         public Tuple<Hashtable, string> GetNIPScoreFile(string path)
         {
@@ -239,6 +241,7 @@ namespace Crozzle_Project
                 configFile1.Add(line);
             }
 
+            //error checking and removing useless chars
             foreach (var line in configFile1)
             {
                 Regex reg = new Regex(@"^NON");
@@ -276,6 +279,7 @@ namespace Crozzle_Project
                 configFile5.Add(line);
             }
 
+            //add object from list to hashtable
             foreach (string str in IPScoreArray)
             {
                 int index = str.IndexOf("=");
@@ -296,6 +300,7 @@ namespace Crozzle_Project
 
             //string [] alphabet = new string[] {"A", "B", "C", "D", "E", "F", "G", "H",  };
 
+            //error checking
             string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
             foreach (char letter in alphabet)
@@ -333,6 +338,7 @@ namespace Crozzle_Project
                 }
             }
 
+            //write errors to log file
             string fPath = Directory.GetCurrentDirectory();
             string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
             StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
@@ -363,6 +369,7 @@ namespace Crozzle_Project
             
         }
 
+        //create the score table
         public Tuple<Hashtable, string> GetIPScoreFile(string path)
         {
             var pathToFile = path;
@@ -507,6 +514,7 @@ namespace Crozzle_Project
             
         }
 
+        //get the configuration file, read and add each line to list
         public Tuple<Hashtable, string> GetFile(string path)
         {
             var pathToFile = path;
@@ -524,6 +532,7 @@ namespace Crozzle_Project
 
             Hashtable htConfig = new Hashtable();
 
+            //error checking and removing useless obj
             foreach (var line in file)
             {
                 configFile1.Add(line);
@@ -700,7 +709,7 @@ namespace Crozzle_Project
         }
 
         
-
+        //create configuration object for return
         public Configuration CreateConfig(Configuration obj, Tuple<Hashtable, string> HtTuple, Tuple<Hashtable, string> IPTuple, Tuple<Hashtable, string> NIPTuple)
         {
             Hashtable HtObj = HtTuple.Item1;

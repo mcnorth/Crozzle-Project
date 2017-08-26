@@ -90,7 +90,7 @@ namespace Crozzle_Project
         }
 
         
-
+        //get teh number of rows and columns for the grid
         public Hashtable GetGrid(List<string> data)
         {
             Hashtable result = new Hashtable();
@@ -127,6 +127,7 @@ namespace Crozzle_Project
             return result; 
         }
 
+        //get teh data for the rows and error check and log
         public Tuple<List<ColumnData>, string> GetColumnData(string path)
         {
             var pathToFile = path;
@@ -271,6 +272,7 @@ namespace Crozzle_Project
 
         }
         
+        //get the data for the columns and error check and log
         public Tuple<List<RowData>, string> GetRowData(string path)
         {
             var pathToFile = path;
@@ -419,6 +421,7 @@ namespace Crozzle_Project
             
         }       
 
+        //get the names of the files associated with the test file
         public Tuple<Hashtable, string> GetFileNames(List<string> loc)
         {
             //string pat = "FILE";
@@ -484,6 +487,7 @@ namespace Crozzle_Project
 
         }
 
+        //get the file error check and log
         public List<string> GetFile(string path)
         {            
             var pathToFile = path;
@@ -571,6 +575,7 @@ namespace Crozzle_Project
             return obj;
         }
 
+        //test the crozzle to see if it is valid
         public CrozzleTest TestCrozzle(CrozzleTest obj, string rPath)
         {
             string cFile = rPath + "\\" + Convert.ToString(obj.ConfigurationFile);

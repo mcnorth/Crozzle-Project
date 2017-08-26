@@ -35,6 +35,7 @@ namespace Crozzle_Project
 
         }
 
+        //create the wordlist object
         public WordList CreateWordlist(string path, WordList obj)
         {
             
@@ -43,6 +44,7 @@ namespace Crozzle_Project
             return obj;
         }
 
+        //get the file for wordlist and error check
         public WordList GetFile(string path, WordList wds)
         {
             var pathToFile = path;

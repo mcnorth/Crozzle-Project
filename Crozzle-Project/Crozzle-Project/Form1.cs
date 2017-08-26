@@ -17,11 +17,14 @@ namespace Crozzle_Project
 {
     public partial class FrmMenu : Form
     {
+        //create a panel for the grid
         DataGridView crozzlePanel = new DataGridView();
 
         public FrmMenu()
         {
             InitializeComponent();
+
+            //clear the log file when onload
             string fPath = Directory.GetCurrentDirectory();
             string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
             FileStream fS = File.Open(fPath + '\\' + filname, FileMode.Open);
@@ -29,6 +32,7 @@ namespace Crozzle_Project
             fS.Close();
         }
 
+        //open a file dialog to retrieve file
         OpenFileDialog ofd = new OpenFileDialog();
 
         private void btnGetFile_Click(object sender, EventArgs e)
@@ -47,19 +51,20 @@ namespace Crozzle_Project
 
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            int x = 10;
-            int y = 10;
             
-
             string cPath = txtFile.Text;
             string configPath = Path.GetDirectoryName(cPath);
 
+            //create crozzletest object
             CrozzleTest test = new CrozzleTest();
             test.CreateCrozzleTest(cPath, test);
             
+            //error testing
             if(test.IsValid == false)
             {               
                 invtxt1.Text = "Crozzle files are invalid";
+
+                //read log file and display in textbox
                 string fPath = Directory.GetCurrentDirectory();
                 string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
                 var pathToFile = fPath + '\\' + filname;
@@ -91,6 +96,7 @@ namespace Crozzle_Project
                 }
                 else
                 {
+                    //if all files are valid display the grid
                     invtxt1.Text = "All Crozzle files are valid";
                     crozzlePanel.Dock = DockStyle.Fill;
                     crozzlePanel.ScrollBars = ScrollBars.None;
@@ -148,6 +154,7 @@ namespace Crozzle_Project
                         }
                     }
 
+                    //get the points for each letter
                     List<string> letters = new List<string>();
                     foreach (var r in test.RowData)
                     {
@@ -175,7 +182,7 @@ namespace Crozzle_Project
                     }
 
 
-
+                    //calculate the score
                     var score = 0;
                     foreach (var ltr in letters)
                     {
@@ -195,6 +202,7 @@ namespace Crozzle_Project
             
         }
 
+        //format a cell
         public void GetCell(int row, int col, string letter)
         {
             DataGridViewCell cell = crozzlePanel[col, row];
