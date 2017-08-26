@@ -1,0 +1,44 @@
+26/08/2017 6:00:49 PM ==> Keyword Missing
+26/08/2017 7:52:35 PM ==> Keyword Missing
+26/08/2017 8:14:34 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:16:45 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:17:51 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:18:56 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:23:44 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:23:55 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:24:55 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:29:36 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:29:47 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:30:15 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:30:28 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 8:30:28 PM ==> All crozzle files are VALID
+26/08/2017 9:11:17 PM ==> Loaded Marking 1 Crozzle.txt
+26/08/2017 9:11:17 PM ==> All crozzle files are VALID
+26/08/2017 9:11:43 PM ==> Loaded Marking 2 Crozzle.txt
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid
+26/08/2017 9:11:43 PM ==> File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetFile ----- Desc: Keyword missing
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetFile ----- Desc: Must be an integer
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetFile ----- Desc: Invalid hex colour
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetFile ----- Desc: Invalid hex colour
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetFile ----- Desc: Invalid boolean
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetFile ----- Desc: Duplicate Key in hashtable
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetFile ----- Desc: Duplicate Key in hashtable
+26/08/2017 9:11:43 PM ==> File: Configuration.cs ----- Line: GetNIPScoreFile ----- Desc: Letter A missing from NonIntersecting Points Hashtable
+26/08/2017 9:11:43 PM ==> File: WordList.cs ----- Line: GetFile ----- Desc: Wordlist contains duplicates
+26/08/2017 9:11:43 PM ==> Crozzle test files are INVALID
+26/08/2017 9:12:32 PM ==> Loaded Marking 3 Crozzle.txt
+26/08/2017 9:12:32 PM ==> File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Row data is greater or lesser than Horizontal words
+26/08/2017 9:12:32 PM ==> File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Row data is greater or lesser than Intersections Horizontal words
+26/08/2017 9:12:32 PM ==> File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Column data is greater or lesser than Intersections Vertical words
+26/08/2017 9:12:32 PM ==> Crozzle test files are INVALID

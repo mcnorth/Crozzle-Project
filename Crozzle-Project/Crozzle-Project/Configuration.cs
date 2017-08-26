@@ -224,6 +224,7 @@ namespace Crozzle_Project
         {
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<string> configFile1 = new List<string>();
             List<string> configFile2 = new List<string>();
             List<string> configFile3 = new List<string>();
@@ -287,11 +288,16 @@ namespace Crozzle_Project
                 var val = str.Substring(index + 1);
                 if (NonintersectingPoints.ContainsKey(key))
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Hashtable Intersecting Points";
-                    string des = "Duplicate key";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetNIPScoreFile ----- Desc: Duplicate Key");
+
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Hashtable Intersecting Points";
+                    //string des = "Duplicate key";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
                     NonintersectingPoints.Remove(key);
                 }
 
@@ -311,11 +317,15 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Hashtable";
-                    string des = "Letter " + letter + " missing from Intersecting Points hashtable";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetNIPScoreFile ----- Desc: Letter " + letter + " missing from NonIntersecting Points Hashtable");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Hashtable";
+                    //string des = "Letter " + letter + " missing from Intersecting Points hashtable";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
 
                 }
             }
@@ -330,27 +340,31 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Hashtable Value";
-                    string des = "Values must equal a number";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetNIPScoreFile ----- Desc: Values must equal a number");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Hashtable Value";
+                    //string des = "Values must equal a number";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
                 }
             }
 
             //write errors to log file
-            string fPath = Directory.GetCurrentDirectory();
-            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+            //string fPath = Directory.GetCurrentDirectory();
+            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
 
-            foreach (var e in configErrors)
-            {
-                wtr.WriteLine("File Name: " + e.File_Name);
-                wtr.WriteLine("Line: " + e.Line);
-                wtr.WriteLine("Description: " + e.Description);
+            //foreach (var e in configErrors)
+            //{
+            //    wtr.WriteLine("File Name: " + e.File_Name);
+            //    wtr.WriteLine("Line: " + e.Line);
+            //    wtr.WriteLine("Description: " + e.Description);
 
-            }
-            wtr.Close();
+            //}
+            //wtr.Close();
 
             string invalid = "Invalid";
             string valid = "Valid";
@@ -374,6 +388,7 @@ namespace Crozzle_Project
         {
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<string> configFile1 = new List<string>();
             List<string> configFile2 = new List<string>();
             List<string> configFile3 = new List<string>();
@@ -435,11 +450,15 @@ namespace Crozzle_Project
                 var val = str.Substring(index + 1);
                 if (intersectingPoints.ContainsKey(key))
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Hashtable Intersecting Points";
-                    string des = "Duplicate key";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetIPScoreFile ----- Desc: Duplicate Key");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Hashtable Intersecting Points";
+                    //string des = "Duplicate key";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
                     intersectingPoints.Remove(key);
                 }
                 intersectingPoints.Add(key, val);
@@ -457,12 +476,16 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Hashtable";
-                    string des = "Letter " + letter + " missing from Intersecting Points hashtable";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
-                    
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetIPScoreFile ----- Desc: Letter " + letter + " missing from NonIntersecting Points Hashtable");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Hashtable";
+                    //string des = "Letter " + letter + " missing from Intersecting Points hashtable";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
+
                 }
             }
 
@@ -476,26 +499,30 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Hashtable Value";
-                    string des = "Values must equal a number";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetIPScoreFile ----- Desc: Values must equal a number");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Hashtable Value";
+                    //string des = "Values must equal a number";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
                 }
             }
             
-            string fPath = Directory.GetCurrentDirectory();
-            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+            //string fPath = Directory.GetCurrentDirectory();
+            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
 
-            foreach (var e in configErrors)
-            {
-                wtr.WriteLine("File Name: " + e.File_Name);
-                wtr.WriteLine("Line: " + e.Line);
-                wtr.WriteLine("Description: " + e.Description);
+            //foreach (var e in configErrors)
+            //{
+            //    wtr.WriteLine("File Name: " + e.File_Name);
+            //    wtr.WriteLine("Line: " + e.Line);
+            //    wtr.WriteLine("Description: " + e.Description);
 
-            }
-            wtr.Close();
+            //}
+            //wtr.Close();
 
             string invalid = "Invalid";
             string valid = "Valid";
@@ -519,6 +546,7 @@ namespace Crozzle_Project
         {
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<string> configFile1 = new List<string>();
             List<string> configFile2 = new List<string>();
             List<string> configFile3 = new List<string>();
@@ -557,11 +585,17 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = line;
-                    string des = "Keyword missing";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
+                    Convert.ToString(htConfig["LOGFILE_NAME"]);
+                    
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Keyword missing");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = line;
+                    //string des = "Keyword missing";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
                     configFile2.Remove(line);
                 }
             }
@@ -593,12 +627,16 @@ namespace Crozzle_Project
                     }
                     else
                     {
-                        string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                        string linerr = line;
-                        string des = "Must be an integer";
-                        ErrorLog err = new ErrorLog(name, linerr, des);
-                        configErrors.Add(err);
-                        
+                        CreateLogFiles err = new CreateLogFiles();
+                        string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                        string fNa = @"LogFiles\log";
+                        err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Must be an integer");
+                        //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                        //string linerr = line;
+                        //string des = "Must be an integer";
+                        //ErrorLog err = new ErrorLog(name, linerr, des);
+                        //configErrors.Add(err);
+
                     }
                 }
                 else
@@ -619,11 +657,15 @@ namespace Crozzle_Project
                     }
                     else
                     {
-                        string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                        string linerr = line;
-                        string des = "Invalid hex colour";
-                        ErrorLog err = new ErrorLog(name, linerr, des);
-                        configErrors.Add(err);
+                        CreateLogFiles err = new CreateLogFiles();
+                        string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                        string fNa = @"LogFiles\log";
+                        err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Invalid hex colour");
+                        //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                        //string linerr = line;
+                        //string des = "Invalid hex colour";
+                        //ErrorLog err = new ErrorLog(name, linerr, des);
+                        //configErrors.Add(err);
 
                     }
                 }
@@ -646,11 +688,15 @@ namespace Crozzle_Project
                     }
                     else
                     {
-                        string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                        string linerr = line;
-                        string des = "Invalid boolean";
-                        ErrorLog err = new ErrorLog(name, linerr, des);
-                        configErrors.Add(err);
+                        CreateLogFiles err = new CreateLogFiles();
+                        string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                        string fNa = @"LogFiles\log";
+                        err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Invalid boolean");
+                        //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                        //string linerr = line;
+                        //string des = "Invalid boolean";
+                        //ErrorLog err = new ErrorLog(name, linerr, des);
+                        //configErrors.Add(err);
                         configFile6.Remove(line);
                     }
                 }
@@ -669,28 +715,32 @@ namespace Crozzle_Project
                 var val = res.Substring(index + 1);
                 if (htConfig.ContainsKey(key))
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Hashtable Config";
-                    string des = "Duplicate key";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    configErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Duplicate Key in hashtable");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Hashtable Config";
+                    //string des = "Duplicate key";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //configErrors.Add(err);
                     htConfig.Remove(key);
                 }
                 htConfig.Add(key, val);
             }
 
-            string fPath = Directory.GetCurrentDirectory();
-            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append:true);
+            //string fPath = Directory.GetCurrentDirectory();
+            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append:true);
             
-            foreach(var e in configErrors)
-            {
-                wtr.WriteLine("File Name: " + e.File_Name);
-                wtr.WriteLine("Line: " + e.Line);
-                wtr.WriteLine("Description: " + e.Description);
+            //foreach(var e in configErrors)
+            //{
+            //    wtr.WriteLine("File Name: " + e.File_Name);
+            //    wtr.WriteLine("Line: " + e.Line);
+            //    wtr.WriteLine("Description: " + e.Description);
                 
-            }
-            wtr.Close();
+            //}
+            //wtr.Close();
 
             string invalid = "Invalid";
             string valid = "Valid";

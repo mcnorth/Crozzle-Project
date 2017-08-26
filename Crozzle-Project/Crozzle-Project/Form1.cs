@@ -24,12 +24,7 @@ namespace Crozzle_Project
         {
             InitializeComponent();
 
-            //clear the log file when onload
-            string fPath = Directory.GetCurrentDirectory();
-            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            FileStream fS = File.Open(fPath + '\\' + filname, FileMode.Open);
-            fS.SetLength(0);
-            fS.Close();
+            
         }
 
         //open a file dialog to retrieve file
@@ -53,7 +48,13 @@ namespace Crozzle_Project
         {
             
             string cPath = txtFile.Text;
-            string configPath = Path.GetDirectoryName(cPath);
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+            string conPath = Path.GetDirectoryName(cPath);
+
+            CreateLogFiles err = new CreateLogFiles();
+            string fP = System.AppDomain.CurrentDomain.BaseDirectory;
+            string fN = @"LogFiles\log";
+            err.ErrorLog(configPath + '\\' + fN, "Loaded " + Path.GetFileName(cPath));
 
             //create crozzletest object
             CrozzleTest test = new CrozzleTest();
@@ -63,41 +64,34 @@ namespace Crozzle_Project
             if(test.IsValid == false)
             {               
                 invtxt1.Text = "Crozzle files are invalid";
-
-                //read log file and display in textbox
-                string fPath = Directory.GetCurrentDirectory();
-                string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-                var pathToFile = fPath + '\\' + filname;
-                var file = File.ReadAllLines(pathToFile);
-
-                foreach (var line in file)
-                {
-                    errTxt.Text += line.ToString() + "\r\n";
-                }
-
+                CreateLogFiles erro = new CreateLogFiles();
+                string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                string fNa = @"LogFiles\log";
+                err.ErrorLog(configPath + '\\' + fNa, "Crozzle files are INVALID");
 
             }            
             else
             {
-                test.TestCrozzle(test, configPath);
+                test.TestCrozzle(test, conPath);
 
                 if (test.IsCrozzleValid == false)
                 {
                     invtxt2.Text = "Crozzle test file is invalid";
-                    string fPath = Directory.GetCurrentDirectory();
-                    string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-                    var pathToFile = fPath + '\\' + filname;
-                    var file = File.ReadAllLines(pathToFile);
+                    CreateLogFiles erro = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    erro.ErrorLog(configPath + '\\' + fNa, "Crozzle test files are INVALID");
 
-                    foreach (var line in file)
-                    {
-                        errTxt.Text += line.ToString() + "\r\n";
-                    }
                 }
                 else
                 {
                     //if all files are valid display the grid
                     invtxt1.Text = "All Crozzle files are valid";
+                    CreateLogFiles erro = new CreateLogFiles();
+                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string fNa = @"LogFiles\log";
+                    erro.ErrorLog(configPath + '\\' + fNa, "All crozzle files are VALID");
+
                     crozzlePanel.Dock = DockStyle.Fill;
                     crozzlePanel.ScrollBars = ScrollBars.None;
                     crozzlePanel.BackgroundColor = Color.Black;

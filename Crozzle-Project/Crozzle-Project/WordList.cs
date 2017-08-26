@@ -49,17 +49,21 @@ namespace Crozzle_Project
         {
             var pathToFile = path;
             string[] file = File.ReadAllText(pathToFile).Split(',');
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<string> wrdsList1 = new List<string>();
             List<ErrorLog> wordlistErrors = new List<ErrorLog>();
             
             if (file.Length != file.Distinct().Count())
             {
-                string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                string linerr = "WordList";
-                string des = "Wordlist contains duplicates";
-                ErrorLog err = new ErrorLog(name, linerr, des);
-                wordlistErrors.Add(err);
-                
+                CreateLogFiles err = new CreateLogFiles();
+                string fNa = @"LogFiles\log";
+                err.ErrorLog(configPath + '\\' + fNa, "File: WordList.cs ----- Line: GetFile ----- Desc: Wordlist contains duplicates");
+                //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                //string linerr = "WordList";
+                //string des = "Wordlist contains duplicates";
+                //ErrorLog err = new ErrorLog(name, linerr, des);
+                //wordlistErrors.Add(err);
+
             }
 
             foreach (string w in file)

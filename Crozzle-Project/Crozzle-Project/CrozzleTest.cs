@@ -95,6 +95,7 @@ namespace Crozzle_Project
         {
             Hashtable result = new Hashtable();
             List<string> temp = new List<string>();
+            
 
             foreach (var d in data)
             {
@@ -132,6 +133,7 @@ namespace Crozzle_Project
         {
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<ColumnData> res = new List<ColumnData>();
             List<string> temp = new List<string>();
             List<string> temp2 = new List<string>();
@@ -177,11 +179,14 @@ namespace Crozzle_Project
          
             if (temp2.Count != temp2.Distinct().Count())
             {
-                string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                string linerr = "ColumnData";
-                string des = "Wordlist contains duplicates";
-                ErrorLog err = new ErrorLog(name, linerr, des);
-                columnDataErrors.Add(err);
+                CreateLogFiles err = new CreateLogFiles();
+                string fNa = @"LogFiles\log";
+                err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data contains duplicates");
+                //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                //string linerr = "ColumnData";
+                //string des = "Wordlist contains duplicates";
+                //ErrorLog err = new ErrorLog(name, linerr, des);
+                //columnDataErrors.Add(err);
             }
 
             foreach (var line in temp2)
@@ -192,11 +197,14 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = line;
-                    string des = "Column Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    columnDataErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = line;
+                    //string des = "Column Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //columnDataErrors.Add(err);
                 }
 
             }
@@ -205,11 +213,14 @@ namespace Crozzle_Project
             {
                 if (reg3.IsMatch(line))
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = line;
-                    string des = "Column Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    columnDataErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = line;
+                    //string des = "Column Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //columnDataErrors.Add(err);
                 }
                 else
                 {
@@ -241,18 +252,18 @@ namespace Crozzle_Project
 
             }
 
-            string fPath = Directory.GetCurrentDirectory();
-            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+            //string fPath = Directory.GetCurrentDirectory();
+            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
 
-            foreach (var e in columnDataErrors)
-            {
-                wtr.WriteLine("File Name: " + e.File_Name);
-                wtr.WriteLine("Line: " + e.Line);
-                wtr.WriteLine("Description: " + e.Description);
+            //foreach (var e in columnDataErrors)
+            //{
+            //    wtr.WriteLine("File Name: " + e.File_Name);
+            //    wtr.WriteLine("Line: " + e.Line);
+            //    wtr.WriteLine("Description: " + e.Description);
 
-            }
-            wtr.Close();
+            //}
+            //wtr.Close();
 
             string invalid = "Invalid";
             string valid = "Valid";
@@ -277,6 +288,7 @@ namespace Crozzle_Project
         {
             var pathToFile = path;
             var file = File.ReadAllLines(pathToFile);
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<RowData> res = new List<RowData>();
             List<string> temp = new List<string>();
             List<string> temp2 = new List<string>();
@@ -345,11 +357,14 @@ namespace Crozzle_Project
 
             if (temp4.Count != temp4.Distinct().Count())
             {
-                string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                string linerr = "RowData";
-                string des = "Wordlist contains duplicates";
-                ErrorLog err = new ErrorLog(name, linerr, des);
-                rowDataErrors.Add(err);
+                CreateLogFiles err = new CreateLogFiles();
+                string fNa = @"LogFiles\log";
+                err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data contains duplicates");
+                //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                //string linerr = "RowData";
+                //string des = "Wordlist contains duplicates";
+                //ErrorLog err = new ErrorLog(name, linerr, des);
+                //rowDataErrors.Add(err);
             }
 
             foreach (var line in temp4)
@@ -360,11 +375,14 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = line;
-                    string des = "Row Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    rowDataErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = line;
+                    //string des = "Row Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //rowDataErrors.Add(err);
                 }
                 
             }
@@ -391,18 +409,18 @@ namespace Crozzle_Project
 
             }
 
-            string fPath = Directory.GetCurrentDirectory();
-            string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+            //string fPath = Directory.GetCurrentDirectory();
+            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
 
-            foreach (var e in rowDataErrors)
-            {
-                wtr.WriteLine("File Name: " + e.File_Name);
-                wtr.WriteLine("Line: " + e.Line);
-                wtr.WriteLine("Description: " + e.Description);
+            //foreach (var e in rowDataErrors)
+            //{
+            //    wtr.WriteLine("File Name: " + e.File_Name);
+            //    wtr.WriteLine("Line: " + e.Line);
+            //    wtr.WriteLine("Description: " + e.Description);
 
-            }
-            wtr.Close();
+            //}
+            //wtr.Close();
 
             string invalid = "Invalid";
             string valid = "Valid";
@@ -426,6 +444,7 @@ namespace Crozzle_Project
         {
             //string pat = "FILE";
             Hashtable result = new Hashtable();
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<string> temp = new List<string>();
             List<string> t = new List<string>();
             List<string> cor = new List<string>();
@@ -473,15 +492,18 @@ namespace Crozzle_Project
             else
             {
                 tuple = new Tuple<Hashtable, string>(result, invalid);
-                string fPath = Directory.GetCurrentDirectory();
-                string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-                StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+                CreateLogFiles err = new CreateLogFiles();
+                string fNa = @"LogFiles\log";
+                err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetFileNames ----- Desc: No configuration file or wordlist file exist");
+                //string fPath = Directory.GetCurrentDirectory();
+                //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
 
-                wtr.WriteLine("File Name: CrozzleTest.cs" );
-                wtr.WriteLine("Line: File name");
-                wtr.WriteLine("Description: No configuration file or wordlist file exist");
+                //wtr.WriteLine("File Name: CrozzleTest.cs" );
+                //wtr.WriteLine("Line: File name");
+                //wtr.WriteLine("Description: No configuration file or wordlist file exist");
 
-                wtr.Close();
+                //wtr.Close();
             }
             return tuple;
 
@@ -491,7 +513,8 @@ namespace Crozzle_Project
         public List<string> GetFile(string path)
         {            
             var pathToFile = path;
-            var file = File.ReadAllLines(pathToFile);            
+            var file = File.ReadAllLines(pathToFile);
+            
             List<string> testFile1 = new List<string>();
             List<string> testFile2 = new List<string>();
             List<string> testFile3 = new List<string>();
@@ -582,8 +605,9 @@ namespace Crozzle_Project
             Configuration config = new Configuration();           
             config.CreateConfigObj(cFile, config);
             List<ErrorLog> testErrors = new List<ErrorLog>();
-            
-        
+            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+
+
             obj.IpTable = config.IntersectingPointsPerLetter;
             obj.NIpTable = config.NonIntersectingPointsPerLetter;
 
@@ -608,11 +632,14 @@ namespace Crozzle_Project
 
                 if (obj.GridRows < config.MinimumNumberOfRows || obj.GridRows > config.MaximumNumberOfRows)
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Grid Rows is greater or lesser than Number of Rows";
-                    string des = "Test Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    testErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Grid Rows is greater or lesser than Number of Rows");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Grid Rows is greater or lesser than Number of Rows";
+                    //string des = "Test Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //testErrors.Add(err);
                     countErrors++;
 
                 }
@@ -620,11 +647,14 @@ namespace Crozzle_Project
 
                 if (obj.GridColumns < config.MinimumNumberOfColumns || obj.GridColumns > config.MaximumNumberOfColumns)
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Grid Columns is greater or lesser than Number of Columns";
-                    string des = "Test Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    testErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Grid Columns is greater or lesser than Number of Columns");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Grid Columns is greater or lesser than Number of Columns";
+                    //string des = "Test Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //testErrors.Add(err);
                     countErrors++;
 
                 }
@@ -632,22 +662,28 @@ namespace Crozzle_Project
 
                 if (obj.RowData.Count < config.MinimumHorizontalWords || obj.RowData.Count > config.MaximumHorizontalWords)
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Row data is greater or lesser than Horizontal words";
-                    string des = "Test Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    testErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Row data is greater or lesser than Horizontal words");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Row data is greater or lesser than Horizontal words";
+                    //string des = "Test Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //testErrors.Add(err);
                     countErrors++;
 
                 }
                
                 if (obj.ColumnData.Count < config.MinimumVerticalWords || obj.ColumnData.Count > config.MaximumVerticalWords)
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Column data is greater or lesser than Vertical words";
-                    string des = "Test Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    testErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Column data is greater or lesser than Vertical words");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Column data is greater or lesser than Vertical words";
+                    //string des = "Test Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //testErrors.Add(err);
                     countErrors++;
 
                 }
@@ -670,11 +706,14 @@ namespace Crozzle_Project
 
                 if (count < config.MinimumIntersectionsInHorizontalWords || count > config.MaximumIntersectionsInHorizontalWords)
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Row data is greater or lesser than Intersections Horizontal words";
-                    string des = "Test Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    testErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Row data is greater or lesser than Intersections Horizontal words");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Row data is greater or lesser than Intersections Horizontal words";
+                    //string des = "Test Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //testErrors.Add(err);
                     countErrors++;
 
                 }
@@ -698,11 +737,14 @@ namespace Crozzle_Project
 
                 if (counter < config.MinimumIntersectionsInVerticalWords || counter > config.MaximumIntersectionsInVerticalWords)
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Column data is greater or lesser than Intersections Vertical words";
-                    string des = "Test Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    testErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Column data is greater or lesser than Intersections Vertical words");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Column data is greater or lesser than Intersections Vertical words";
+                    //string des = "Test Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //testErrors.Add(err);
                     countErrors++;
 
                 }
@@ -715,11 +757,14 @@ namespace Crozzle_Project
 
                 if (sameWords.Count > config.MinimumNumberOfTheSameWord || sameWords.Count > config.MaximumNumberOfTheSameWord)
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = "Duplicates in the word list";
-                    string des = "Test Data is invalid";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    testErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: TestCrozzle ----- Desc: Duplicates in the word list");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = "Duplicates in the word list";
+                    //string des = "Test Data is invalid";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    //testErrors.Add(err);
                     countErrors++;
 
                 }
@@ -727,18 +772,18 @@ namespace Crozzle_Project
 
                 if (countErrors > 0)
                 {
-                    string fPath = Directory.GetCurrentDirectory();
-                    string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-                    StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+                    //string fPath = Directory.GetCurrentDirectory();
+                    //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                    //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
 
-                    foreach (var e in testErrors)
-                    {
-                        wtr.WriteLine("File Name: " + e.File_Name);
-                        wtr.WriteLine("Line: " + e.Line);
-                        wtr.WriteLine("Description: " + e.Description);
+                    //foreach (var e in testErrors)
+                    //{
+                    //    wtr.WriteLine("File Name: " + e.File_Name);
+                    //    wtr.WriteLine("Line: " + e.Line);
+                    //    wtr.WriteLine("Description: " + e.Description);
 
-                    }
-                    wtr.Close();
+                    //}
+                    //wtr.Close();
                     obj.IsCrozzleValid = false;
                     
                 }

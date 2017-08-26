@@ -1,3 +1,42 @@
 File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
-Line: Row data is greater or lesser than Horizontal words
-Description: Test Data is invalid
+Line: =3,ANGELA,3
+Description: Row Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: ROW=,CATO,3
+Description: Row Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: ROW=2,$#@$#@,3
+Description: Row Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: ROW=5,LEAH,XYZ
+Description: Row Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: ROW=6,,1
+Description: Row Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: ROW=8,GARY,
+Description: Row Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: ROW=ABC,LE,9
+Description: Row Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: =3,ALAN,123        // error 9
+Description: Column Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: COLUMN=,CENA,1     // error 10
+Description: Column Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: COLUMN=5,???,5     // error 11
+Description: Column Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: COLUMN=7.5,LILY,3  // error 12
+Description: Column Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\CrozzleTest.cs
+Line: COLUMN=9,AL,9.5    // error 13
+Description: Column Data is invalid
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\WordList.cs
+Line: 
+Description: Must be a word that does nnot contain numbers
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\WordList.cs
+Line: ????
+Description: Must be a word that does nnot contain numbers

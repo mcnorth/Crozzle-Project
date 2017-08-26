@@ -49,6 +49,7 @@
     <Compile Include="ColumnData.cs" />
     <Compile Include="ConfigController.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="CreateLogFiles.cs" />
     <Compile Include="CrozzleTest.cs" />
     <Compile Include="ErrorLog.cs" />
     <Compile Include="Form1.cs">
