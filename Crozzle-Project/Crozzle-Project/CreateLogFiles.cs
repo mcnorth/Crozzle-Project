@@ -9,27 +9,27 @@ namespace Crozzle_Project
 {
     class CreateLogFiles
     {
-        private string sLogFormat;
-        private string sErrorTime;
+        private string formatLog;
+        private string timeOfError;
 
         public CreateLogFiles()
         {
             //sLogFormat used to create log files format :
             // dd/mm/yyyy hh:mm:ss AM/PM ==> Log Message
-            sLogFormat = DateTime.Now.ToShortDateString().ToString() + " " + DateTime.Now.ToLongTimeString().ToString() + " ==> ";
+            formatLog = DateTime.Now.ToShortDateString().ToString() + " " + DateTime.Now.ToLongTimeString().ToString() + " ==> ";
 
             //this variable used to create log filename format "
             //for example filename : ErrorLogYYYYMMDD
-            string sYear = DateTime.Now.Year.ToString();
-            string sMonth = DateTime.Now.Month.ToString();
-            string sDay = DateTime.Now.Day.ToString();
-            sErrorTime = sYear + sMonth + sDay;
+            string lfYear = DateTime.Now.Year.ToString();
+            string lfMonth = DateTime.Now.Month.ToString();
+            string lfDay = DateTime.Now.Day.ToString();
+            timeOfError = lfYear + lfMonth + lfDay;
         }
 
-        public void ErrorLog(string sPathName, string sErrMsg)
+        public void ErrorLog(string pName, string errMsg)
         {
-            StreamWriter sw = new StreamWriter(sPathName + sErrorTime, true);
-            sw.WriteLine(sLogFormat + sErrMsg);
+            StreamWriter sw = new StreamWriter(pName + timeOfError, true);
+            sw.WriteLine(formatLog + errMsg);
             sw.Flush();
             sw.Close();
         }

@@ -144,6 +144,7 @@ namespace Crozzle_Project
             List<string> temp7 = new List<string>();
             List<ErrorLog> columnDataErrors = new List<ErrorLog>();
             string result;
+            int counter = 0;
             var myRegex = new Regex(@"\w+=\d+,\w+,\d+");
             var reg = new Regex(@"// The vertical rows containing words.");
             var reg2 = new Regex(@"COLUMN=\d+,\w+,\d+");
@@ -182,6 +183,7 @@ namespace Crozzle_Project
                 CreateLogFiles err = new CreateLogFiles();
                 string fNa = @"LogFiles\log";
                 err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data contains duplicates");
+                counter++;
                 //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
                 //string linerr = "ColumnData";
                 //string des = "Wordlist contains duplicates";
@@ -200,6 +202,7 @@ namespace Crozzle_Project
                     CreateLogFiles err = new CreateLogFiles();
                     string fNa = @"LogFiles\log";
                     err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid");
+                    counter++;
                     //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
                     //string linerr = line;
                     //string des = "Column Data is invalid";
@@ -216,6 +219,7 @@ namespace Crozzle_Project
                     CreateLogFiles err = new CreateLogFiles();
                     string fNa = @"LogFiles\log";
                     err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetColumnData ----- Desc: Column data is invalid");
+                    counter++;
                     //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
                     //string linerr = line;
                     //string des = "Column Data is invalid";
@@ -269,7 +273,7 @@ namespace Crozzle_Project
             string valid = "Valid";
             Tuple<List<ColumnData>, string> tuple;
 
-            if (columnDataErrors.Count > 0)
+            if (counter > 0)
             {
 
                 tuple = new Tuple<List<ColumnData>, string>(res, invalid);
@@ -298,6 +302,7 @@ namespace Crozzle_Project
             List<string> temp6 = new List<string>();
             List<ErrorLog> rowDataErrors = new List<ErrorLog>();
             string result;
+            int counter = 0;
             var myRegex = new Regex(@"\w+=\d+,\w+,\d+");
             var reg = new Regex(@"// The horizontal rows containing words.");
             var reg2 = new Regex(@"// The vertical rows containing words.");
@@ -360,6 +365,7 @@ namespace Crozzle_Project
                 CreateLogFiles err = new CreateLogFiles();
                 string fNa = @"LogFiles\log";
                 err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data contains duplicates");
+                counter++;
                 //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
                 //string linerr = "RowData";
                 //string des = "Wordlist contains duplicates";
@@ -378,6 +384,7 @@ namespace Crozzle_Project
                     CreateLogFiles err = new CreateLogFiles();
                     string fNa = @"LogFiles\log";
                     err.ErrorLog(configPath + '\\' + fNa, "File: CrozzleTest.cs ----- Line: GetRowData ----- Desc: Row data is invalid");
+                    counter++;
                     //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
                     //string linerr = line;
                     //string des = "Row Data is invalid";
@@ -406,7 +413,6 @@ namespace Crozzle_Project
                 ob.Name = Convert.ToString(y[1]);
                 ob.Column = Convert.ToInt32(y[2]);
                 res.Add(ob);
-
             }
 
             //string fPath = Directory.GetCurrentDirectory();
@@ -426,7 +432,7 @@ namespace Crozzle_Project
             string valid = "Valid";
             Tuple<List<RowData>, string> tuple;
 
-            if (rowDataErrors.Count > 0)
+            if (counter > 0)
             {
 
                 tuple = new Tuple<List<RowData>, string>(res, invalid);

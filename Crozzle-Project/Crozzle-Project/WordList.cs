@@ -9,7 +9,7 @@ using System.Collections;
 
 namespace Crozzle_Project
 {
-    class WordList : List<string>
+    public class WordList : List<string>
     {
 
         private List<string> WORDS;

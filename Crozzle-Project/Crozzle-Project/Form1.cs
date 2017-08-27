@@ -67,7 +67,7 @@ namespace Crozzle_Project
                 CreateLogFiles erro = new CreateLogFiles();
                 string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
                 string fNa = @"LogFiles\log";
-                err.ErrorLog(configPath + '\\' + fNa, "Crozzle files are INVALID");
+                erro.ErrorLog(configPath + '\\' + fNa, "Crozzle files are INVALID");
 
             }            
             else
@@ -77,20 +77,20 @@ namespace Crozzle_Project
                 if (test.IsCrozzleValid == false)
                 {
                     invtxt2.Text = "Crozzle test file is invalid";
-                    CreateLogFiles erro = new CreateLogFiles();
+                    CreateLogFiles error = new CreateLogFiles();
                     string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
                     string fNa = @"LogFiles\log";
-                    erro.ErrorLog(configPath + '\\' + fNa, "Crozzle test files are INVALID");
+                    error.ErrorLog(configPath + '\\' + fNa, "Crozzle test files are INVALID");
 
                 }
                 else
                 {
                     //if all files are valid display the grid
                     invtxt1.Text = "All Crozzle files are valid";
-                    CreateLogFiles erro = new CreateLogFiles();
+                    CreateLogFiles er = new CreateLogFiles();
                     string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
                     string fNa = @"LogFiles\log";
-                    erro.ErrorLog(configPath + '\\' + fNa, "All crozzle files are VALID");
+                    er.ErrorLog(configPath + '\\' + fNa, "All crozzle files are VALID");
 
                     crozzlePanel.Dock = DockStyle.Fill;
                     crozzlePanel.ScrollBars = ScrollBars.None;
@@ -188,6 +188,10 @@ namespace Crozzle_Project
                     }
 
                     errTxt.Text = "Score: " + score;
+
+                    CreateLogFiles log = new CreateLogFiles();
+                    string fNab = @"LogFiles\log";
+                    log.ErrorLog(configPath + '\\' + fNab, "LOADING COMPLETE");
                 }
                 
             }

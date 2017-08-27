@@ -34,9 +34,9 @@
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.txtFile = new System.Windows.Forms.TextBox();
             this.errorPanel = new System.Windows.Forms.Panel();
-            this.invtxt1 = new System.Windows.Forms.TextBox();
-            this.invtxt2 = new System.Windows.Forms.TextBox();
             this.errTxt = new System.Windows.Forms.RichTextBox();
+            this.invtxt2 = new System.Windows.Forms.TextBox();
+            this.invtxt1 = new System.Windows.Forms.TextBox();
             this.errorPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,30 +83,33 @@
             this.errorPanel.Location = new System.Drawing.Point(654, 82);
             this.errorPanel.Name = "errorPanel";
             this.errorPanel.Padding = new System.Windows.Forms.Padding(5);
-            this.errorPanel.Size = new System.Drawing.Size(740, 461);
+            this.errorPanel.Size = new System.Drawing.Size(515, 461);
             this.errorPanel.TabIndex = 7;
-            // 
-            // invtxt1
-            // 
-            this.invtxt1.Location = new System.Drawing.Point(9, 9);
-            this.invtxt1.Name = "invtxt1";
-            this.invtxt1.Size = new System.Drawing.Size(723, 20);
-            this.invtxt1.TabIndex = 0;
-            // 
-            // invtxt2
-            // 
-            this.invtxt2.Location = new System.Drawing.Point(9, 35);
-            this.invtxt2.Name = "invtxt2";
-            this.invtxt2.Size = new System.Drawing.Size(723, 20);
-            this.invtxt2.TabIndex = 1;
             // 
             // errTxt
             // 
-            this.errTxt.Location = new System.Drawing.Point(9, 61);
+            this.errTxt.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.errTxt.Location = new System.Drawing.Point(9, 92);
             this.errTxt.Name = "errTxt";
-            this.errTxt.Size = new System.Drawing.Size(723, 392);
+            this.errTxt.Size = new System.Drawing.Size(498, 361);
             this.errTxt.TabIndex = 3;
             this.errTxt.Text = "";
+            // 
+            // invtxt2
+            // 
+            this.invtxt2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.invtxt2.Location = new System.Drawing.Point(8, 51);
+            this.invtxt2.Name = "invtxt2";
+            this.invtxt2.Size = new System.Drawing.Size(498, 32);
+            this.invtxt2.TabIndex = 1;
+            // 
+            // invtxt1
+            // 
+            this.invtxt1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.invtxt1.Location = new System.Drawing.Point(9, 9);
+            this.invtxt1.Name = "invtxt1";
+            this.invtxt1.Size = new System.Drawing.Size(498, 32);
+            this.invtxt1.TabIndex = 0;
             // 
             // FrmMenu
             // 
@@ -114,7 +117,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(1406, 555);
+            this.ClientSize = new System.Drawing.Size(1181, 555);
             this.Controls.Add(this.errorPanel);
             this.Controls.Add(this.txtFile);
             this.Controls.Add(this.btnLoadFile);

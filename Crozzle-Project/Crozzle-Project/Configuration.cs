@@ -9,7 +9,7 @@ using System.Collections;
 
 namespace Crozzle_Project
 {
-    class Configuration
+    public class Configuration
     {
         private string LOGFILE_NAME;
         private int MINIMUM_NUMBER_OF_UNIQUE_WORDS;
