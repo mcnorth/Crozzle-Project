@@ -69,6 +69,7 @@ namespace Crozzle_Project
                 string fNa = @"LogFiles\log";
                 erro.ErrorLog(configPath + '\\' + fNa, "Crozzle files are INVALID");
 
+                test.TestCrozzle(test, conPath);
             }            
             else
             {

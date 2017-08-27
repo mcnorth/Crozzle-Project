@@ -52,12 +52,13 @@ namespace Crozzle_Project
             string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             List<string> wrdsList1 = new List<string>();
             List<ErrorLog> wordlistErrors = new List<ErrorLog>();
-            
+            int count = 0;
             if (file.Length != file.Distinct().Count())
             {
                 CreateLogFiles err = new CreateLogFiles();
                 string fNa = @"LogFiles\log";
                 err.ErrorLog(configPath + '\\' + fNa, "File: WordList.cs ----- Line: GetFile ----- Desc: Wordlist contains duplicates");
+                count++;
                 //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
                 //string linerr = "WordList";
                 //string des = "Wordlist contains duplicates";
@@ -74,10 +75,10 @@ namespace Crozzle_Project
 
 
 
-
+            
             foreach (var line in wrdsList1)
             {
-                var myReg = new Regex(@"\w+");
+                var myReg = new Regex(@"^[a-zA-Z]+[a-zA-Z]$");
                 if (myReg.IsMatch(line))
                 {
                     wds.Add(line);
@@ -85,30 +86,33 @@ namespace Crozzle_Project
                 }
                 else
                 {
-                    string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    string linerr = line;
-                    string des = "Must be a word that does nnot contain numbers";
-                    ErrorLog err = new ErrorLog(name, linerr, des);
-                    wordlistErrors.Add(err);
+                    CreateLogFiles err = new CreateLogFiles();
+                    string fNa = @"LogFiles\log";
+                    err.ErrorLog(configPath + '\\' + fNa, "File: WordList.cs ----- Line: "+line+" ----- Desc: Wordlist contains invalid word");
+                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
+                    //string linerr = line;
+                    //string des = "Must be a word that does nnot contain numbers";
+                    //ErrorLog err = new ErrorLog(name, linerr, des);
+                    count++;
                     wds.IsValid = false;
 
                 }
             }
 
-            if(wordlistErrors.Count > 0)
+            if(count > 0)
             {
-                string fPath = Directory.GetCurrentDirectory();
-                string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-                StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
+                //string fPath = Directory.GetCurrentDirectory();
+                //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
+                //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
 
-                foreach (var e in wordlistErrors)
-                {
-                    wtr.WriteLine("File Name: " + e.File_Name);
-                    wtr.WriteLine("Line: " + e.Line);
-                    wtr.WriteLine("Description: " + e.Description);
+                //foreach (var e in wordlistErrors)
+                //{
+                //    wtr.WriteLine("File Name: " + e.File_Name);
+                //    wtr.WriteLine("Line: " + e.Line);
+                //    wtr.WriteLine("Description: " + e.Description);
 
-                }
-                wtr.Close();
+                //}
+                //wtr.Close();
                 wds.IsValid = false;
                 return wds;
             }

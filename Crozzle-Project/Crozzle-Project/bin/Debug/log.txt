@@ -52,3 +52,9 @@ Description: Must be a word that does nnot contain numbers
 File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\WordList.cs
 Line: ????
 Description: Must be a word that does nnot contain numbers
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\WordList.cs
+Line: 
+Description: Must be a word that does nnot contain numbers
+File Name: D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\WordList.cs
+Line: ????
+Description: Must be a word that does nnot contain numbers
