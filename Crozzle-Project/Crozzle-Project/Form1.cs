@@ -17,8 +17,7 @@ namespace Crozzle_Project
 {
     public partial class FrmMenu : Form
     {
-        //create a panel for the grid
-        DataGridView crozzlePanel = new DataGridView();
+        
 
         public FrmMenu()
         {
@@ -27,189 +26,183 @@ namespace Crozzle_Project
             
         }
 
-        //open a file dialog to retrieve file
-        OpenFileDialog ofd = new OpenFileDialog();
+        
 
-        private void btnGetFile_Click(object sender, EventArgs e)
+       
+
+        private Crozzle SIT323Crozzle { get; set; }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult result = ofd.ShowDialog();
 
-            if(result == DialogResult.OK)
-            {
-                txtFile.Text = ofd.FileName;
-            }
-            else
-            {
-                txtFile.Text = "Try again";
-            }
         }
 
-        private void btnLoadFile_Click(object sender, EventArgs e)
+        private void validateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            string cPath = txtFile.Text;
-            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            string conPath = Path.GetDirectoryName(cPath);
 
-            CreateLogFiles err = new CreateLogFiles();
-            string fP = System.AppDomain.CurrentDomain.BaseDirectory;
-            string fN = @"LogFiles\log";
-            err.ErrorLog(configPath + '\\' + fN, "Loaded " + Path.GetFileName(cPath));
+        }
 
-            //create crozzletest object
-            CrozzleTest test = new CrozzleTest();
-            test.CreateCrozzleTest(cPath, test);
-            
-            //error testing
-            if(test.IsValid == false)
-            {               
-                invtxt1.Text = "Crozzle files are invalid";
-                CreateLogFiles erro = new CreateLogFiles();
-                string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                string fNa = @"LogFiles\log";
-                erro.ErrorLog(configPath + '\\' + fNa, "Crozzle files are INVALID");
+        private void openCrozzleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenCrozzleFile();
+        }
 
-                test.TestCrozzle(test, conPath);
-            }            
-            else
+        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void OpenCrozzleFile()
+        {
+            DialogResult result;
+
+            // indicate crozzle file, and crozzle are not valid, and clear GUI.
+            crozzleToolStripMenuItem.Enabled = false;     //menu across the top
+            crozzleWebBrowser.DocumentText = "";            //area where the crozzle will be displayed
+            errorWebBrowser.DocumentText = "";              // area where the errors will be displayed
+
+            //process crozzle file
+            result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
             {
-                test.TestCrozzle(test, conPath);
-
-                if (test.IsCrozzleValid == false)
+                // Get configuration filename.
+                string configurationFileName = GetConfigurationFileName(openFileDialog1.FileName);
+                if (configurationFileName == null)
                 {
-                    invtxt2.Text = "Crozzle test file is invalid";
-                    CreateLogFiles error = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    error.ErrorLog(configPath + '\\' + fNa, "Crozzle test files are INVALID");
-
+                    MessageBox.Show("Configuration filename is missing from the crozzle file", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
                 }
                 else
                 {
-                    //if all files are valid display the grid
-                    invtxt1.Text = "All Crozzle files are valid";
-                    CreateLogFiles er = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    er.ErrorLog(configPath + '\\' + fNa, "All crozzle files are VALID");
+                    string filename = configurationFileName.Trim();
 
-                    crozzlePanel.Dock = DockStyle.Fill;
-                    crozzlePanel.ScrollBars = ScrollBars.None;
-                    crozzlePanel.BackgroundColor = Color.Black;
-                    crozzlePanel.DefaultCellStyle.BackColor = Color.Black;
-                    //crozzlePanel.DefaultCellStyle.ForeColor = Color.Black;
-                    crozzlePanel.Font = new Font("Arial", 12);
-                    crozzlePanel.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    crozzlePanel.Enabled = false;
-                    crozzlePanel.RowsDefaultCellStyle.SelectionBackColor = Color.Black;
+                    //sends to the class validator to find out if there are deliminators
+                    //if comes back true
+                    //remove the deliminators double quotes
+                    if (Validator.IsDelimited(filename, Crozzle.StringDelimiters))
+                        filename = filename.Trim(Crozzle.StringDelimiters);
+                    configurationFileName = filename;
 
-                    for (int i = 0; i < test.GridColumns; i++)
-                    {
-                        crozzlePanel.Columns.Add("", "");
-                    }
-                    for (int j = 0; j < test.GridRows; j++)
-                    {
-                        crozzlePanel.Rows.Add();
-                    }
-
-                    foreach (DataGridViewColumn col in crozzlePanel.Columns)
-                    {
-                        col.Width = boardPanel.Width / test.GridColumns;
-                    }
-
-                    foreach (DataGridViewRow row in crozzlePanel.Rows)
-                    {
-                        row.Height = boardPanel.Height / test.GridRows;
-                    }
-                    crozzlePanel.ColumnHeadersVisible = false;
-                    crozzlePanel.RowHeadersVisible = false;
-                    boardPanel.Controls.Add(crozzlePanel);
-
-                    foreach (var obj in test.RowData)
-                    {
-                        int beginCol = obj.Column - 1;
-                        int beginRow = obj.Row - 1;
-                        char[] name = obj.Name.ToCharArray();
-
-                        for (int j = 0; j < name.Length; j++)
-                        {
-                            GetCell(beginRow, beginCol + j, name[j].ToString());
-                        }
-                    }
-
-                    foreach (var obj in test.ColumnData)
-                    {
-                        int beginCol = obj.Column - 1;
-                        int beginRow = obj.Row - 1;
-                        char[] name = obj.Name.ToCharArray();
-
-                        for (int j = 0; j < name.Length; j++)
-                        {
-                            GetCell(beginRow + j, beginCol, name[j].ToString());
-                        }
-                    }
-
-                    //get the points for each letter
-                    List<string> letters = new List<string>();
-                    foreach (var r in test.RowData)
-                    {
-                        //int colNo = r.Column - 1;
-                        for (int colNo = r.Column - 1; colNo <= (r.Column - 1) + (r.Name.Length - 1); colNo++)
-                        {
-                            foreach (var c in test.ColumnData)
-                            {
-                                for (int rowNo = c.Row - 1; rowNo <= (c.Row - 1) + (c.Name.Length - 1); rowNo++)
-                                {
-                                    if (colNo == c.Column - 1 && r.Row - 1 == rowNo)
-                                    {
-                                        string lett = Convert.ToString(crozzlePanel.Rows[rowNo].Cells[colNo].Value);
-                                        letters.Add(lett);
-
-                                    }
-
-
-                                }
-
-
-                            }
-                        }
-
-                    }
-
-
-                    //calculate the score
-                    var score = 0;
-                    foreach (var ltr in letters)
-                    {
-                        if (test.IpTable.ContainsKey(ltr))
-                        {
-                            int s = Convert.ToInt32(test.IpTable[ltr]);
-                            score = score + s;
-                        }
-                    }
-
-                    errTxt.Text = "Score: " + score;
-
-                    CreateLogFiles log = new CreateLogFiles();
-                    string fNab = @"LogFiles\log";
-                    log.ErrorLog(configPath + '\\' + fNab, "LOADING COMPLETE");
+                    //asks whether the path contains a root
+                    //if not it will get the directory name
+                    if (!Path.IsPathRooted(configurationFileName))
+                        configurationFileName = Path.GetDirectoryName(openFileDialog1.FileName) + @"\" + configurationFileName;
                 }
-                
-            }
 
-            
-            
+                //validate configuration file.
+                Configuration aConfiguration = null;
+                Configuration.TryParse(configurationFileName, out aConfiguration);
+
+                // Get wordlist filename.
+                String wordListFileName = GetWordlistFileName(openFileDialog1.FileName);
+                if (wordListFileName == null)
+                {
+                    MessageBox.Show("Wordlist filename is missing from the crozzle file", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
+                }
+                else
+                {
+                    String filename = wordListFileName.Trim();
+                    if (Validator.IsDelimited(filename, Crozzle.StringDelimiters))
+                        filename = filename.Trim(Crozzle.StringDelimiters);
+                    wordListFileName = filename;
+
+                    if (!Path.IsPathRooted(wordListFileName))
+                        wordListFileName = Path.GetDirectoryName(openFileDialog1.FileName) + @"\" + wordListFileName;
+                }
+
+                // Parse wordlist file.
+                WordList wordList = null;
+                WordList.TryParse(wordListFileName, aConfiguration, out wordList);
+
+                // Parse crozzle file.
+                Crozzle aCrozzle;
+                Crozzle.TryParse(openFileDialog1.FileName, aConfiguration, wordList, out aCrozzle);
+                SIT323Crozzle = aCrozzle;
+
+                // Update GUI - menu enabled, display crozzle data (whether valid or invalid), and crozzle file errors.
+                if (SIT323Crozzle.FileValid && SIT323Crozzle.Configuration.Valid && SIT323Crozzle.WordList.Valid)
+                    crozzleToolStripMenuItem.Enabled = true;
+
+                crozzleWebBrowser.DocumentText = SIT323Crozzle.ToStringHTML();
+                errorWebBrowser.DocumentText = 
+                    SIT323Crozzle.FileErrorsHTML +
+                    SIT323Crozzle.Configuration.FileErrorsHTML +
+                    SIT323Crozzle.WordList.FileErrorsHTML;
+
+                // Log errors.
+                SIT323Crozzle.LogFileErrors(SIT323Crozzle.FileErrorsTXT);
+                SIT323Crozzle.LogFileErrors(SIT323Crozzle.Configuration.FileErrorsTXT);
+                SIT323Crozzle.LogFileErrors(SIT323Crozzle.WordList.FileErrors);
+            }
         }
 
-        //format a cell
-        public void GetCell(int row, int col, string letter)
+        private string GetConfigurationFileName(string path)
         {
-            DataGridViewCell cell = crozzlePanel[col, row];
-            cell.ReadOnly = false;
-            cell.Style.BackColor = Color.White;
-            cell.Style.ForeColor = Color.Tomato;
-            cell.Value = letter;
-            
+            CrozzleFileItem aCrozzleFileItem = null;  //this will be the line in the text file stream is reading
+
+            StreamReader fileIn = new StreamReader(path);
+
+            // REads the crozzle.txt file and Search for line in the txt file CONFIGERATION_FILE
+            while (!fileIn.EndOfStream)
+            {
+                //Try Parse is a function that has been overidden, it is located in CrozzleFileItem
+                if (CrozzleFileItem.TryParse(fileIn.ReadLine(), out aCrozzleFileItem))
+                    if (aCrozzleFileItem.IsConfigurationFile)
+                        break;
+            }
+
+            // Close files.
+            fileIn.Close();
+
+            // Return file name.
+            if (aCrozzleFileItem == null)
+                return (null);
+            else
+                return (aCrozzleFileItem.KeyValue.Value);
+        }
+
+        private String GetWordlistFileName(String path)
+        {
+            CrozzleFileItem aCrozzleFileItem = null;
+            StreamReader fileIn = new StreamReader(path);
+
+            // Search for file name.
+            while (!fileIn.EndOfStream)
+            {
+                if (CrozzleFileItem.TryParse(fileIn.ReadLine(), out aCrozzleFileItem))
+                    if (aCrozzleFileItem.IsWordListFile)
+                        break;
+            }
+
+            // Close files.
+            fileIn.Close();
+
+            // Return file name.
+            if (aCrozzleFileItem == null)
+                return (null);
+            else
+                return (aCrozzleFileItem.KeyValue.Value);
+        }
+
+        
+
+        private void crozzleToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            // Check if the crozzle is valid.
+            SIT323Crozzle.validate();
+
+            // Update GUI - display crozzle data (whether valid or invalid), 
+            // crozle file errors, config file errors, word list file errors and crozzle errors.
+            crozzleWebBrowser.DocumentText = SIT323Crozzle.ToStringHTML();
+            errorWebBrowser.DocumentText =
+                SIT323Crozzle.FileErrorsHTML +
+                SIT323Crozzle.Configuration.FileErrorsHTML +
+                SIT323Crozzle.WordList.FileErrorsHTML +
+                SIT323Crozzle.ErrorsHTML;
+
+            // Log crozzle errors.
+            SIT323Crozzle.LogFileErrors(SIT323Crozzle.ErrorsTXT);
         }
     }
 }

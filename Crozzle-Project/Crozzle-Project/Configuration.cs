@@ -11,804 +11,607 @@ namespace Crozzle_Project
 {
     public class Configuration
     {
-        private string LOGFILE_NAME;
-        private int MINIMUM_NUMBER_OF_UNIQUE_WORDS;
-        private int MAXIMUM_NUMBER_OF_UNIQUE_WORDS;
-        private string INVALID_CROZZLE_SCORE;
-        private bool UPPERCASE;
-        private string STYLE;
-        private string BGCOLOUR_EMPTY_TD;
-        private string BGCOLOUR_NON_EMPTY_TD;
-        private int MINIMUM_NUMBER_OF_ROWS;
-        private int MAXIMUM_NUMBER_OF_ROWS;
-        private int MINIMUM_NUMBER_OF_COLUMNS;
-        private int MAXIMUM_NUMBER_OF_COLUMNS;
-        private int MINIMUM_HORIZONTAL_WORDS;
-        private int MAXIMUM_HORIZONTAL_WORDS;
-        private int MINIMUM_VERTICAL_WORDS;
-        private int MAXIMUM_VERTICAL_WORDS;
-        private int MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS;
-        private int MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS;
-        private int MINIMUM_INTERSECTIONS_IN_VERTICAL_WORDS;
-        private int MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS;
-        private int MINIMUM_NUMBER_OF_THE_SAME_WORD;
-        private int MAXIMUM_NUMBER_OF_THE_SAME_WORD;
-        private int MINIMUM_NUMBER_OF_GROUPS;
-        private int MAXIMUM_NUMBER_OF_GROUPS;
-        private int POINTS_PER_WORD;
-        private Hashtable INTERSECTING_POINTS_PER_LETTER;
-        private Hashtable NON_INTERSECTING_POINTS_PER_LETTER;
-        private bool ISVALID;
+        //constants
+        public static string allowedCharacters = @"^[a-zA-Z]+$";
+        public static string allowedBooleans = @"^(true|false)$";
+        private static readonly Char[] PointSeparators = new Char[] { ',' };
 
-        public bool IsValid
-        {
-            get { return ISVALID; }
-            set { ISVALID = value; }
-        }
-        public string LogfileName
-        {
-            get { return LOGFILE_NAME; }
-            set { LOGFILE_NAME = value; }
-        }
+        //properties
+        public static List<string> Errors { get; set; }
 
-        public int MinimumNumberOfUniqueWords
-        {
-            get { return MINIMUM_NUMBER_OF_UNIQUE_WORDS; }
-            set { MINIMUM_NUMBER_OF_UNIQUE_WORDS = value; }
-        }
+        //file validity
+        public bool Valid { get; set; } = false;
 
-        public int MaximumNumberOfUniqueWords
-        {
-            get { return MAXIMUM_NUMBER_OF_UNIQUE_WORDS; }
-            set { MAXIMUM_NUMBER_OF_UNIQUE_WORDS = value; }
-        }
+        //file name properties
+        public string ConfigurationPath { get; set; }
+        public string ConfigurationFileName { get; set; }
+        public string ConfigurationDirectoryName { get; set; }
+        public string LogFileName { get; set; }
 
-        public string InvalidCrozzleScore
-        {
-            get { return INVALID_CROZZLE_SCORE; }
-            set { INVALID_CROZZLE_SCORE = value; }
-        }
+        // Limits on the size of a word list.
+        public int MinimumNumberOfUniqueWords { get; set; }
+        public int MaximumNumberOfUniqueWords { get; set; }
 
-        public bool UpperCase
-        {
-            get { return UPPERCASE; }
-            set { UPPERCASE = value; }
-        }
+        public string InvalidCrozzleScore { get; set; } = "";
+        public bool Uppercase { get; set; } = true;
+        public string Style { get; set; } = @"<style></style>";
+        public string BGcolourEmptyTD { get; set; } = @"#ffffff";
+        public string BGcolourNonEmptyTD { get; set; } = @"#ffffff";
 
-        public string Style
+        //configuration keys
+        private static bool[] ActualIntersectingKeys { get; set; }
+        private static bool[] ActualNonIntersectingKeys { get; set; }
+        private static List<string> ActualKeys { get; set; }
+        private static readonly List<string> expectedKeys = new List<string>()
         {
-            get { return STYLE; }
-            set { STYLE = value; }
-        }
+            ConfigurationKeys.LOGFILE_NAME,
+            ConfigurationKeys.MINIMUM_NUMBER_OF_UNIQUE_WORDS,
+            ConfigurationKeys.MAXIMUM_NUMBER_OF_UNIQUE_WORDS,
+            ConfigurationKeys.INVALID_CROZZLE_SCORE,
+            ConfigurationKeys.UPPERCASE,
+            ConfigurationKeys.STYLE,
+            ConfigurationKeys.BGCOLOUR_EMPTY_TD,
+            ConfigurationKeys.BGCOLOUR_NON_EMPTY_TD,
+            ConfigurationKeys.MINIMUM_NUMBER_OF_ROWS,
+            ConfigurationKeys.MAXIMUM_NUMBER_OF_ROWS,
+            ConfigurationKeys.MINIMUM_NUMBER_OF_COLUMNS,
+            ConfigurationKeys.MAXIMUM_NUMBER_OF_COLUMNS,
+            ConfigurationKeys.MINIMUM_HORIZONTAL_WORDS,
+            ConfigurationKeys.MAXIMUM_HORIZONTAL_WORDS,
+            ConfigurationKeys.MINIMUM_VERTICAL_WORDS,
+            ConfigurationKeys.MAXIMUM_VERTICAL_WORDS,
+            ConfigurationKeys.MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS,
+            ConfigurationKeys.MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS,
+            ConfigurationKeys.MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS,
+            ConfigurationKeys.MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS,
+            ConfigurationKeys.MINIMUM_NUMBER_OF_THE_SAME_WORD,
+            ConfigurationKeys.MAXIMUM_NUMBER_OF_THE_SAME_WORD,
+            ConfigurationKeys.MINIMUM_NUMBER_OF_GROUPS,
+            ConfigurationKeys.MAXIMUM_NUMBER_OF_GROUPS,
+            ConfigurationKeys.POINTS_PER_WORD,
+            ConfigurationKeys.INTERSECTING_POINTS_PER_LETTER,
+            ConfigurationKeys.NON_INTERSECTING_POINTS_PER_LETTER
+        };
 
-        public string BgColourEmptyTd
-        {
-            get { return BGCOLOUR_EMPTY_TD; }
-            set { BGCOLOUR_EMPTY_TD = value; }
-        }
+        //crozzle config
+        // Limits on the size of the crozzle grid.
+        public int MinimumNumberOfRows { get; set; }
+        public int MaximumNumberOfRows { get; set; }
+        public int MinimumNumberOfColumns { get; set; }
+        public int MaximumNumberOfColumns { get; set; }
 
-        public string BgColourNonEmptyTd
-        {
-            get { return BGCOLOUR_NON_EMPTY_TD; }
-            set { BGCOLOUR_NON_EMPTY_TD = value; }
-        }
+        // Limits on the number of horizontal and vertical words in a crozzle.
+        public int MinimumHorizontalWords { get; set; }
+        public int MaximumHorizontalWords { get; set; }
+        public int MinimumVerticalWords { get; set; }
+        public int MaximumVerticalWords { get; set; }
 
-        public int MinimumNumberOfRows
-        {
-            get { return MINIMUM_NUMBER_OF_ROWS; }
-            set { MINIMUM_NUMBER_OF_ROWS = value; }
-        }
+        // Limits on the number of 
+        // intersecting vertical words for each horizontal word, and
+        // intersecting horizontal words for each vertical word.
+        public int MinimumIntersectionsInHorizontalWords { get; set; }
+        public int MaximumIntersectionsInHorizontalWords { get; set; }
+        public int MinimumIntersectionsInVerticalWords { get; set; }
+        public int MaximumIntersectionsInVerticalWords { get; set; }
 
-        public int MaximumNumberOfRows
-        {
-            get { return MAXIMUM_NUMBER_OF_ROWS; }
-            set { MAXIMUM_NUMBER_OF_ROWS = value; }
-        }
+        // Limits on duplicate words in the crozzle.
+        public int MinimumNumberOfTheSameWord { get; set; }
+        public int MaximumNumberOfTheSameWord { get; set; }
 
-        public int MinimumNumberOfColumns
-        {
-            get { return MINIMUM_NUMBER_OF_COLUMNS; }
-            set { MINIMUM_NUMBER_OF_COLUMNS = value; }
-        }
+        // Limits on the number of valid word groups.
+        public int MinimumNumberOfGroups { get; set; }
+        public int MaximumNumberOfGroups { get; set; }
 
-        public int MaximumNumberOfColumns
-        {
-            get { return MAXIMUM_NUMBER_OF_COLUMNS; }
-            set { MAXIMUM_NUMBER_OF_COLUMNS = value; }
-        }
+        //scoring config
+        // The number of points per word within the crozzle.
+        public int PointsPerWord { get; set; }
 
-        public int MinimumHorizontalWords
+        // Points per letter that is at the intersection of a horizontal and vertical word within the crozzle.
+        public int[] IntersectingPointsPerLetter { get; set; } = new int[26];
+
+        // Points per letter that is not at the intersection of a horizontal and vertical word within the crozzle.
+        public int[] NonIntersectingPointsPerLetter { get; set; } = new int[26];
+
+        //constructors
+        public Configuration(String path)
         {
-            get { return MINIMUM_HORIZONTAL_WORDS; }
-            set { MINIMUM_HORIZONTAL_WORDS = value; }
+            ConfigurationPath = path;
+            ConfigurationFileName = Path.GetFileName(path);
+            ConfigurationDirectoryName = Path.GetDirectoryName(path);
         }
 
-        public int MaximumHorizontalWords
+        public string FileErrorsTXT
         {
-            get { return MAXIMUM_HORIZONTAL_WORDS; }
-            set { MAXIMUM_HORIZONTAL_WORDS = value; }
-        }
-
-        public int MinimumVerticalWords
-        {
-            get { return MINIMUM_VERTICAL_WORDS; }
-            set { MINIMUM_VERTICAL_WORDS = value; }
-        }
-
-        public int MaximumVerticalWords
-        {
-            get { return MAXIMUM_VERTICAL_WORDS; }
-            set { MAXIMUM_VERTICAL_WORDS = value; }
-        }
-
-        public int MinimumIntersectionsInHorizontalWords
-        {
-            get { return MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS; }
-            set { MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS = value; }
-        }
-
-        public int MaximumIntersectionsInHorizontalWords
-        {
-            get { return MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS; }
-            set { MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS = value; }
-        }
-
-        public int MinimumIntersectionsInVerticalWords
-        {
-            get { return MINIMUM_INTERSECTIONS_IN_VERTICAL_WORDS; }
-            set { MINIMUM_INTERSECTIONS_IN_VERTICAL_WORDS = value; }
-        }
-
-        public int MaximumIntersectionsInVerticalWords
-        {
-            get { return MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS; }
-            set { MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS = value; }
-        }
-
-        public int MinimumNumberOfTheSameWord
-        {
-            get { return MINIMUM_NUMBER_OF_THE_SAME_WORD; }
-            set { MINIMUM_NUMBER_OF_THE_SAME_WORD = value; }
-        }
-
-        public int MaximumNumberOfTheSameWord
-        {
-            get { return MAXIMUM_NUMBER_OF_THE_SAME_WORD; }
-            set { MAXIMUM_NUMBER_OF_THE_SAME_WORD = value; }
-        }
-
-        public int MinimumNumberOfGroups
-        {
-            get { return MINIMUM_NUMBER_OF_GROUPS; }
-            set { MINIMUM_NUMBER_OF_GROUPS = value; }
-        }
-
-        public int MaximumNumberOfGroups
-        {
-            get { return MAXIMUM_NUMBER_OF_GROUPS; }
-            set { MAXIMUM_NUMBER_OF_GROUPS = value; }
-        }
-
-        public int PointsPerWord
-        {
-            get { return POINTS_PER_WORD; }
-            set { POINTS_PER_WORD = value; }
-        }
-
-        public Hashtable IntersectingPointsPerLetter
-        {
-            get { return INTERSECTING_POINTS_PER_LETTER; }
-            set { INTERSECTING_POINTS_PER_LETTER = value; }
-        }
-
-        public Hashtable NonIntersectingPointsPerLetter
-        {
-            get { return NON_INTERSECTING_POINTS_PER_LETTER; }
-            set { NON_INTERSECTING_POINTS_PER_LETTER = value; }
-        }
-
-        //error check lines from file
-        public Configuration CreateConfigObj(string file, Configuration obj)
-        {
-
-            Tuple<Hashtable, string> ht = GetFile(file);
-            Tuple<Hashtable, string> IPscoreHt = GetIPScoreFile(file);
-            Tuple<Hashtable, string> NIPscoreHt = GetNIPScoreFile(file);
-            //Hashtable hashT = ValidateHt(ht);
-            CreateConfig(obj, ht, IPscoreHt, NIPscoreHt);
-            return obj;
-        }
-
-
-        public Tuple<Hashtable, string> GetNIPScoreFile(string path)
-        {
-            var pathToFile = path;
-            var file = File.ReadAllLines(pathToFile);
-            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            List<string> configFile1 = new List<string>();
-            List<string> configFile2 = new List<string>();
-            List<string> configFile3 = new List<string>();
-            List<string> configFile4 = new List<string>();
-            List<string> configFile5 = new List<string>();
-            List<string> ScoreConfigFile = new List<string>();
-            string[] IPScoreArray = new string[0];
-
-            List<ErrorLog> configErrors = new List<ErrorLog>();
-
-            Hashtable NonintersectingPoints = new Hashtable();
-
-            foreach (var line in file)
+            get
             {
-                configFile1.Add(line);
-            }
+                int errorNumber = 1;
+                String errors = "START PROCESSING FILE: " + ConfigurationFileName + "\r\n";
 
-            //error checking and removing useless chars
-            foreach (var line in configFile1)
+                foreach (String error in Configuration.Errors)
+                    errors += "error " + errorNumber++ + ": " + error + "\r\n";
+                errors += "END PROCESSING FILE: " + ConfigurationFileName + "\r\n";
+
+                return (errors);
+            }
+        }
+
+        public String FileErrorsHTML
+        {
+            get
             {
-                Regex reg = new Regex(@"^NON");
-                if (reg.IsMatch(line))
-                {
-                    configFile2.Add(line);
-                }
+                int errorNumber = 1;
+                String errors = "<p style=\"font-weight:bold\">START PROCESSING FILE: " + ConfigurationFileName + "</p>";
 
+                foreach (String error in Configuration.Errors)
+                    errors += "<p>error " + errorNumber++ + ": " + error + "</p>";
+                errors += "<p style=\"font-weight:bold\">END PROCESSING FILE: " + ConfigurationFileName + "</p>";
+
+                return (errors);
             }
+        }
 
-            foreach (var res in configFile2)
-            {
+        public static Boolean TryParse(String path, out Configuration aConfiguration)
+        {
+            Errors = new List<String>();
+            ActualIntersectingKeys = new Boolean[26];
+            ActualNonIntersectingKeys = new Boolean[26];
+            ActualKeys = new List<string>();
+            aConfiguration = new Configuration(path);
 
-                int index = res.IndexOf('=');
-                var val = res.Substring(index + 1);
-                configFile3.Add(val);
-            }
-
-            foreach (var line in configFile3)
-            {
-                if (line.Contains('"'))
-                {
-                    string res = line.Replace("\"", "");
-                    configFile4.Add(res);
-                }
-            }
-
-            foreach (string s in configFile4)
-            {
-                IPScoreArray = s.Split(',');
-            }
-
-            foreach (var line in IPScoreArray)
-            {
-                configFile5.Add(line);
-            }
-
-            //add object from list to hashtable
-            foreach (string str in IPScoreArray)
-            {
-                int index = str.IndexOf("=");
-                var key = str.Substring(0, index);
-                var val = str.Substring(index + 1);
-                if (NonintersectingPoints.ContainsKey(key))
-                {
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetNIPScoreFile ----- Desc: Duplicate Key");
-
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = "Hashtable Intersecting Points";
-                    //string des = "Duplicate key";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-                    NonintersectingPoints.Remove(key);
-                }
-
-                NonintersectingPoints.Add(key, val);
-            }
-
-            //string [] alphabet = new string[] {"A", "B", "C", "D", "E", "F", "G", "H",  };
-
-            //error checking
-            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            foreach (char letter in alphabet)
-            {
-                if (NonintersectingPoints.ContainsKey(Convert.ToString(letter)))
-                {
-                    continue;
-                }
-                else
-                {
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetNIPScoreFile ----- Desc: Letter " + letter + " missing from NonIntersecting Points Hashtable");
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = "Hashtable";
-                    //string des = "Letter " + letter + " missing from Intersecting Points hashtable";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-
-                }
-            }
-
-            Regex r = new Regex(@"\d+");
-
-            foreach (string num in NonintersectingPoints.Values)
-            {
-                if (r.IsMatch(num))
-                {
-                    continue;
-                }
-                else
-                {
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetNIPScoreFile ----- Desc: Values must equal a number");
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = "Hashtable Value";
-                    //string des = "Values must equal a number";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-                }
-            }
-
-            //write errors to log file
-            //string fPath = Directory.GetCurrentDirectory();
-            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
-
-            //foreach (var e in configErrors)
-            //{
-            //    wtr.WriteLine("File Name: " + e.File_Name);
-            //    wtr.WriteLine("Line: " + e.Line);
-            //    wtr.WriteLine("Description: " + e.Description);
-
-            //}
-            //wtr.Close();
-
-            string invalid = "Invalid";
-            string valid = "Valid";
-            Tuple<Hashtable, string> tuple;
-
-            if (configErrors.Count > 0)
-            {
-
-                tuple = new Tuple<Hashtable, string>(NonintersectingPoints, invalid);
-            }
+            if (aConfiguration.ConfigurationFileName.IndexOfAny(Path.GetInvalidFileNameChars()) > -1)
+                Errors.Add(String.Format(ConfigurationErrors.FilenameError, path));
             else
             {
-                tuple = new Tuple<Hashtable, string>(NonintersectingPoints, valid);
-            }
-            return tuple;
-            
-        }
+                StreamReader fileIn = new StreamReader(path);
 
-        //create the score table
-        public Tuple<Hashtable, string> GetIPScoreFile(string path)
-        {
-            var pathToFile = path;
-            var file = File.ReadAllLines(pathToFile);
-            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            List<string> configFile1 = new List<string>();
-            List<string> configFile2 = new List<string>();
-            List<string> configFile3 = new List<string>();
-            List<string> configFile4 = new List<string>();
-            List<string> configFile5 = new List<string>();
-            List<string> ScoreConfigFile = new List<string>();
-            string[] IPScoreArray = new string[0];
-            
-            List<ErrorLog> configErrors = new List<ErrorLog>();
-
-            Hashtable intersectingPoints = new Hashtable();            
-
-            foreach (var line in file)
-            {
-                configFile1.Add(line);
-            }
-
-            foreach (var line in configFile1)
-            {
-                Regex reg = new Regex(@"^INTERSECTING");
-                if (reg.IsMatch(line))
+                // Validate file.
+                while (!fileIn.EndOfStream)
                 {
-                    configFile2.Add(line);
-                }
-                
-            }
+                    // Read a line.
+                    String line = fileIn.ReadLine();
 
-            foreach (var res in configFile2)
-            {
-
-                int index = res.IndexOf('=');
-                var val = res.Substring(index + 1);
-                configFile3.Add(val);
-            }
-
-            foreach (var line in configFile3)
-            {
-                if(line.Contains('"'))
-                {
-                    string res = line.Replace("\"", "");
-                    configFile4.Add(res);
-                }
-            }
-
-            foreach (string s in configFile4)
-            {
-                IPScoreArray = s.Split(',');
-            }
-
-            foreach(var line in IPScoreArray)
-            {
-                configFile5.Add(line);
-            }
-
-            foreach (string str in IPScoreArray)
-            {
-                int index = str.IndexOf("=");
-                var key = str.Substring(0, index);
-                var val = str.Substring(index + 1);
-                if (intersectingPoints.ContainsKey(key))
-                {
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetIPScoreFile ----- Desc: Duplicate Key");
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = "Hashtable Intersecting Points";
-                    //string des = "Duplicate key";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-                    intersectingPoints.Remove(key);
-                }
-                intersectingPoints.Add(key, val);
-            }
-
-            //string [] alphabet = new string[] {"A", "B", "C", "D", "E", "F", "G", "H",  };
-
-            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            foreach(char letter in alphabet)
-            {
-                if(intersectingPoints.ContainsKey(Convert.ToString(letter)))
-                {
-                    continue;
-                }
-                else
-                {
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetIPScoreFile ----- Desc: Letter " + letter + " missing from NonIntersecting Points Hashtable");
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = "Hashtable";
-                    //string des = "Letter " + letter + " missing from Intersecting Points hashtable";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-
-                }
-            }
-
-            Regex r = new Regex(@"\d+");
-
-            foreach(string num in intersectingPoints.Values)
-            {
-                if(r.IsMatch(num))
-                {
-                    continue;
-                }
-                else
-                {
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetIPScoreFile ----- Desc: Values must equal a number");
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = "Hashtable Value";
-                    //string des = "Values must equal a number";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-                }
-            }
-            
-            //string fPath = Directory.GetCurrentDirectory();
-            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append: true);
-
-            //foreach (var e in configErrors)
-            //{
-            //    wtr.WriteLine("File Name: " + e.File_Name);
-            //    wtr.WriteLine("Line: " + e.Line);
-            //    wtr.WriteLine("Description: " + e.Description);
-
-            //}
-            //wtr.Close();
-
-            string invalid = "Invalid";
-            string valid = "Valid";
-            Tuple<Hashtable, string> tuple;
-
-            if (configErrors.Count > 0)
-            {
-
-                tuple = new Tuple<Hashtable, string>(intersectingPoints, invalid);
-            }
-            else
-            {
-                tuple = new Tuple<Hashtable, string>(intersectingPoints, valid);
-            }
-            return tuple;
-            
-        }
-
-        //get the configuration file, read and add each line to list
-        public Tuple<Hashtable, string> GetFile(string path)
-        {
-            var pathToFile = path;
-            var file = File.ReadAllLines(pathToFile);
-            string configPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            List<string> configFile1 = new List<string>();
-            List<string> configFile2 = new List<string>();
-            List<string> configFile3 = new List<string>();
-            List<string> configFile4 = new List<string>();
-            List<string> configFile5 = new List<string>();
-            List<string> configFile6 = new List<string>();
-            List<string> configFile7 = new List<string>();
-            List<ErrorLog> configErrors = new List<ErrorLog>();
-
-            string result;
-
-            Hashtable htConfig = new Hashtable();
-
-            //error checking and removing useless obj
-            foreach (var line in file)
-            {
-                configFile1.Add(line);
-               
-            }
-
-            foreach (var line in configFile1)
-            {
-                var myRegex = new Regex(@"\w+=");
-                if (myRegex.IsMatch(line))
-                {
-                    configFile2.Add(line);
-                }                
-            }
-
-            foreach (var line in configFile2.ToArray())
-            {
-                var myRegex = new Regex(@"^[A-Z]");
-                if (myRegex.IsMatch(line))
-                {
-                    configFile3.Add(line);
-                }
-                else
-                {
-                    Convert.ToString(htConfig["LOGFILE_NAME"]);
-                    
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Keyword missing");
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = line;
-                    //string des = "Keyword missing";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-                    configFile2.Remove(line);
-                }
-            }
-
-            foreach (var line in configFile3)
-            {
-                if (line.Contains("//"))
-                {
-                    int index = line.IndexOf("//");
-                    result = line.Substring(0, index);
-                    string trim = result.Trim();
-                    configFile4.Add(trim);
-                }
-                else
-                {
-                    configFile4.Add(line);
-                }
-            }
-
-            foreach (var line in configFile4)
-            {
-                var myRegex = new Regex(@"MAXIMUM|MINIMUM|POINTS");
-                var myReg = new Regex(@"\w+=\d");
-                if (myRegex.IsMatch(line))
-                {
-                    if(myReg.IsMatch(line))
+                    // Parse a configuration item.
+                    ConfigurationFileItem aConfigurationItem;
+                    if (ConfigurationFileItem.TryParse(line, out aConfigurationItem))
                     {
-                        configFile5.Add(line);
+                        if (aConfigurationItem.KeyValue != null && ActualKeys.Contains(aConfigurationItem.KeyValue.Key))
+                            Errors.Add(String.Format(ConfigurationErrors.DuplicateKeyError, aConfigurationItem.KeyValue.OriginalKeyValue));
+                        else
+                        {
+                            // Record that this key has been found.
+                            if (aConfigurationItem.KeyValue != null)
+                                ActualKeys.Add(aConfigurationItem.KeyValue.Key);
+
+                            // Process the key-value.
+                            if (aConfigurationItem.IsLogFile)
+                            {
+                                // Get the value representing an invalid score.
+                                aConfiguration.LogFileName = aConfigurationItem.KeyValue.Value.Trim();
+                                if (Validator.IsDelimited(aConfiguration.LogFileName, Crozzle.StringDelimiters))
+                                {
+                                    aConfiguration.LogFileName = aConfiguration.LogFileName.Trim(Crozzle.StringDelimiters);
+                                    if (!Validator.IsFilename(aConfiguration.LogFileName))
+                                        Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumNumberOfUniqueWords)
+                            {
+                                // Get the value of the minimum number of unique words allowed in the wordlist.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumNumberOfUniqueWords = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumNumberOfUniqueWords)
+                            {
+                                // Get the value of the maximum number of unique words allowed in the wordlist.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumNumberOfUniqueWords = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+
+                            }
+                            else if (aConfigurationItem.IsInvalidCrozzleScore)
+                            {
+                                // Get the value representing an invalid score.
+                                aConfiguration.InvalidCrozzleScore = aConfigurationItem.KeyValue.Value.Trim();
+                                if (Validator.IsDelimited(aConfiguration.InvalidCrozzleScore, Crozzle.StringDelimiters))
+                                    aConfiguration.InvalidCrozzleScore = aConfiguration.InvalidCrozzleScore.Trim(Crozzle.StringDelimiters);
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsUppercase)
+                            {
+                                // Get the Boolean value that determines whether to display the crozzle letters in uppercase or lowercase.
+                                Boolean uppercase = true;
+                                if (!Validator.IsMatch(aConfigurationItem.KeyValue.Value, allowedBooleans))
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                aConfiguration.Uppercase = uppercase;
+                            }
+                            else if (aConfigurationItem.IsStyle)
+                            {
+                                // Get the value of the HTML style to display the crozzle in an HTML table.
+                                aConfiguration.Style = aConfigurationItem.KeyValue.Value.Trim();
+                                if (Validator.IsDelimited(aConfiguration.Style, Crozzle.StringDelimiters))
+                                {
+                                    aConfiguration.Style = aConfiguration.Style.Trim(Crozzle.StringDelimiters);
+                                    if (!Validator.IsStyleTag(aConfiguration.Style))
+                                        Errors.Add(String.Format(ConfigurationErrors.StyleError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsBGcolourEmptyTD)
+                            {
+                                // Get the value of the background colour for an empty TD (HTML table data).
+                                aConfiguration.BGcolourEmptyTD = aConfigurationItem.KeyValue.Value.Trim();
+                                if (!Validator.IsHexColourCode(aConfiguration.BGcolourEmptyTD))
+                                    Errors.Add(String.Format(ConfigurationErrors.ColourError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsBGcolourNonEmptyTD)
+                            {
+                                // Get the value of the background colour for a non empty TD (HTML table data).
+                                aConfiguration.BGcolourNonEmptyTD = aConfigurationItem.KeyValue.Value.Trim();
+                                if (!Validator.IsHexColourCode(aConfiguration.BGcolourNonEmptyTD))
+                                    Errors.Add(String.Format(ConfigurationErrors.ColourError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumNumberOfRows)
+                            {
+                                // Get the value of the minimum number of rows per crozzle.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumNumberOfRows = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumNumberOfRows)
+                            {
+                                // Get the value of the maximum number of rows per crozzle.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumNumberOfRows = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumNumberOfColumns)
+                            {
+                                // Get the value of the minimum number of columns per crozzle.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumNumberOfColumns = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumNumberOfColumns)
+                            {
+                                // Get the value of the maximum number of columns per crozzle.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumNumberOfColumns = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumHorizontalWords)
+                            {
+                                // Get the value of the minimum number of horizontal words in a crozzle.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumHorizontalWords = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumHorizontalWords)
+                            {
+                                // Get the value of the maximum number of horizontal words in a crozzle.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumHorizontalWords = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumVerticalWords)
+                            {
+                                // Get the value of the minimum number of vertical words in a crozzle.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumVerticalWords = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumVerticalWords)
+                            {
+                                // Get the value of the maximum number of vertical words in a crozzle.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumVerticalWords = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumIntersectionsInHorizontalWords)
+                            {
+                                // Get the value of the minimum number of the intersections in a horizontal word.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumIntersectionsInHorizontalWords = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumIntersectionsInHorizontalWords)
+                            {
+                                // Get the value of the maximum number of the intersections in a horizontal word.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumIntersectionsInHorizontalWords = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumIntersectionsInVerticalWords)
+                            {
+                                // Get the value of the minimum number of the intersections in a vertical word.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumIntersectionsInVerticalWords = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumIntersectionsInVerticalWords)
+                            {
+                                // Get the value of the maximum number of the intersections in a vertical word.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumIntersectionsInVerticalWords = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumNumberOfTheSameWord)
+                            {
+                                // Get the value of the minimum number of the same word per crozzle limit.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumNumberOfTheSameWord = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumNumberOfTheSameWord)
+                            {
+                                // Get the value of the maximum number of the same word per crozzle limit.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumNumberOfTheSameWord = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMinimumNumberOfGroups)
+                            {
+                                // Get the value of the minimum number of groups per crozzle limit.
+                                int minimum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out minimum))
+                                {
+                                    aConfiguration.MinimumNumberOfGroups = minimum;
+                                    if (!Validator.TryRange(minimum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsMaximumNumberOfGroups)
+                            {
+                                // Get the value of the maximum number of groups per crozzle limit.
+                                int maximum;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out maximum))
+                                {
+                                    aConfiguration.MaximumNumberOfGroups = maximum;
+                                    if (!Validator.TryRange(maximum, 1, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsPointsPerWord)
+                            {
+                                // Get the value of points per words.
+                                int pointsPerWord;
+                                if (Validator.IsInt32(aConfigurationItem.KeyValue.Value.Trim(), out pointsPerWord))
+                                {
+                                    aConfiguration.PointsPerWord = pointsPerWord;
+                                    if (!Validator.TryRange(pointsPerWord, 0, Int32.MaxValue))
+                                        Errors.Add(String.Format(ConfigurationErrors.IntegerError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                }
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, aConfigurationItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                            }
+                            else if (aConfigurationItem.IsIntersecting)
+                            {
+                                // Get the values of each INTERSECTING point.
+                                String originalValues = aConfigurationItem.KeyValue.Value.Trim();
+                                if (Validator.IsDelimited(originalValues, Crozzle.StringDelimiters))
+                                    originalValues = originalValues.Trim(Crozzle.StringDelimiters).Trim();
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, originalValues, Validator.Errors[0]));
+
+                                String[] intersectingPoints = originalValues.Split(PointSeparators);
+                                foreach (String intersectingPoint in intersectingPoints)
+                                {
+                                    KeyValue aKeyValue;
+                                    if (KeyValue.TryParse(intersectingPoint, @"[A-Z]", out aKeyValue))
+                                    {
+                                        int points;
+                                        if (Validator.IsInt32(aKeyValue.Value, out points))
+                                        {
+                                            int index = (int)aKeyValue.Key[0] - (int)'A';
+                                            aConfiguration.IntersectingPointsPerLetter[index] = points;
+                                            ActualIntersectingKeys[index] = true;
+                                        }
+                                        else
+                                            Errors.Add(String.Format(ConfigurationErrors.ValueError, aKeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                    }
+                                    else
+                                        Errors.AddRange(KeyValue.Errors);
+                                }
+                            }
+                            else if (aConfigurationItem.IsNonIntersecting)
+                            {
+                                // Get the value of each NONINTERSECTING point.
+                                String originalValues = aConfigurationItem.KeyValue.Value.Trim();
+                                if (Validator.IsDelimited(originalValues, Crozzle.StringDelimiters))
+                                    originalValues = originalValues.Trim(Crozzle.StringDelimiters).Trim();
+                                else
+                                    Errors.Add(String.Format(ConfigurationErrors.ValueError, originalValues, Validator.Errors[0]));
+
+                                String[] nonIntersectingPoints = originalValues.Split(PointSeparators);
+                                foreach (String nonIntersectingPoint in nonIntersectingPoints)
+                                {
+                                    KeyValue aKeyValue;
+                                    if (KeyValue.TryParse(nonIntersectingPoint, @"[A-Z]", out aKeyValue))
+                                    {
+                                        int points;
+                                        if (Validator.IsInt32(aKeyValue.Value, out points))
+                                        {
+                                            int index = (int)aKeyValue.Key[0] - (int)'A';
+                                            aConfiguration.NonIntersectingPointsPerLetter[index] = points;
+                                            ActualNonIntersectingKeys[index] = true;
+                                        }
+                                        else
+                                            Errors.Add(String.Format(ConfigurationErrors.ValueError, aKeyValue.OriginalKeyValue, Validator.Errors[0]));
+                                    }
+                                    else
+                                        Errors.AddRange(KeyValue.Errors);
+                                }
+                            }
+                        }
                     }
                     else
-                    {
-                        CreateLogFiles err = new CreateLogFiles();
-                        string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                        string fNa = @"LogFiles\log";
-                        err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Must be an integer");
-                        //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                        //string linerr = line;
-                        //string des = "Must be an integer";
-                        //ErrorLog err = new ErrorLog(name, linerr, des);
-                        //configErrors.Add(err);
+                        Errors.AddRange(ConfigurationFileItem.Errors);
+                }
 
-                    }
-                }
-                else
-                {
-                    configFile5.Add(line);
-                }
+                // Close files.
+                fileIn.Close();
+
+                // Check which keys are missing from the configuration file.
+                foreach (string expectedKey in expectedKeys)
+                    if (!ActualKeys.Contains(expectedKey))
+                        Errors.Add(String.Format(ConfigurationErrors.MissingKeyError, expectedKey));
+                for (char ch = 'A'; ch <= 'Z'; ch++)
+                    if (!ActualIntersectingKeys[(int)ch - (int)'A'])
+                        Errors.Add(String.Format(ConfigurationErrors.MissingIntersectionKeyError, ch.ToString()));
+                for (char ch = 'A'; ch <= 'Z'; ch++)
+                    if (!ActualNonIntersectingKeys[(int)ch - (int)'A'])
+                        Errors.Add(String.Format(ConfigurationErrors.MissingNonIntersectionKeyError, ch.ToString()));
+
+                // Check that minimum values are <= to their maximmum counterpart values.
+                if (ActualKeys.Contains("MINIMUM_NUMBER_OF_UNIQUE_WORDS") && ActualKeys.Contains("MAXIMUM_NUMBER_OF_UNIQUE_WORDS"))
+                    if (aConfiguration.MinimumNumberOfUniqueWords > aConfiguration.MaximumNumberOfUniqueWords)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_NUMBER_OF_UNIQUE_WORDS",
+                            aConfiguration.MinimumNumberOfUniqueWords, aConfiguration.MaximumNumberOfUniqueWords));
+                if (ActualKeys.Contains("MINIMUM_NUMBER_OF_ROWS") && ActualKeys.Contains("MAXIMUM_NUMBER_OF_ROWS"))
+                    if (aConfiguration.MinimumNumberOfRows > aConfiguration.MaximumNumberOfRows)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_NUMBER_OF_ROWS",
+                            aConfiguration.MinimumNumberOfRows, aConfiguration.MaximumNumberOfRows));
+                if (ActualKeys.Contains("MINIMUM_NUMBER_OF_COLUMNS") && ActualKeys.Contains("MAXIMUM_NUMBER_OF_COLUMNS"))
+                    if (aConfiguration.MinimumNumberOfColumns > aConfiguration.MaximumNumberOfColumns)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_NUMBER_OF_COLUMNS",
+                            aConfiguration.MinimumNumberOfColumns, aConfiguration.MaximumNumberOfColumns));
+                if (ActualKeys.Contains("MINIMUM_HORIZONTAL_WORDS") && ActualKeys.Contains("MAXIMUM_HORIZONTAL_WORDS"))
+                    if (aConfiguration.MinimumHorizontalWords > aConfiguration.MaximumHorizontalWords)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_HORIZONTAL_WORDS",
+                            aConfiguration.MinimumHorizontalWords, aConfiguration.MaximumHorizontalWords));
+                if (ActualKeys.Contains("MINIMUM_VERTICAL_WORDS") && ActualKeys.Contains("MAXIMUM_VERTICAL_WORDS"))
+                    if (aConfiguration.MinimumVerticalWords > aConfiguration.MaximumVerticalWords)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_VERTICAL_WORDS",
+                            aConfiguration.MinimumVerticalWords, aConfiguration.MaximumVerticalWords));
+                if (ActualKeys.Contains("MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS") && ActualKeys.Contains("MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS"))
+                    if (aConfiguration.MinimumIntersectionsInHorizontalWords > aConfiguration.MaximumIntersectionsInHorizontalWords)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS",
+                            aConfiguration.MinimumIntersectionsInHorizontalWords, aConfiguration.MaximumIntersectionsInHorizontalWords));
+                if (ActualKeys.Contains("MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS") && ActualKeys.Contains("MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS"))
+                    if (aConfiguration.MinimumIntersectionsInVerticalWords > aConfiguration.MaximumIntersectionsInVerticalWords)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS",
+                            aConfiguration.MinimumIntersectionsInVerticalWords, aConfiguration.MaximumIntersectionsInVerticalWords));
+                if (ActualKeys.Contains("MINIMUM_NUMBER_OF_THE_SAME_WORD") && ActualKeys.Contains("MAXIMUM_NUMBER_OF_THE_SAME_WORD"))
+                    if (aConfiguration.MinimumNumberOfTheSameWord > aConfiguration.MaximumNumberOfTheSameWord)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_NUMBER_OF_THE_SAME_WORD",
+                            aConfiguration.MinimumNumberOfTheSameWord, aConfiguration.MaximumNumberOfTheSameWord));
+                if (ActualKeys.Contains("MINIMUM_NUMBER_OF_GROUPS") && ActualKeys.Contains("MAXIMUM_NUMBER_OF_GROUPS"))
+                    if (aConfiguration.MinimumNumberOfGroups > aConfiguration.MaximumNumberOfGroups)
+                        Errors.Add(String.Format(ConfigurationErrors.MinGreaterThanMaxError, "MINIMUM_NUMBER_OF_GROUPS",
+                            aConfiguration.MinimumNumberOfGroups, aConfiguration.MaximumNumberOfGroups));
             }
 
-            foreach(var line in configFile5)
-            {
-                var myRegex = new Regex(@"BGCOLOUR");
-                var myReg = new Regex(@"\w+=#\w{6}$");
-                if (myRegex.IsMatch(line))
-                {
-                    if (myReg.IsMatch(line))
-                    {
-                        configFile6.Add(line);
-                    }
-                    else
-                    {
-                        CreateLogFiles err = new CreateLogFiles();
-                        string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                        string fNa = @"LogFiles\log";
-                        err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Invalid hex colour");
-                        //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                        //string linerr = line;
-                        //string des = "Invalid hex colour";
-                        //ErrorLog err = new ErrorLog(name, linerr, des);
-                        //configErrors.Add(err);
-
-                    }
-                }
-                else
-                {
-                    configFile6.Add(line);
-                }
-
-            }
-
-            foreach (var line in configFile6.ToArray())
-            {
-                var myRegex = new Regex(@"UPPERCASE");
-                var myReg = new Regex(@"true|false");
-                if (myRegex.IsMatch(line))
-                {
-                    if (myReg.IsMatch(line))
-                    {
-                        configFile7.Add(line);
-                    }
-                    else
-                    {
-                        CreateLogFiles err = new CreateLogFiles();
-                        string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                        string fNa = @"LogFiles\log";
-                        err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Invalid boolean");
-                        //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                        //string linerr = line;
-                        //string des = "Invalid boolean";
-                        //ErrorLog err = new ErrorLog(name, linerr, des);
-                        //configErrors.Add(err);
-                        configFile6.Remove(line);
-                    }
-                }
-                else
-                {
-                    configFile7.Add(line);
-                }
-
-            }
-
-            foreach (var res in configFile7)
-            {
-
-                int index = res.IndexOf("=");
-                var key = res.Substring(0, index);
-                var val = res.Substring(index + 1);
-                if (htConfig.ContainsKey(key))
-                {
-                    CreateLogFiles err = new CreateLogFiles();
-                    string fPa = System.AppDomain.CurrentDomain.BaseDirectory;
-                    string fNa = @"LogFiles\log";
-                    err.ErrorLog(configPath + '\\' + fNa, "File: Configuration.cs ----- Line: GetFile ----- Desc: Duplicate Key in hashtable");
-                    //string name = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
-                    //string linerr = "Hashtable Config";
-                    //string des = "Duplicate key";
-                    //ErrorLog err = new ErrorLog(name, linerr, des);
-                    //configErrors.Add(err);
-                    htConfig.Remove(key);
-                }
-                htConfig.Add(key, val);
-            }
-
-            //string fPath = Directory.GetCurrentDirectory();
-            //string filname = @"log.txt";//Convert.ToString(htConfig["LOGFILE_NAME"]);
-            //StreamWriter wtr = new StreamWriter(fPath + '\\' + filname, append:true);
-            
-            //foreach(var e in configErrors)
-            //{
-            //    wtr.WriteLine("File Name: " + e.File_Name);
-            //    wtr.WriteLine("Line: " + e.Line);
-            //    wtr.WriteLine("Description: " + e.Description);
-                
-            //}
-            //wtr.Close();
-
-            string invalid = "Invalid";
-            string valid = "Valid";
-            Tuple<Hashtable, string> tuple;
-
-            if (configErrors.Count > 0)
-            {
-
-                tuple = new Tuple<Hashtable, string>(htConfig, invalid);
-            }
-            else
-            {
-                tuple = new Tuple<Hashtable, string>(htConfig, valid);
-            }
-            return tuple;
+            // Store validity.
+            aConfiguration.Valid = Errors.Count == 0;
+            return (aConfiguration.Valid);
         }
 
-        
-        //create configuration object for return
-        public Configuration CreateConfig(Configuration obj, Tuple<Hashtable, string> HtTuple, Tuple<Hashtable, string> IPTuple, Tuple<Hashtable, string> NIPTuple)
-        {
-            Hashtable HtObj = HtTuple.Item1;
-            string result = HtTuple.Item2;
-            Hashtable IPObj = IPTuple.Item1;
-            string result2 = IPTuple.Item2;
-            Hashtable NIPObj = NIPTuple.Item1;
-            string result3 = NIPTuple.Item2;
 
-            if (result == "Valid" || result2 == "Valid" || result3 == "Valid")
-            {
-                obj.IsValid = true;
-                obj.LogfileName = Convert.ToString(HtObj["LOGFILE_NAME"]);
-                obj.MinimumNumberOfUniqueWords = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_UNIQUE_WORDS"]);
-                obj.MaximumNumberOfUniqueWords = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_UNIQUE_WORDS"]);
-                obj.InvalidCrozzleScore = Convert.ToString(HtObj["INVALID_CROZZLE_SCORE"]);
-                obj.UpperCase = Convert.ToBoolean(HtObj["UPPERCASE"]);
-                obj.Style = Convert.ToString(HtObj["STYLE"]);
-                obj.BgColourEmptyTd = Convert.ToString(HtObj["BGCOLOUR_EMPTY_TD"]);
-                obj.BgColourNonEmptyTd = Convert.ToString(HtObj["BGCOLOUR_NON_EMPTY_TD"]);
-                obj.MinimumNumberOfRows = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_ROWS"]);
-                obj.MaximumNumberOfRows = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_ROWS"]);
-                obj.MinimumNumberOfColumns = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_COLUMNS"]);
-                obj.MaximumNumberOfColumns = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_COLUMNS"]);
-                obj.MinimumHorizontalWords = Convert.ToInt32(HtObj["MINIMUM_HORIZONTAL_WORDS"]);
-                obj.MaximumHorizontalWords = Convert.ToInt32(HtObj["MAXIMUM_HORIZONTAL_WORDS"]);
-                obj.MinimumVerticalWords = Convert.ToInt32(HtObj["MINIMUM_VERTICAL_WORDS"]);
-                obj.MaximumVerticalWords = Convert.ToInt32(HtObj["MAXIMUM_VERTICAL_WORDS"]);
-                obj.MinimumIntersectionsInHorizontalWords = Convert.ToInt32(HtObj["MINIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS"]);
-                obj.MaximumIntersectionsInHorizontalWords = Convert.ToInt32(HtObj["MAXIMUM_INTERSECTIONS_IN_HORIZONTAL_WORDS"]);
-                obj.MinimumIntersectionsInVerticalWords = Convert.ToInt32(HtObj["MINIMUM_INTERSECTIONS_IN_VERTICAL_WORDS"]);
-                obj.MaximumIntersectionsInVerticalWords = Convert.ToInt32(HtObj["MAXIMUM_INTERSECTIONS_IN_VERTICAL_WORDS"]);
-                obj.MinimumNumberOfTheSameWord = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_THE_SAME_WORD"]);
-                obj.MaximumNumberOfTheSameWord = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_THE_SAME_WORD"]);
-                obj.MinimumNumberOfGroups = Convert.ToInt32(HtObj["MINIMUM_NUMBER_OF_GROUPS"]);
-                obj.MaximumNumberOfGroups = Convert.ToInt32(HtObj["MAXIMUM_NUMBER_OF_GROUPS"]);
-                obj.PointsPerWord = Convert.ToInt32(HtObj["POINTS_PER_WORD"]);
-                obj.IntersectingPointsPerLetter = IPObj;
-                obj.NonIntersectingPointsPerLetter = NIPObj;
-            }
-            else
-            {
-                obj.IsValid = false;
-            }
-            
-
-
-            return obj;
-        }
+     
 
     }
 }

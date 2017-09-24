@@ -46,24 +46,125 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColumnData.cs" />
-    <Compile Include="ConfigController.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="CreateLogFiles.cs" />
-    <Compile Include="CrozzleTest.cs" />
-    <Compile Include="ErrorLog.cs" />
+    <Compile Include="ConfigurationErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConfigurationErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigurationFileItem.cs" />
+    <Compile Include="ConfigurationFileItemErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConfigurationFileItemErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigurationKeys.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConfigurationKeys.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Coordinate.cs" />
+    <Compile Include="CoordinateErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoordinateErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Crozzle.cs" />
+    <Compile Include="CrozzleErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CrozzleErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CrozzleFileErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CrozzleFileErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CrozzleFileItem.cs" />
+    <Compile Include="CrozzleFileItemErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CrozzleFileItemErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CrozzleMap.cs" />
+    <Compile Include="CrozzleSequences.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="KeyValue.cs" />
+    <Compile Include="KeyValueErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>KeyValueErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Orientation.cs" />
+    <Compile Include="OrientationErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OrientationErrors.resx</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RowData.cs" />
+    <Compile Include="Validator.cs" />
+    <Compile Include="ValidatorErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValidatorErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WordData.cs" />
+    <Compile Include="WordDataErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WordDataErrors.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WordDataList.cs" />
     <Compile Include="WordList.cs" />
+    <Compile Include="WordListErrors.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WordListErrors.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="ConfigurationErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfigurationErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigurationFileItemErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfigurationFileItemErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigurationKeys.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfigurationKeys.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CoordinateErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CoordinateErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrozzleErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CrozzleErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrozzleFileErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CrozzleFileErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrozzleFileItemErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CrozzleFileItemErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KeyValueErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>KeyValueErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OrientationErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OrientationErrors.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -74,6 +175,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ValidatorErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidatorErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WordDataErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WordDataErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WordListErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WordListErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

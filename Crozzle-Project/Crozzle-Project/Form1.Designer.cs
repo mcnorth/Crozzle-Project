@@ -29,87 +29,88 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMenu));
-            this.boardPanel = new System.Windows.Forms.Panel();
-            this.btnGetFile = new System.Windows.Forms.Button();
-            this.btnLoadFile = new System.Windows.Forms.Button();
-            this.txtFile = new System.Windows.Forms.TextBox();
-            this.errorPanel = new System.Windows.Forms.Panel();
-            this.errTxt = new System.Windows.Forms.RichTextBox();
-            this.invtxt2 = new System.Windows.Forms.TextBox();
-            this.invtxt1 = new System.Windows.Forms.TextBox();
-            this.errorPanel.SuspendLayout();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openCrozzleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.validateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.crozzleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.crozzleWebBrowser = new System.Windows.Forms.WebBrowser();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.errorWebBrowser = new System.Windows.Forms.WebBrowser();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // boardPanel
+            // menuStrip1
             // 
-            this.boardPanel.BackColor = System.Drawing.Color.White;
-            this.boardPanel.Location = new System.Drawing.Point(12, 82);
-            this.boardPanel.Name = "boardPanel";
-            this.boardPanel.Size = new System.Drawing.Size(620, 461);
-            this.boardPanel.TabIndex = 2;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.validateToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1181, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // btnGetFile
+            // fileToolStripMenuItem
             // 
-            this.btnGetFile.Location = new System.Drawing.Point(12, 43);
-            this.btnGetFile.Name = "btnGetFile";
-            this.btnGetFile.Size = new System.Drawing.Size(140, 33);
-            this.btnGetFile.TabIndex = 3;
-            this.btnGetFile.Text = "Get File";
-            this.btnGetFile.UseVisualStyleBackColor = true;
-            this.btnGetFile.Click += new System.EventHandler(this.btnGetFile_Click);
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openCrozzleToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Click += new System.EventHandler(this.fileToolStripMenuItem_Click);
             // 
-            // btnLoadFile
+            // openCrozzleToolStripMenuItem
             // 
-            this.btnLoadFile.Location = new System.Drawing.Point(158, 43);
-            this.btnLoadFile.Name = "btnLoadFile";
-            this.btnLoadFile.Size = new System.Drawing.Size(140, 33);
-            this.btnLoadFile.TabIndex = 4;
-            this.btnLoadFile.Text = "Load File";
-            this.btnLoadFile.UseVisualStyleBackColor = true;
-            this.btnLoadFile.Click += new System.EventHandler(this.btnLoadFile_Click);
+            this.openCrozzleToolStripMenuItem.Name = "openCrozzleToolStripMenuItem";
+            this.openCrozzleToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.openCrozzleToolStripMenuItem.Text = "Open Crozzle";
+            this.openCrozzleToolStripMenuItem.Click += new System.EventHandler(this.openCrozzleToolStripMenuItem_Click);
             // 
-            // txtFile
+            // exitToolStripMenuItem
             // 
-            this.txtFile.Location = new System.Drawing.Point(12, 13);
-            this.txtFile.Name = "txtFile";
-            this.txtFile.Size = new System.Drawing.Size(489, 20);
-            this.txtFile.TabIndex = 5;
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
             // 
-            // errorPanel
+            // validateToolStripMenuItem
             // 
-            this.errorPanel.Controls.Add(this.errTxt);
-            this.errorPanel.Controls.Add(this.invtxt2);
-            this.errorPanel.Controls.Add(this.invtxt1);
-            this.errorPanel.Location = new System.Drawing.Point(654, 82);
-            this.errorPanel.Name = "errorPanel";
-            this.errorPanel.Padding = new System.Windows.Forms.Padding(5);
-            this.errorPanel.Size = new System.Drawing.Size(515, 461);
-            this.errorPanel.TabIndex = 7;
+            this.validateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.crozzleToolStripMenuItem});
+            this.validateToolStripMenuItem.Name = "validateToolStripMenuItem";
+            this.validateToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.validateToolStripMenuItem.Text = "Validate";
+            this.validateToolStripMenuItem.Click += new System.EventHandler(this.validateToolStripMenuItem_Click);
             // 
-            // errTxt
+            // crozzleToolStripMenuItem
             // 
-            this.errTxt.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.errTxt.Location = new System.Drawing.Point(9, 92);
-            this.errTxt.Name = "errTxt";
-            this.errTxt.Size = new System.Drawing.Size(498, 361);
-            this.errTxt.TabIndex = 3;
-            this.errTxt.Text = "";
+            this.crozzleToolStripMenuItem.Name = "crozzleToolStripMenuItem";
+            this.crozzleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.crozzleToolStripMenuItem.Text = "Crozzle";
+            this.crozzleToolStripMenuItem.Click += new System.EventHandler(this.crozzleToolStripMenuItem_Click_1);
             // 
-            // invtxt2
+            // crozzleWebBrowser
             // 
-            this.invtxt2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.invtxt2.Location = new System.Drawing.Point(8, 51);
-            this.invtxt2.Name = "invtxt2";
-            this.invtxt2.Size = new System.Drawing.Size(498, 32);
-            this.invtxt2.TabIndex = 1;
+            this.crozzleWebBrowser.Location = new System.Drawing.Point(13, 91);
+            this.crozzleWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.crozzleWebBrowser.Name = "crozzleWebBrowser";
+            this.crozzleWebBrowser.Size = new System.Drawing.Size(619, 414);
+            this.crozzleWebBrowser.TabIndex = 9;
             // 
-            // invtxt1
+            // openFileDialog1
             // 
-            this.invtxt1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.invtxt1.Location = new System.Drawing.Point(9, 9);
-            this.invtxt1.Name = "invtxt1";
-            this.invtxt1.Size = new System.Drawing.Size(498, 32);
-            this.invtxt1.TabIndex = 0;
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
+            // 
+            // errorWebBrowser
+            // 
+            this.errorWebBrowser.Location = new System.Drawing.Point(658, 91);
+            this.errorWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.errorWebBrowser.Name = "errorWebBrowser";
+            this.errorWebBrowser.Size = new System.Drawing.Size(511, 414);
+            this.errorWebBrowser.TabIndex = 10;
             // 
             // FrmMenu
             // 
@@ -118,30 +119,30 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(1181, 555);
-            this.Controls.Add(this.errorPanel);
-            this.Controls.Add(this.txtFile);
-            this.Controls.Add(this.btnLoadFile);
-            this.Controls.Add(this.btnGetFile);
-            this.Controls.Add(this.boardPanel);
+            this.Controls.Add(this.errorWebBrowser);
+            this.Controls.Add(this.crozzleWebBrowser);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmMenu";
             this.Text = "Crozzle - Home";
-            this.errorPanel.ResumeLayout(false);
-            this.errorPanel.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Panel boardPanel;
-        private System.Windows.Forms.Button btnGetFile;
-        private System.Windows.Forms.Button btnLoadFile;
-        private System.Windows.Forms.TextBox txtFile;
-        private System.Windows.Forms.Panel errorPanel;
-        private System.Windows.Forms.TextBox invtxt1;
-        private System.Windows.Forms.TextBox invtxt2;
-        private System.Windows.Forms.RichTextBox errTxt;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openCrozzleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem validateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem crozzleToolStripMenuItem;
+        private System.Windows.Forms.WebBrowser crozzleWebBrowser;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.WebBrowser errorWebBrowser;
     }
 }
 
