@@ -47,9 +47,45 @@ namespace Crozzle_Project
             OpenCrozzleFile();
         }
 
+        private void btnOpenTask2Crozzle_Click(object sender, EventArgs e)
+        {
+            OpenCrozzleAss2();
+        }
+        
+
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
 
+        }
+
+        private void OpenCrozzleAss2()
+        {
+            
+
+            crozzleWebBrowser.DocumentText = "";            //area where the crozzle will be displayed
+            errorWebBrowser.DocumentText = "";              // area where the errors will be displayed
+
+            //process crozzle file
+            // Get configuration filename.
+
+            CrozzleTaskTwo config = new CrozzleTaskTwo(URLs.Task2Crozzle);
+            // string configurationFileName = GetConfigurationFileName(URLs.Task2Crozzle);
+
+            //validate configuration file.
+            Configuration aConfiguration = null;
+            Configuration.TryParseTaskTwo(config.ConfigurationURL, out aConfiguration);
+
+            // Parse wordlist file.
+            WordListTaskTwo wordList = new WordListTaskTwo(config.WordlistURL);
+            //WordList.TryParseTaskTwo(config.WordlistURL, aConfiguration, out wordList);
+           
+
+            // Parse crozzle file.
+            //Crozzle aCrozzle;
+            //Crozzle.TryParseTaskTwo(URLs.Task2Crozzle, aConfiguration, wordList, out aCrozzle);
+            //SIT323Crozzle = aCrozzle;
+
+            
         }
 
         private void OpenCrozzleFile()
@@ -139,7 +175,7 @@ namespace Crozzle_Project
 
         private string GetConfigurationFileName(string path)
         {
-            CrozzleFileItem aCrozzleFileItem = null;  //this will be the line in the text file stream is reading
+            CrozzleFileItem aCrozzleFileItem = null;  //this will be the line in the text file stream is reading        
 
             StreamReader fileIn = new StreamReader(path);
 
@@ -184,8 +220,7 @@ namespace Crozzle_Project
             else
                 return (aCrozzleFileItem.KeyValue.Value);
         }
-
-        
+       
 
         private void crozzleToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
@@ -204,5 +239,7 @@ namespace Crozzle_Project
             // Log crozzle errors.
             SIT323Crozzle.LogFileErrors(SIT323Crozzle.ErrorsTXT);
         }
+
+        
     }
 }

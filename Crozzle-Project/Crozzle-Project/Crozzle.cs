@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Net;
 
 namespace Crozzle_Project
 {
@@ -170,6 +171,141 @@ namespace Crozzle_Project
             // but now we need to create crozzle rows and crozzle columns that represent the crozzle.
             aCrozzle.createCrozzleRows(aCrozzle.WordDataList);
             aCrozzle.createCrozzleColumns(aCrozzle.WordDataList);
+
+            // Store validity.
+            aCrozzle.FileValid = Errors.Count == 0;
+            return (aCrozzle.FileValid);
+        }
+
+        public static Boolean TryParseTaskTwo(String path, Configuration aConfiguration, WordList wordList, out Crozzle aCrozzle)
+        {
+            Errors = new List<String>();
+            aCrozzle = new Crozzle(path, aConfiguration, wordList);
+
+            // Open file.
+            WebClient webClient = new WebClient();
+
+            // Open streams on this file.
+            Stream aStream = webClient.OpenRead(path);
+            StreamReader fileIn = new StreamReader(aStream);
+            
+            List<String> wordData = new List<string>();
+
+            // Validate file.
+            while (!fileIn.EndOfStream)
+            {
+                // Read a line.
+                String line = fileIn.ReadLine();
+
+                // Parse a crozzle file item.
+                CrozzleFileItem aCrozzleFileItem;
+                if (CrozzleFileItem.TryParse(line, out aCrozzleFileItem))
+                {
+                    //if (aCrozzleFileItem.IsConfigurationFile)
+                    //{
+                    //    // Get the configuration file name.
+                    //    String configurationPath = aCrozzleFileItem.KeyValue.Value;
+                    //    if (configurationPath == null)
+                    //    {
+                    //        Errors.Add(CrozzleFileErrors.ConfigurationFilenameMissing);
+                    //    }
+                    //    else
+                    //    {
+                    //        configurationPath = configurationPath.Trim();
+                    //        if (Validator.IsDelimited(configurationPath, StringDelimiters))
+                    //            configurationPath = configurationPath.Trim(StringDelimiters);
+
+                    //        if (!Path.IsPathRooted(configurationPath))
+                    //        {
+                    //            String directoryName = Path.GetDirectoryName(path);
+                    //            configurationPath = directoryName + @"\" + configurationPath;
+                    //        }
+
+                    //        aCrozzle.ConfigurationPath = configurationPath;
+                    //    }
+                    //}
+                    //else if (aCrozzleFileItem.IsWordListFile)
+                    //{
+                    //    // Get the word list file name.                       
+                    //    String wordListPath = aCrozzleFileItem.KeyValue.Value;
+                    //    if (wordListPath == null)
+                    //    {
+                    //        Errors.Add(CrozzleFileErrors.WordlistFilenameMissing);
+                    //    }
+                    //    else
+                    //    {
+                    //        wordListPath = wordListPath.Trim();
+                    //        if (Validator.IsDelimited(wordListPath, StringDelimiters))
+                    //            wordListPath = wordListPath.Trim(StringDelimiters);
+
+                    //        if (!Path.IsPathRooted(wordListPath))
+                    //        {
+                    //            String directoryName = Path.GetDirectoryName(path);
+                    //            wordListPath = directoryName + @"\" + wordListPath;
+                    //        }
+
+                    //        aCrozzle.WordListPath = wordListPath;
+                    //    }
+                    //}
+                    if (aCrozzleFileItem.IsRows)
+                    {
+                        // Get the number of rows.
+                        int rows;
+                        if (Validator.IsInt32(aCrozzleFileItem.KeyValue.Value.Trim(), out rows))
+                            aCrozzle.Rows = rows;
+                        else
+                            Errors.Add(String.Format(CrozzleFileErrors.RowError, aCrozzleFileItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                    }
+                    else if (aCrozzleFileItem.IsColumns)
+                    {
+                        // Get the number of columns.
+                        int columns;
+                        if (Validator.IsInt32(aCrozzleFileItem.KeyValue.Value.Trim(), out columns))
+                            aCrozzle.Columns = columns;
+                        else
+                            Errors.Add(String.Format(CrozzleFileErrors.ColumnError, aCrozzleFileItem.KeyValue.OriginalKeyValue, Validator.Errors[0]));
+                    }
+                    //else if (aCrozzleFileItem.IsRow)
+                    //{
+                    //    // Collect potential word data for a horizontal word.
+                    //    wordData.Add(aCrozzleFileItem.KeyValue.OriginalKeyValue);
+                    //}
+                    //else if (aCrozzleFileItem.IsColumn)
+                    //{
+                    //    // Collect potential word data for a vertical word.
+                    //    wordData.Add(aCrozzleFileItem.KeyValue.OriginalKeyValue);
+                    //}
+                }
+                else
+                    Errors.AddRange(CrozzleFileItem.Errors);
+            }
+
+            // Close files.
+            fileIn.Close();
+
+
+            //// Get potential word data list.
+            //WordDataList wordDataList;
+            //if (!WordDataList.TryParse(wordData, aCrozzle, out wordDataList))
+            //    Errors.AddRange(WordDataList.Errors);
+            //aCrozzle.WordDataList = wordDataList;
+
+
+            //// Validate file sections.
+            //// Check the configuration file name.
+            //if (aCrozzle.Configuration != null)
+            //    if (aCrozzle.Configuration.ConfigurationPath != aCrozzle.ConfigurationPath)
+            //        Errors.Add(String.Format(CrozzleFileErrors.ConfigurationFilenameError, aCrozzle.ConfigurationPath, aCrozzle.Configuration.ConfigurationFileName));
+
+            //// Check the word list file name.
+            //if (aCrozzle.WordList != null)
+            //    if (aCrozzle.WordList.WordlistPath != aCrozzle.WordListPath)
+            //        Errors.Add(String.Format(CrozzleFileErrors.WordlistFilenameError, aCrozzle.WordListPath, aCrozzle.WordList.WordlistFileName));
+
+            //// Raw word data of horizontal and vertical words were obtained when reading the crozzle file,
+            //// but now we need to create crozzle rows and crozzle columns that represent the crozzle.
+            //aCrozzle.createCrozzleRows(aCrozzle.WordDataList);
+            //aCrozzle.createCrozzleColumns(aCrozzle.WordDataList);
 
             // Store validity.
             aCrozzle.FileValid = Errors.Count == 0;

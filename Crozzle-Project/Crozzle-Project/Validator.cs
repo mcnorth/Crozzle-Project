@@ -72,6 +72,17 @@ namespace Crozzle_Project
             return (Errors.Count == 0);
         }
 
+        // Check that a string field is a regex such as "[a-zA-Z]{2,}" 
+        public static Boolean IsRegex(String name)
+        {
+            Errors = new List<String>();
+
+            if (name != "[a-zA-Z]{2,}")
+                Errors.Add(ValidatorErrors.FilenameError);
+
+            return (Errors.Count == 0);
+        }
+
         // Check that a string field is delimited by double quotes.
         public static Boolean IsDelimited(String field, Char[] delimiters)
         {

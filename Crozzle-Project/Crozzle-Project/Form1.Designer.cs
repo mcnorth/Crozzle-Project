@@ -38,6 +38,7 @@
             this.crozzleWebBrowser = new System.Windows.Forms.WebBrowser();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.errorWebBrowser = new System.Windows.Forms.WebBrowser();
+            this.btnOpenTask2Crozzle = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,14 +66,14 @@
             // openCrozzleToolStripMenuItem
             // 
             this.openCrozzleToolStripMenuItem.Name = "openCrozzleToolStripMenuItem";
-            this.openCrozzleToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.openCrozzleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openCrozzleToolStripMenuItem.Text = "Open Crozzle";
             this.openCrozzleToolStripMenuItem.Click += new System.EventHandler(this.openCrozzleToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // validateToolStripMenuItem
@@ -87,7 +88,7 @@
             // crozzleToolStripMenuItem
             // 
             this.crozzleToolStripMenuItem.Name = "crozzleToolStripMenuItem";
-            this.crozzleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.crozzleToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.crozzleToolStripMenuItem.Text = "Crozzle";
             this.crozzleToolStripMenuItem.Click += new System.EventHandler(this.crozzleToolStripMenuItem_Click_1);
             // 
@@ -112,6 +113,16 @@
             this.errorWebBrowser.Size = new System.Drawing.Size(511, 414);
             this.errorWebBrowser.TabIndex = 10;
             // 
+            // btnOpenTask2Crozzle
+            // 
+            this.btnOpenTask2Crozzle.Location = new System.Drawing.Point(13, 40);
+            this.btnOpenTask2Crozzle.Name = "btnOpenTask2Crozzle";
+            this.btnOpenTask2Crozzle.Size = new System.Drawing.Size(126, 31);
+            this.btnOpenTask2Crozzle.TabIndex = 11;
+            this.btnOpenTask2Crozzle.Text = "Open Task 2 Crozzle";
+            this.btnOpenTask2Crozzle.UseVisualStyleBackColor = true;
+            this.btnOpenTask2Crozzle.Click += new System.EventHandler(this.btnOpenTask2Crozzle_Click);
+            // 
             // FrmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -119,6 +130,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(1181, 555);
+            this.Controls.Add(this.btnOpenTask2Crozzle);
             this.Controls.Add(this.errorWebBrowser);
             this.Controls.Add(this.crozzleWebBrowser);
             this.Controls.Add(this.menuStrip1);
@@ -143,6 +155,7 @@
         private System.Windows.Forms.WebBrowser crozzleWebBrowser;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.WebBrowser errorWebBrowser;
+        private System.Windows.Forms.Button btnOpenTask2Crozzle;
     }
 }
 

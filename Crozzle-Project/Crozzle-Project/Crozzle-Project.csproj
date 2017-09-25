@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="CrozzleMap.cs" />
     <Compile Include="CrozzleSequences.cs" />
+    <Compile Include="CrozzleTaskTwo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +101,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>KeyValueErrors.resx</DependentUpon>
     </Compile>
+    <Compile Include="LetterTable.cs" />
     <Compile Include="Orientation.cs" />
     <Compile Include="OrientationErrors.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -108,6 +110,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="URLs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>URLs.resx</DependentUpon>
+    </Compile>
     <Compile Include="Validator.cs" />
     <Compile Include="ValidatorErrors.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,6 +134,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WordListErrors.resx</DependentUpon>
     </Compile>
+    <Compile Include="WordListTaskTwo.cs" />
+    <Compile Include="WordTable.cs" />
     <EmbeddedResource Include="ConfigurationErrors.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ConfigurationErrors.Designer.cs</LastGenOutput>
@@ -175,6 +184,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="URLs.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>URLs.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="ValidatorErrors.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ValidatorErrors.Designer.cs</LastGenOutput>

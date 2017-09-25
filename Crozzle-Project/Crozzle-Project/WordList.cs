@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Net;
 
 namespace Crozzle_Project
 {
@@ -14,6 +15,7 @@ namespace Crozzle_Project
         private static readonly Char[] WordSeparators = new Char[] { ',' };
 
         public static List<string> Errors { get; set; }
+        
 
         //properties
         public String WordlistPath { get; set; }
@@ -41,6 +43,54 @@ namespace Crozzle_Project
         public static Boolean TryParse(String path, Configuration aConfiguration, out WordList aWordList)
         {
             StreamReader fileIn = new StreamReader(path);
+
+            Errors = new List<String>();
+            aWordList = new WordList(path, aConfiguration);
+
+            // Split the original wordlist from the file.
+            aWordList.OriginalList = fileIn.ReadLine().Split(WordSeparators);
+
+            // Check each field in the wordlist.
+            int fieldNumber = 0;
+            foreach (String potentialWord in aWordList.OriginalList)
+            {
+                // Check that the field is not empty.
+                if (potentialWord.Length > 0)
+                {
+                    // Check that the field is alphabetic.
+                    if (Regex.IsMatch(potentialWord, Configuration.allowedCharacters))
+                        aWordList.Add(potentialWord);
+                    else
+                        Errors.Add(String.Format(WordListErrors.AlphabeticError, potentialWord, fieldNumber));
+                }
+                else
+                    Errors.Add(String.Format(WordListErrors.MissingWordError, fieldNumber));
+
+                fieldNumber++;
+            }
+
+            // Check the minimmum word limit.
+            if (aWordList.Count < aConfiguration.MinimumNumberOfUniqueWords)
+                Errors.Add(String.Format(WordListErrors.MinimumSizeError, aWordList.Count, aConfiguration.MinimumNumberOfUniqueWords));
+
+            // Check the maximum word limit.
+            if (aWordList.Count > aConfiguration.MaximumNumberOfUniqueWords)
+                Errors.Add(String.Format(WordListErrors.MaximumSizeError, aWordList.Count, aConfiguration.MaximumNumberOfUniqueWords));
+
+            aWordList.Valid = Errors.Count == 0;
+            return (aWordList.Valid);
+        }
+
+        
+
+        public static Boolean TryParseTaskTwo(String path, Configuration aConfiguration, out WordList aWordList)
+        {
+            WebClient webClient = new WebClient();
+
+            // Open streams on this file.
+            Stream aStream = webClient.OpenRead(path);
+            StreamReader fileIn = new StreamReader(aStream);
+            
 
             Errors = new List<String>();
             aWordList = new WordList(path, aConfiguration);

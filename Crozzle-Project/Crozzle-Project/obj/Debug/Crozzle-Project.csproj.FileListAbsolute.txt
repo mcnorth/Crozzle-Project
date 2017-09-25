@@ -19,3 +19,4 @@ D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.ValidatorErrors.resources
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.WordDataErrors.resources
 D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.WordListErrors.resources
+D:\Kellie Personal Docs\Repo\Crozzle-Project\Crozzle-Project\Crozzle-Project\obj\Debug\Crozzle_Project.URLs.resources

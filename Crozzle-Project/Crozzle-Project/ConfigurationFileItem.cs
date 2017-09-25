@@ -12,6 +12,8 @@ namespace Crozzle_Project
         //constants keys in the file
         const String NoConfigItem = "NO_CONFIG_ITEM";
         const String LogfileName = "LOGFILE_NAME";
+        const String RuntimeLimit = "RUNTIME_LIMIT";
+        const String WordRegexPattern = "WORD_REGEX_PATTERN";
 
         const String MinimumNumberOfUniqueWords = "MINIMUM_NUMBER_OF_UNIQUE_WORDS";
         const String MaximumNumberOfUniqueWords = "MAXIMUM_NUMBER_OF_UNIQUE_WORDS";
@@ -67,6 +69,16 @@ namespace Crozzle_Project
         public Boolean IsLogFile
         {
             get { return (Regex.IsMatch(Name, @"^" + LogfileName + @"$")); }
+        }
+
+        public Boolean IsRunTimeLimit
+        {
+            get { return (Regex.IsMatch(Name, @"^" + RuntimeLimit + @"$")); }
+        }
+
+        public Boolean IsWordRegexPattern
+        {
+            get { return (Regex.IsMatch(Name, @"^" + WordRegexPattern + @"$")); }
         }
 
         public Boolean IsMinimumNumberOfUniqueWords
@@ -230,6 +242,24 @@ namespace Crozzle_Project
             {
                 // Check for only 0 or more white spaces.
                 aConfigurationFileItem.Name = NoConfigItem;
+            }
+            else if (Regex.IsMatch(configurationFileItem, @"^" + RuntimeLimit + @".*"))
+            {
+                // Get the CrozzleHtmlStyle key-value pair.
+                KeyValue aKeyValue;
+                if (!KeyValue.TryParse(configurationFileItem, RuntimeLimit, out aKeyValue))
+                    Errors.AddRange(KeyValue.Errors);
+                aConfigurationFileItem.Name = RuntimeLimit;
+                aConfigurationFileItem.KeyValue = aKeyValue;
+            }
+            else if (Regex.IsMatch(configurationFileItem, @"^" + WordRegexPattern + @".*"))
+            {
+                // Get the CrozzleHtmlStyle key-value pair.
+                KeyValue aKeyValue;
+                if (!KeyValue.TryParse(configurationFileItem, WordRegexPattern, out aKeyValue))
+                    Errors.AddRange(KeyValue.Errors);
+                aConfigurationFileItem.Name = WordRegexPattern;
+                aConfigurationFileItem.KeyValue = aKeyValue;
             }
             else if (Regex.IsMatch(configurationFileItem, @"^" + LogfileName + @".*"))
             {
