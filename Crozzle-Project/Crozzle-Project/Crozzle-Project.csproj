@@ -103,6 +103,7 @@
       <DependentUpon>KeyValueErrors.resx</DependentUpon>
     </Compile>
     <Compile Include="LetterTable.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Orientation.cs" />
     <Compile Include="OrientationErrors.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -111,6 +112,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tree.cs" />
     <Compile Include="URLs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -129,6 +131,7 @@
       <DependentUpon>WordDataErrors.resx</DependentUpon>
     </Compile>
     <Compile Include="WordDataList.cs" />
+    <Compile Include="WordInGrid.cs" />
     <Compile Include="WordList.cs" />
     <Compile Include="WordListErrors.Designer.cs">
       <AutoGen>True</AutoGen>
