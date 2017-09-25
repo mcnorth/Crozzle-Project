@@ -372,3 +372,21 @@ error 3: code 11003: the number of times LE occurs is 5, but this is not within 
 error 4: code 11005: the number of groups of connected words is 3, but this is not within [2, 2]
 END PROCESSING CROZZLE:
 
+START PROCESSING FILE: Marking 1 Crozzle.txt
+END PROCESSING FILE: Marking 1 Crozzle.txt
+
+START PROCESSING FILE: Marking 1 Configuration.txt
+END PROCESSING FILE: Marking 1 Configuration.txt
+
+START PROCESSING FILE: Marking 1 Wordlist.txt
+END PROCESSING FILE: Marking 1 Wordlist.txt
+
+START PROCESSING FILE: Marking 1 Crozzle.txt
+END PROCESSING FILE: Marking 1 Crozzle.txt
+
+START PROCESSING FILE: Marking 1 Configuration.txt
+END PROCESSING FILE: Marking 1 Configuration.txt
+
+START PROCESSING FILE: Marking 1 Wordlist.txt
+END PROCESSING FILE: Marking 1 Wordlist.txt
+

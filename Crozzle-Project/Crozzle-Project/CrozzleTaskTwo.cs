@@ -19,12 +19,17 @@ namespace Crozzle_Project
 
         public string ConfigurationURL { get; set; }
         public string WordlistURL { get; set; }
+        public string Rows { get; set; }
+        public string Columns { get; set; }
 
         public CrozzleTaskTwo(string url)
         {
             URL = url;
             ConfigurationURL = GetURL("CONFIGURATION_FILE");
             WordlistURL = GetURL("WORDLIST_FILE");
+            Rows = GetURL("ROWS");
+            Columns = GetURL("COLUMNS");
+
         }
 
         private string GetURL(string keyword)

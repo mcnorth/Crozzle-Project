@@ -62,8 +62,8 @@ namespace Crozzle_Project
         {
             
 
-            crozzleWebBrowser.DocumentText = "";            //area where the crozzle will be displayed
-            errorWebBrowser.DocumentText = "";              // area where the errors will be displayed
+            //crozzleWebBrowser.DocumentText = "";            //area where the crozzle will be displayed
+            //errorWebBrowser.DocumentText = "";              // area where the errors will be displayed
 
             //process crozzle file
             // Get configuration filename.
@@ -78,14 +78,22 @@ namespace Crozzle_Project
             // Parse wordlist file.
             WordListTaskTwo wordList = new WordListTaskTwo(config.WordlistURL);
             //WordList.TryParseTaskTwo(config.WordlistURL, aConfiguration, out wordList);
-           
+
+            //char[,] grid = new char[Convert.ToInt16(config.Rows), Convert.ToInt16(config.Columns)];
+
+            CrozzleGrid aGrid = new CrozzleGrid(aConfiguration, wordList, config);
+
+            string res = aGrid.CreateGrid();
+
+            crozzleWebBrowser.DocumentText = res;
+            
 
             // Parse crozzle file.
             //Crozzle aCrozzle;
             //Crozzle.TryParseTaskTwo(URLs.Task2Crozzle, aConfiguration, wordList, out aCrozzle);
             //SIT323Crozzle = aCrozzle;
 
-            
+
         }
 
         private void OpenCrozzleFile()
@@ -240,6 +248,9 @@ namespace Crozzle_Project
             SIT323Crozzle.LogFileErrors(SIT323Crozzle.ErrorsTXT);
         }
 
-        
+        private void crozzleWebBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+
+        }
     }
 }
