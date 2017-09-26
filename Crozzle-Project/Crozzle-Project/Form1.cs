@@ -83,15 +83,15 @@ namespace Crozzle_Project
 
             CrozzleGrid aGrid = new CrozzleGrid(aConfiguration, wordList, config);
 
-            string res = aGrid.CreateGrid();
+            aGrid.AddRootWord();
+
+            aGrid.AddWordToGrid();
+
+            string res = aGrid.DisplayGrid();
+            //string res = aGrid.CreateGrid();
 
             crozzleWebBrowser.DocumentText = res;
-            
-
-            // Parse crozzle file.
-            //Crozzle aCrozzle;
-            //Crozzle.TryParseTaskTwo(URLs.Task2Crozzle, aConfiguration, wordList, out aCrozzle);
-            //SIT323Crozzle = aCrozzle;
+                      
 
 
         }

@@ -69,6 +69,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CoordinateErrors.resx</DependentUpon>
     </Compile>
+    <Compile Include="CordsLetterTable.cs" />
+    <Compile Include="CordsWordTable.cs" />
     <Compile Include="Crozzle.cs" />
     <Compile Include="CrozzleErrors.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -96,12 +98,14 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="IndexedDictionary.cs" />
     <Compile Include="KeyValue.cs" />
     <Compile Include="KeyValueErrors.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>KeyValueErrors.resx</DependentUpon>
     </Compile>
+    <Compile Include="LastWordEntered.cs" />
     <Compile Include="LetterTable.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Orientation.cs" />

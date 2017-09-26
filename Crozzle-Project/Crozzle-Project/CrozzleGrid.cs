@@ -13,22 +13,109 @@ namespace Crozzle_Project
         Configuration Config { get; set; }
         WordListTaskTwo WordList { get; set; }
         CrozzleTaskTwo RowsAndColumns { get; set; }
-
+        char[,] Grid { get; set; }
+        int Score { get; set; }
+        CordsWordTable LetterCordsForWordsInGrid { get; set; }
+        string RootWord { get; set; }
+        List<string> WordsInGrid { get; set; }
+        LastWordEntered LastwordEnter { get; set; }
 
         public CrozzleGrid(Configuration config, WordListTaskTwo wordlist, CrozzleTaskTwo rowsandcolumns)
         {
             Config = config;
             WordList = wordlist;
             RowsAndColumns = rowsandcolumns;
-            
+            Grid = CreateGrid();
+            Score = GetScore();
+            LetterCordsForWordsInGrid = new CordsWordTable();
+            RootWord = "";
+            WordsInGrid = new List<string>();
+            LastwordEnter = null;
         }
 
-        public string CreateGrid()
+        public int GetScore()
         {
-            char[,] grid = new char[Convert.ToInt16(RowsAndColumns.Rows), Convert.ToInt16(RowsAndColumns.Columns)];
+            if (Grid == null)
+            {
+                Score = 0;
+            }
 
+            return Score;
+        }
+
+        public char[,] AddWordToGrid()
+        {
             Dictionary<char, int> points = new Dictionary<char, int>();
+            IndexedDictionary<char, List<string>> intersectingWords = new IndexedDictionary<char, List<string>>();
+            List<string> wordsThatIntersectOnAChar = new List<string>();
+            char keyindic = 'A';
+            char[,] grid = Grid;            
+            string lastWordAdded = WordsInGrid.Last();
+
+            //put the points table into a dictionary
+            foreach (var val in Config.IntersectingPointsPerLetter)
+            {
+                points.Add(keyindic, val);
+                keyindic++;
+            }
+
+            Dictionary<char, List<string>> inwords = LastwordEnter.IntersectingWords;
+            Dictionary<char, Coordinate> coordsinExistingLetter = LastwordEnter.LetterCoordsForIntersectingWords;
+            int i = 0;
+            bool added = false;
+            int index = 0;
+
+            foreach (var chararcter in inwords)
+            {
+                intersectingWords.Add(chararcter.Key, chararcter.Value);
+            }
+
+            var characterActive = 
+            wordsThatIntersectOnAChar = intersectingWords[index] as List<string>;
+            char[] nameCharAraay = wordsThatIntersectOnAChar[index].ToCharArray();
+
+            while (i < nameCharAraay.Length && added == false)
+            {
+                var keyInDic = intersectingWords.GetKeyByIndex(index);
+                var letter = nameCharAraay[i];
+
+                if(letter == keyInDic)
+                {                   
+                    if(coordsinExistingLetter.ContainsKey(letter))
+                    {
+                        Score = points[letter] + Config.PointsPerWord;
+                        var cords = coordsinExistingLetter[letter];
+                        var indexOfLetterInIntersectingWord = i;
+                        var row = cords.Row;
+                        var startX = row - i;
+                        var startY = cords.Column;
+
+                        foreach (var c in nameCharAraay)
+                        {
+                            grid[startX, startY] = c;
+                            startX = startX + 1;
+                        }
+
+                        added = true;
+                    }
+                }
+                
+                i++;
+
+            }
+
+            
+
+            return Grid;
+        }
+
+        public char[,] AddRootWord()
+        {
             var dictList = WordList.Table;
+            Dictionary<string, int> bestWordDict = new Dictionary<string, int>();
+            Dictionary<char, int> points = new Dictionary<char, int>();
+            int scoreWords = 0;
+            CordsLetterTable cl = new CordsLetterTable();            
             char keyindic = 'A';
 
             //put the points table into a dictionary
@@ -38,19 +125,8 @@ namespace Crozzle_Project
                 keyindic++;
             }
 
-            int scoreWords = 0;
-
-            Dictionary<string, int> bestWordDict = new Dictionary<string, int>();
-            OrderedDictionary intersectingWords = new OrderedDictionary();
-            Dictionary<Coordinate, char> letterCordsforWordsInGrid = new Dictionary<Coordinate, char>(); 
-
-            //var longestWord = WordList.Table.Keys.OrderByDescending(s => s.Length)
-            //       .ThenBy(s => s)
-            //       .FirstOrDefault();
-
-            
-
-            foreach(var k in dictList)
+            //add names to dictionary with score of intersecting letters
+            foreach (var k in dictList)
             {
                 var letters = k.Value;
                 foreach (var l in letters)
@@ -65,151 +141,62 @@ namespace Crozzle_Project
                 scoreWords = 0;
             }
 
+            //find the highest scoring word
             string highestWord = bestWordDict.Max(s => s.Key);
 
-            //foreach(var key in dicList)
-
-            //add word to the centre of the grid
+            //create a char arrayu of the name
             char[] wordCharArray = highestWord.ToCharArray();
 
-            int xh = grid.GetLength(0) / 2;
-            int yh = (grid.GetLength(1) - highestWord.Length) / 2;
+            //set the cords of the grid so the word is placed in the centre
+            int x = Grid.GetLength(0) / 2;
+            int y = (Grid.GetLength(1) - highestWord.Length) / 2;
 
-            int x = grid.GetLength(0);
-            int y = grid.GetLength(1);
-
+            //add the word to the grid
             foreach (var letter in wordCharArray)
             {
-                grid[xh, yh] = letter;
-                Coordinate c = new Coordinate(xh, yh);
-                letterCordsforWordsInGrid.Add(c, letter);
-                yh = yh + 1;
+                Grid[x, y] = letter;
+                Coordinate c = new Coordinate(x, y);
+                cl.Add(c, letter);                
+                y = y + 1;
             }
-            WordInGrid n = new WordInGrid(highestWord, letterCordsforWordsInGrid);
 
-            if(dictList.ContainsKey(highestWord))
+            //add the name, letters and coords of each letter to the table
+            //add properties to the object
+            LetterCordsForWordsInGrid.Add(highestWord, cl);
+
+            Score = LetterCordsForWordsInGrid.Keys.Count * Config.PointsPerWord;
+
+            var objKey = WordList.Table[highestWord];
+            Dictionary<char, List<string>> objDict = new Dictionary<char, List<string>>();
+            
+            foreach(var key in objKey)
             {
-                var inndic = dictList[highestWord];
-                var keysOfInnerDic = inndic.Keys;
-
-                foreach(var key in inndic)
-                {
-                    intersectingWords.Add(key.Key, key.Value);
-                }
+                objDict.Add(key.Key, key.Value);
             }
 
-            int index = 0;          
-            List<string> listOfNames = intersectingWords[index] as List<string>;
-            char[] nameCharAraay = listOfNames[index].ToCharArray();
-            int a = 0;
-            bool added = false;
-
-            while(a < nameCharAraay.Length && added == false)
+            var cor = LetterCordsForWordsInGrid[highestWord];
+            Dictionary<Coordinate, char> objCor = new Dictionary<Coordinate, char>();
+            foreach(var res in cor)
             {
-                var let = nameCharAraay[a];
-                if (n.NameCharArrayCords.ContainsValue(let))
-                {
-                    var nameOfObj = n.NameCharArrayCords;
-                    var cords = nameOfObj.FirstOrDefault(b => b.Value == let).Key;
-                    var indexOfLetterInIntersectingWord = a;
-                    var row = cords.Row;
-                    var startX = row - a;
-                    var startY = cords.Column;
-
-                    foreach (var c in nameCharAraay)
-                    {
-                        grid[startX, startY] = c;
-                        startX = startX + 1;
-                    }
-
-                    added = true;
-                }
-
-                a++;
+                objCor.Add(res.Key, res.Value);
             }
 
-            //for (int i = 0; i < nameCharAraay.Length; i++)
-            //{
-            //    var let = nameCharAraay[i];
-            //    if (n.NameCharArrayCords.ContainsValue(let))
-            //    {
-            //        var nameOfObj = n.NameCharArrayCords;
-            //        var cords = nameOfObj.FirstOrDefault(b => b.Value == let).Key;
-            //        var indexOfLetterInIntersectingWord = i;
-            //        var row = cords.Row;
-            //        var startX = row - i;
-            //        var startY = cords.Column;
+            LastwordEnter = new LastWordEntered(highestWord, objDict, objCor);
 
-            //        foreach (var c in nameCharAraay)
-            //        {
-            //            grid[startX, startY] = c;
-            //            startX = startX + 1;
-            //        }
+            WordList.Table.Remove(highestWord);
 
-            //    }
+            RootWord = highestWord;
 
-            //    continue;
-            //}
-                //foreach (var letter in intersectingWords.Keys)
-                //{
-                //    var listOfnames = intersectingWords[letter];
+            WordsInGrid.Add(highestWord);
 
-                //    foreach (var name in listOfnames)
-                //    {
-                //        char[] nameCharAraay = name.ToCharArray();
+            return Grid;
 
-                //        for (int i = 0; i < nameCharAraay.Length; i++)
-                //        {
-                //            var let = nameCharAraay[i];
-                //            if (n.NameCharArrayCords.ContainsValue(let))
-                //            {
-                //                var nameOfObj = n.NameCharArrayCords;
-                //                var cords = nameOfObj.FirstOrDefault(b => b.Value == let).Key;
-                //                var indexOfLetterInIntersectingWord = i;
-                //                var row = cords.Row;
-                //                var startX = row - i;
-                //                var startY = cords.Column;
+        }
 
-                //                foreach (var c in nameCharAraay)
-                //                {
-                //                    grid[startX, startY] = c;
-                //                    startX = startX + 1;
-                //                }
-                //            }
-
-
-
-
-                //        }
-
-
-                //    }
-
-
-                //}
-
-
-
-
-
-
-
-
-
-                //for (int x = grid.GetLength(0) / 2; x < grid.GetLength(0); x++)
-                //{
-                //    for (int y = (grid.GetLength(1) - highestWord.Length) / 2; y < grid.GetLength(1); y++)
-                //    {
-                //        foreach (var letter in wordCharArray)
-                //        {
-                //            grid[x, y] = letter;
-                //        }
-
-
-                //    }
-                //}
-
-                String crozzleHTML = "";
+        public string DisplayGrid()
+        {
+            char[,] grid = Grid;
+            String crozzleHTML = "";
             String style = Config.Style;
 
             style += @"<style>
@@ -228,7 +215,7 @@ namespace Crozzle_Project
 
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
-                    if(grid[i,j] == 0)
+                    if (grid[i, j] == 0)
                     {
                         crozzleHTML += @"<td class=""empty""></td>";
                     }
@@ -240,29 +227,22 @@ namespace Crozzle_Project
                 crozzleHTML += @"</tr>";
             }
             crozzleHTML += @"</table>";
+
+            crozzleHTML += @"<p>Score = " + Score + @"</p>";
+
             crozzleHTML += @"</body></html>";
 
             return crozzleHTML;
+        }
+
+        public char[,] CreateGrid()
+        {
+            char[,] grid = new char[Convert.ToInt16(RowsAndColumns.Rows), Convert.ToInt16(RowsAndColumns.Columns)];
+
+            return grid;
 
         }
 
-        //public string ToStringHTML()
-        //{
-        //    String crozzleHTML = "";
-        //    String style = Config.Style;
-
-        //    style += @"<style>
-        //               .empty { background-color: " + Config.BGcolourEmptyTD + @"; }
-        //               .nonempty { background-color: " + Config.BGcolourNonEmptyTD + @"; }
-        //               </style>";
-
-        //    crozzleHTML += @"<!DOCTYPE html><html><head>";
-        //    crozzleHTML += style;
-        //    crozzleHTML += @"</head><body>";
-        //    crozzleHTML += @"<table>";
-
-        //    foreach(var val in )
-        //}
 
     }
 }
