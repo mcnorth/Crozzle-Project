@@ -14,6 +14,7 @@ namespace Crozzle_Project
         public Dictionary<char, Coordinate> LetterCoordsForIntersectingWords { get; set; }
         public int Row { get; set; }
         public int Col { get; set; }
+
         
 
         public LastWordEntered(string name, Dictionary<char, List<string>>intersectingwords, Dictionary<Coordinate, char> lettercords)

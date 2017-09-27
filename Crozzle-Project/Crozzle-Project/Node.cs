@@ -8,11 +8,11 @@ namespace Crozzle_Project
 {
     class Node
     {
-        public char[] Grid;
+        public CrozzleGrid Grid;
         public Node Left;
         public Node Right;
 
-        public Node(char[] grid)
+        public Node(CrozzleGrid grid)
         {
             Grid = grid;
             Left = null;

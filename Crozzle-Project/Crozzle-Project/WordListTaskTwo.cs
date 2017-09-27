@@ -27,6 +27,16 @@ namespace Crozzle_Project
 
             List<string> words = GetWords();
 
+            //List<string> words = new List<string>();
+            //words.Add("ANGELA");
+            //words.Add("JIMMY");
+            //words.Add("LARRY");
+            //words.Add("JACK");
+            //words.Add("JILL");
+            //words.Add("MARK");
+            //words.Add("AMY");
+
+
             foreach (string word in words)
             {
                 LetterTable letterTable = new LetterTable();
