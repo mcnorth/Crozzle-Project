@@ -69,6 +69,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CoordinateErrors.resx</DependentUpon>
     </Compile>
+    <Compile Include="CoordsPointer.cs" />
     <Compile Include="CordsLetterTable.cs" />
     <Compile Include="CordsWordTable.cs" />
     <Compile Include="Crozzle.cs" />
@@ -106,6 +107,7 @@
       <DependentUpon>KeyValueErrors.resx</DependentUpon>
     </Compile>
     <Compile Include="LastWordEntered.cs" />
+    <Compile Include="LetterCheck.cs" />
     <Compile Include="LetterTable.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Orientation.cs" />

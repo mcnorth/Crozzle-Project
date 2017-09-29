@@ -92,7 +92,7 @@ namespace Crozzle_Project
                 aGrid.AddWordToGrid();
                 aGrid.AddWordToGrid();
 
-                string res = aGrid.DisplayGrid();
+                string res = aGrid.DisplayGrid(aGrid);
                 //string res = aGrid.CreateGrid();
 
                 crozzleWebBrowser.DocumentText = res;
