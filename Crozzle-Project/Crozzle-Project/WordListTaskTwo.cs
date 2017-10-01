@@ -20,6 +20,12 @@ namespace Crozzle_Project
             PopulateTable();
         }
 
+        public WordListTaskTwo(WordListTaskTwo copy)
+        {
+            this.URL = copy.URL;
+            PopulateTable();
+        }
+
         private void PopulateTable()
         {
             //create dict

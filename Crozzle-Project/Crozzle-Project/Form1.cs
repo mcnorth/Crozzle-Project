@@ -12,25 +12,37 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Web.UI.HtmlControls;
 using System.Web.UI;
-
+using System.Timers;
 
 namespace Crozzle_Project
 {
     public partial class FrmMenu : Form
     {
         private System.Timers.Timer aTimer;
+        //private System.Windows.Forms.Timer aTimer;
+        private List<CrozzleGrid> ListOfGrids = new List<CrozzleGrid>();
 
         public FrmMenu()
         {
             InitializeComponent();
+            //aTimer = new System.Timers.Timer(300000);
             aTimer = new System.Timers.Timer(300000);
-            aTimer.Elapsed += ATimer_Elapsed;
+            //aTimer = new Timer();
+            //aTimer.Interval = 2000;
+            //aTimer.Tick += ATimer_Tick;
+            aTimer.Elapsed += new ElapsedEventHandler(ATimer_Elapsed);
             
         }
 
-        private void ATimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void ATimer_Tick(object sender, EventArgs e)
         {
             aTimer.Stop();
+            aTimer.Enabled = false;
+        }
+
+        private void ATimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {            
+            aTimer.Enabled = false;
         }
 
         private Crozzle SIT323Crozzle { get; set; }
@@ -62,64 +74,102 @@ namespace Crozzle_Project
         }
 
         private void OpenCrozzleAss2()
-        {
-           //aTimer.Start();
+        {           
+            aTimer.Enabled = true;
+
             
-            //while (aTimer.Enabled)
+
+            CrozzleTaskTwo config = new CrozzleTaskTwo(URLs.Task2Crozzle);
+            // string configurationFileName = GetConfigurationFileName(URLs.Task2Crozzle);
+
+            //validate configuration file.
+            Configuration aConfiguration = null;
+            Configuration.TryParseTaskTwo(config.ConfigurationURL, out aConfiguration);
+
+            // Parse wordlist file.
+            WordListTaskTwo wordList = new WordListTaskTwo(config.WordlistURL);
+            
+            //WordList.TryParseTaskTwo(config.WordlistURL, aConfiguration, out wordList);
+
+            //char[,] grid = new char[Convert.ToInt16(config.Rows), Convert.ToInt16(config.Columns)];
+
+            CrozzleGrid aGrid = new CrozzleGrid(aConfiguration, wordList, config);
+
+            aGrid.AddRootWord();
+            //aGrid.AddFirstWord();
+
+            //Tree aTree = new Tree(aGrid);
+            //aGrid.AddNameToGrid();
+
+            //while (aTimer.Enabled = true || aGrid.GetWordlistCount() > 0)
             //{
-                CrozzleTaskTwo config = new CrozzleTaskTwo(URLs.Task2Crozzle);
-                // string configurationFileName = GetConfigurationFileName(URLs.Task2Crozzle);
 
-                //validate configuration file.
-                Configuration aConfiguration = null;
-                Configuration.TryParseTaskTwo(config.ConfigurationURL, out aConfiguration);
-
-                // Parse wordlist file.
-                WordListTaskTwo wordList = new WordListTaskTwo(config.WordlistURL);
-                //WordList.TryParseTaskTwo(config.WordlistURL, aConfiguration, out wordList);
-
-                //char[,] grid = new char[Convert.ToInt16(config.Rows), Convert.ToInt16(config.Columns)];
-
-                CrozzleGrid aGrid = new CrozzleGrid(aConfiguration, wordList, config);
-
-                aGrid.AddRootWord();
-                Tree aTree = new Tree(aGrid);
-
-                 //Recursive(aGrid, aTimer, aTree);
-                aGrid.AddWordToGrid();
-                //aTree.Add(aGrid);
-                aGrid.AddWordToGrid();
-                aGrid.AddWordToGrid();
-                aGrid.AddWordToGrid();
-
-                string res = aGrid.DisplayGrid(aGrid);
-                //string res = aGrid.CreateGrid();
-
-                crozzleWebBrowser.DocumentText = res;
             //}
 
+           Recursive(aGrid, wordList);
+
+            
+            //aGrid.AddWordToGrid();
+            //aTree.Add(aGrid);
+            //aGrid.AddWordToGrid();
+            //aGrid.AddWordToGrid();
+            //aGrid.AddWordToGrid();
+            //aGrid.AddWordToGrid();
+
             
 
-            //string res = aGrid.DisplayGrid();
+            //ListOfGrids.Sort((x, y) => x.Score.CompareTo(y.OrderDate));
+
+            //ListOfGrids.Sort()
+
+            
+            var maxObject = ListOfGrids.OrderByDescending(item => item.Score).First();
+
+            string res = aGrid.DisplayGrid(maxObject);
+            //string res = aGrid.CreateGrid();
+
+            crozzleWebBrowser.DocumentText = res;
+
+            //string res = aGrid.DisplayGrid(aGrid);
             ////string res = aGrid.CreateGrid();
 
             //crozzleWebBrowser.DocumentText = res;
 
+
         }
 
-        private CrozzleGrid Recursive(CrozzleGrid grid, System.Timers.Timer timer, Tree tree)
+        private CrozzleGrid Recursive(CrozzleGrid aGrid, WordListTaskTwo wordList)
         {
-            if (timer.Enabled == false)
+            while (aTimer.Enabled == true)
             {
-                return grid;
+                if (aGrid.GetWordlistCount() == 0)
+                {
+                    return aGrid;
+                }
+                if (aGrid.GetRootWord() == "")
+                {
+                    aGrid.AddRootWord();
+                    aGrid.AddWordToGrid();
+                }
+                else
+                {
+                    aGrid.AddWordToGrid();
+                }
+                if (aGrid.GetCounter() == 0)
+                {
+
+                    ListOfGrids.Add(aGrid); //not copying the obj, everytime it adds a new grid it overides the reference in the list
+                    WordListTaskTwo freshWordlist = new WordListTaskTwo(wordList);
+                    CrozzleGrid bGrid = new CrozzleGrid(aGrid, freshWordlist);
+
+                    return Recursive(bGrid, freshWordlist);
+                }
+
+                return Recursive(aGrid, wordList);
             }
-            grid.AddWordToGrid();
-            tree.Add(grid);
 
-            return Recursive(grid, timer, tree);
+            return aGrid;
         }
-
-
 
         private void OpenCrozzleFile()
         {
@@ -194,7 +244,7 @@ namespace Crozzle_Project
                     crozzleToolStripMenuItem.Enabled = true;
 
                 crozzleWebBrowser.DocumentText = SIT323Crozzle.ToStringHTML();
-                errorWebBrowser.DocumentText = 
+                errorWebBrowser.DocumentText =
                     SIT323Crozzle.FileErrorsHTML +
                     SIT323Crozzle.Configuration.FileErrorsHTML +
                     SIT323Crozzle.WordList.FileErrorsHTML;

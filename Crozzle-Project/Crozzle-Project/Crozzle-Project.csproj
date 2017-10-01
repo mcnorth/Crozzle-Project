@@ -107,7 +107,9 @@
       <DependentUpon>KeyValueErrors.resx</DependentUpon>
     </Compile>
     <Compile Include="LastWordEntered.cs" />
+    <Compile Include="LetterAttributes.cs" />
     <Compile Include="LetterCheck.cs" />
+    <Compile Include="LettersInName.cs" />
     <Compile Include="LetterTable.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Orientation.cs" />
@@ -130,6 +132,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ValidatorErrors.resx</DependentUpon>
     </Compile>
+    <Compile Include="Word.cs" />
     <Compile Include="WordData.cs" />
     <Compile Include="WordDataErrors.Designer.cs">
       <AutoGen>True</AutoGen>

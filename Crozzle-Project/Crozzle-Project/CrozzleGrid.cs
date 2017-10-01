@@ -14,19 +14,21 @@ namespace Crozzle_Project
         WordListTaskTwo WordList { get; set; }
         CrozzleTaskTwo RowsAndColumns { get; set; }
         char[,] Grid { get; set; }
-        int Score { get; set; }
+        public int Score { get; set; }
         CordsWordTable LetterCordsForWordsInGrid { get; set; }
         string RootWord { get; set; }
         List<string> WordsInGrid { get; set; }
         int index { get; set; }
         List<LastWordEntered> WordsInserted { get; set; }
+        List<Word> WordsInsertedInGrid { get; set; }
         int Counter { get; set; }
         LetterCheck lett { get; set; }
+        WordTable WordListInUse { get; set; }
+        List<string> PreviousRootWords { get; set; }
+        List<string> NamesList { get; set; }
+
+        static Random rnd = new Random();
         
-        public CrozzleGrid Copy()
-        {
-            return (CrozzleGrid)this.MemberwiseClone();
-        }
 
         public CrozzleGrid(Configuration config, WordListTaskTwo wordlist, CrozzleTaskTwo rowsandcolumns)
         {
@@ -37,12 +39,40 @@ namespace Crozzle_Project
             Score = GetScore();
             LetterCordsForWordsInGrid = new CordsWordTable();
             RootWord = "";
+            PreviousRootWords = new List<string>();
             WordsInGrid = new List<string>();
             WordsInserted = new List<LastWordEntered>();
+            WordsInsertedInGrid = new List<Word>();
             index = 0;
             Counter = 0;
+            WordListInUse = WordList.Table;
+            NamesList = new List<string>();
+        }
 
-            
+        public CrozzleGrid(CrozzleGrid copy, WordListTaskTwo wordCopy)
+        {
+            this.Config = copy.Config;
+            this.WordList = wordCopy; //this needs to be a fresh wordlist minus the rootword in the previous grids
+            this.RowsAndColumns = copy.RowsAndColumns;
+            this.Grid = CreateGrid();
+            this.Score = GetScore();
+            this.LetterCordsForWordsInGrid = new CordsWordTable();
+            this.RootWord = "";
+            this.WordsInGrid = new List<string>();
+            this.WordsInserted = new List<LastWordEntered>();
+            this.WordsInsertedInGrid = new List<Word>();
+            this.index = 0;
+            this.Counter = 0;
+            this.WordListInUse = WordList.Table;
+            this.PreviousRootWords = copy.PreviousRootWords;
+            this.NamesList = new List<string>();
+
+        }
+
+
+        public string GetRootWord()
+        {
+            return RootWord;
         }
 
         public int GetScore()
@@ -55,496 +85,17 @@ namespace Crozzle_Project
             return Score;
         }
 
-        public char[,] AddWordsToMultipleInGrid()
+        public int GetCounter()
         {
-            List<LastWordEntered> copyWordsInserted = WordsInserted.ToList();
-            List<LastWordEntered> removeWordsInserted = new List<LastWordEntered>();
-
-            foreach (var entry in copyWordsInserted)
-            {
-                Counter = 0;
-                Dictionary<char, int> points = new Dictionary<char, int>();
-                IndexedDictionary<char, List<string>> intersectingWords = new IndexedDictionary<char, List<string>>();
-                List<string> wordsThatIntersectOnAChar = new List<string>();
-                char keyindic = 'A';
-                char[,] grid = Grid;
-                string lastWordAdded = WordsInGrid.Last();
-                CordsLetterTable cl = new CordsLetterTable();
-                IndexOutOfRangeException outOfBounds = new IndexOutOfRangeException();
-
-                //put the points table into a dictionary
-                foreach (var val in Config.IntersectingPointsPerLetter)
-                {
-                    points.Add(keyindic, val);
-                    keyindic++;
-                }
-
-                //var lastWord = WordsInserted.Find(w => w.Name == lastWordAdded);
-                Dictionary<char, List<string>> inwords = entry.IntersectingWords;
-                Dictionary<char, Coordinate> coordsinExistingLetter = entry.LetterCoordsForIntersectingWords;
-                int i;
-                bool added = false;
-                bool valid = true;
-                bool inwordsFinished = false;
-                var Name = "";
-                var aName = "";
-
-                for (i = 0; i < inwords.Count; i++)
-                {
-                    if (added == false)
-                    {
-                        var letterInExistingWord = inwords.ElementAt(i).Key;
-                        wordsThatIntersectOnAChar = inwords.ElementAt(i).Value;
-
-                        foreach (var aWord in wordsThatIntersectOnAChar)
-                        {
-                            aName = aWord;
-                            List<char> aNameCharList = aName.ToList();
-                            List<char> charThatDontMatchExistingCharInGrid = new List<char>();
-
-                            foreach (var letter in aNameCharList)
-                            {
-                                if (valid == true)
-                                {
-                                    int iterationsLeftOrAbove = aNameCharList.IndexOf(letter);
-                                    int lengthOfWord = aNameCharList.Count;
-                                    int iterationsRightOrBelow = lengthOfWord - iterationsLeftOrAbove;
-
-                                    if (letter == letterInExistingWord)
-                                    {
-                                        var cords = coordsinExistingLetter[letter]; //get the coords of the letter in the existing word so we know where to start
-                                        int LeftOfLetter = cords.Column - 1;  //movement points 
-                                        int RightOfLetter = cords.Column + 1;
-                                        int AboveLetter = cords.Row - 1;
-                                        int BelowLetter = cords.Row + 1;
-
-                                        //check if word to be inserted is a horizontal word, also lets you know if the existing word in the grid is vertical
-                                        if (Grid[cords.Row, LeftOfLetter] == '\0' && Grid[cords.Row, RightOfLetter] == '\0' && cords.Row < Grid.GetUpperBound(0) && RightOfLetter < Grid.GetUpperBound(1) && RightOfLetter > 0 && cords.Row > 0)
-                                        {
-                                            //check the grid for empty tiles and space for the word
-                                            if (iterationsLeftOrAbove == 0) //check if the intersecting letter in the word to be added is at the start
-                                            {
-                                                //check right of letter the letter
-                                                for (int x = 0; x < iterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
-                                                {
-
-                                                    if (Grid[cords.Row, RightOfLetter] == '\0' && cords.Row < Grid.GetUpperBound(0) && RightOfLetter < Grid.GetUpperBound(1) && RightOfLetter >= 0 && cords.Row >= 0 && Grid[AboveLetter, RightOfLetter] == '\0' && Grid[BelowLetter, RightOfLetter] == '\0' && AboveLetter < Grid.GetUpperBound(0) && BelowLetter < Grid.GetUpperBound(0) && AboveLetter >= 0 && BelowLetter >= 0)
-                                                    {
-                                                        valid = true;
-                                                        RightOfLetter++;   //goin right so plus the index by 1                                                
-                                                        continue;
-                                                    }
-                                                    else
-                                                    {
-                                                        valid = false;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (valid == true)
-                                                {
-                                                    var startX = cords.Row;
-                                                    var startY = cords.Column - iterationsLeftOrAbove;
-
-                                                    if (WordsInGrid.Contains(aName))
-                                                    {
-                                                        valid = false;
-
-                                                    }
-                                                    else
-                                                    {
-
-                                                        foreach (var c in aNameCharList)
-                                                        {
-                                                            if (startX < 0 || startY < 0)
-                                                            {
-                                                                valid = false;
-                                                            }
-                                                            else
-                                                            {
-                                                                grid[startX, startY] = c;
-                                                                Coordinate co = new Coordinate(startX, startY);
-                                                                cl.Add(co, c);
-                                                                startY = startY + 1;
-                                                            }
-
-                                                        }
-
-                                                        Score = Score + points[letter] + Config.PointsPerWord;  //caluclate the score
-                                                        added = true;
-                                                        break;
-                                                    }
-                                                }
-
-                                            }
-                                            else //check both right and left
-                                            {
-                                                //check right  of letter the letter
-                                                for (int x = 0; x < iterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
-                                                {
-
-                                                    if (Grid[cords.Row, RightOfLetter] == '\0' && cords.Row < Grid.GetUpperBound(0) && RightOfLetter < Grid.GetUpperBound(1) && RightOfLetter >= 0 && cords.Row >= 0 && Grid[AboveLetter, RightOfLetter] == '\0' && Grid[BelowLetter, RightOfLetter] == '\0' && AboveLetter < Grid.GetUpperBound(0) && BelowLetter < Grid.GetUpperBound(0) && AboveLetter >= 0 && BelowLetter >= 0)
-                                                    {
-                                                        valid = true;
-                                                        RightOfLetter++;   //goin right so plus the index by 1
-                                                        continue;
-                                                    }
-                                                    else
-                                                    {
-                                                        valid = false;
-                                                        break;
-                                                    }
-                                                }
-
-                                                //check left of letter
-                                                for (int x = 0; x < iterationsLeftOrAbove + 1; x++) //add an extra move to the left for white space around the letter
-                                                {
-                                                    if (Grid[cords.Row, LeftOfLetter] == '\0' && cords.Row < Grid.GetUpperBound(0) && LeftOfLetter < Grid.GetUpperBound(1) && LeftOfLetter >= 0 && cords.Row >= 0 && Grid[AboveLetter, LeftOfLetter] == '\0' && Grid[BelowLetter, LeftOfLetter] == '\0' && AboveLetter < Grid.GetUpperBound(0) && BelowLetter < Grid.GetUpperBound(0) && AboveLetter >= 0 && BelowLetter >= 0)
-                                                    {
-                                                        valid = true;
-                                                        LeftOfLetter--;   //goin left so minus the index by 1
-                                                        continue;
-                                                    }
-                                                    else
-                                                    {
-                                                        valid = false;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (valid == true)
-                                                {
-                                                    var startX = cords.Row;
-                                                    var startY = cords.Column - iterationsLeftOrAbove;
-
-                                                    if (WordsInGrid.Contains(aName))
-                                                    {
-                                                        valid = false;
-                                                    }
-                                                    else
-                                                    {
-
-                                                        foreach (var c in aNameCharList)
-                                                        {
-                                                            if (startX < 0 || startY < 0)
-                                                            {
-                                                                valid = false;
-                                                            }
-                                                            else
-                                                            {
-                                                                grid[startX, startY] = c;
-                                                                Coordinate co = new Coordinate(startX, startY);
-                                                                cl.Add(co, c);
-                                                                startY = startY + 1;
-                                                            }
-
-                                                        }
-
-                                                        Score = Score + points[letter] + Config.PointsPerWord;  //caluclate the score
-                                                        added = true;
-                                                        break;
-                                                    }
-                                                }
-
-                                            }
-                                        }
-                                        //check if word to be inserted is a vertical word, also lets you know if the existing word in the grid is horizontal
-                                        else if (Grid[AboveLetter, cords.Column] == '\0' && Grid[BelowLetter, cords.Column] == '\0' && BelowLetter < Grid.GetUpperBound(0) && cords.Column < Grid.GetUpperBound(1) && BelowLetter > 0 && cords.Column > 0)
-                                        {
-                                            //check the grid for empty tiles and space for the word
-                                            if (iterationsLeftOrAbove == 0) //check if the intersecting letter in the word to be added is at the start
-                                            {
-                                                //check below of the letter
-                                                for (int x = 0; x < iterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
-                                                {
-                                                    if (Grid[BelowLetter, cords.Column] == '\0' && BelowLetter < Grid.GetUpperBound(0) && cords.Column < Grid.GetUpperBound(1) && BelowLetter > 0 && cords.Column > 0 && Grid[BelowLetter, LeftOfLetter] == '\0' && Grid[BelowLetter, RightOfLetter] == '\0' && RightOfLetter < Grid.GetUpperBound(1) && LeftOfLetter < Grid.GetUpperBound(0) && LeftOfLetter > 0 && RightOfLetter > 0)
-                                                    {
-                                                        valid = true;
-                                                        BelowLetter++;   //goin down so plus the index by 1
-                                                        continue;
-                                                    }
-                                                    else
-                                                    {
-                                                        valid = false;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (valid == true)
-                                                {
-                                                    var startX = cords.Row - iterationsLeftOrAbove;
-                                                    var startY = cords.Column;
-                                                    if (WordsInGrid.Contains(aName))
-                                                    {
-                                                        valid = false;
-                                                    }
-                                                    else
-                                                    {
-                                                        foreach (var c in aNameCharList)
-                                                        {
-                                                            if (startX < 0 || startY < 0)
-                                                            {
-                                                                valid = false;
-                                                            }
-                                                            else
-                                                            {
-                                                                grid[startX, startY] = c;
-                                                                Coordinate co = new Coordinate(startX, startY);
-                                                                cl.Add(co, c);
-                                                                startX = startX + 1;
-                                                            }
-
-                                                        }
-
-                                                        Score = Score + points[letter] + Config.PointsPerWord;  //caluclate the score
-                                                        added = true;
-                                                        break;
-                                                    }
-                                                }
-
-
-
-                                            }
-                                            else //check both up and down
-                                            {
-                                                //check below of the letter
-                                                for (int x = 0; x < iterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
-                                                {
-                                                    if (Grid[BelowLetter, cords.Column] == '\0' && BelowLetter < Grid.GetUpperBound(0) && cords.Column < Grid.GetUpperBound(1) && BelowLetter > 0 && cords.Column > 0 && Grid[BelowLetter, LeftOfLetter] == '\0' && Grid[BelowLetter, RightOfLetter] == '\0' && RightOfLetter < Grid.GetUpperBound(1) && LeftOfLetter < Grid.GetUpperBound(0) && LeftOfLetter > 0 && RightOfLetter > 0)
-                                                    {
-                                                        valid = true;
-                                                        BelowLetter++;   //goin down so plus the index by 1
-                                                        continue;
-                                                    }
-                                                    else
-                                                    {
-                                                        valid = false;
-                                                        break;
-                                                    }
-                                                }
-
-                                                //check above of the letter
-                                                for (int x = 0; x < iterationsLeftOrAbove + 1; x++) //add an extra move to the left for white space around the letter
-                                                {
-                                                    if (Grid[AboveLetter, cords.Column] == '\0' && AboveLetter < Grid.GetUpperBound(0) && cords.Column < Grid.GetUpperBound(1) && AboveLetter > 0 && cords.Column > 0 && Grid[AboveLetter, LeftOfLetter] == '\0' && Grid[AboveLetter, RightOfLetter] == '\0' && RightOfLetter < Grid.GetUpperBound(1) && LeftOfLetter < Grid.GetUpperBound(0) && LeftOfLetter > 0 && RightOfLetter > 0)
-                                                    {
-                                                        valid = true;
-                                                        AboveLetter--;   //goin up so minus the index by 1
-                                                        continue;
-                                                    }
-                                                    else
-                                                    {
-                                                        valid = false;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (valid == true)
-                                                {
-                                                    var startX = cords.Row - iterationsLeftOrAbove;
-                                                    var startY = cords.Column;
-                                                    if (WordsInGrid.Contains(aName))
-                                                    {
-                                                        valid = false;
-                                                    }
-                                                    else
-                                                    {
-                                                        foreach (var c in aNameCharList)
-                                                        {
-                                                            if (startX < 0 || startY < 0)
-                                                            {
-                                                                valid = false;
-                                                            }
-                                                            else
-                                                            {
-                                                                grid[startX, startY] = c;
-                                                                Coordinate co = new Coordinate(startX, startY);
-                                                                cl.Add(co, c);
-                                                                startX = startX + 1;
-                                                            }
-
-                                                        }
-
-                                                        Score = Score + points[letter] + Config.PointsPerWord;  //caluclate the score
-                                                        added = true;
-                                                        break;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    wordsThatIntersectOnAChar.Remove(Name);
-                                                    break;
-                                                }
-
-                                            }
-
-
-                                        }
-                                        else
-                                        {
-                                            charThatDontMatchExistingCharInGrid.Add(letter);
-
-                                            if (charThatDontMatchExistingCharInGrid.Count == aNameCharList.Count)
-                                            {
-                                                wordsThatIntersectOnAChar.Remove(Name);
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                continue;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        charThatDontMatchExistingCharInGrid.Add(letter);
-
-                                        if (charThatDontMatchExistingCharInGrid.Count == aNameCharList.Count)
-                                        {
-                                            wordsThatIntersectOnAChar.Remove(Name);
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    wordsThatIntersectOnAChar.Remove(Name);
-                                    break;
-                                }
-
-                            }
-                        }
-                        
-                    }
-                    else
-                    {
-                        //add the name, letters and coords of each letter to the table
-                        //add properties to the object
-                        LetterCordsForWordsInGrid.Add(aName, cl);
-                        i--;
-                        var objKey = WordList.Table[aName];
-                        Dictionary<char, List<string>> objDict = new Dictionary<char, List<string>>();
-
-                        foreach (var key in objKey)
-                        {
-                            objDict.Add(key.Key, key.Value);
-                        }
-
-                        var cor = LetterCordsForWordsInGrid[aName];
-                        Dictionary<Coordinate, char> objCor = new Dictionary<Coordinate, char>();
-                        foreach (var res in cor)
-                        {
-                            objCor.Add(res.Key, res.Value);
-                        }
-
-                        LastWordEntered nameWord = new LastWordEntered(aName, objDict, objCor);
-
-                        WordsInserted.Add(nameWord);
-
-                        WordList.Table.Remove(aName);
-
-                        WordsInGrid.Add(aName);
-
-                        wordsThatIntersectOnAChar.Remove(aName);
-
-                        Counter++;
-
-                        added = false;
-                    }
-
-                }
-
-                
-                
-                
-            }
-           
-            return Grid;
+            return Counter;
         }
 
-        //public char[,] AddWordsToOneInGrid()
-        //{
+        public int GetWordlistCount()
+        {
+            return WordList.Table.Count;
+        }
 
-        //    Counter = 0;
-        //    Dictionary<char, int> points = new Dictionary<char, int>();
-        //    IndexedDictionary<char, List<string>> intersectingWords = new IndexedDictionary<char, List<string>>();
-        //    List<string> wordsThatIntersectOnAChar = new List<string>();
-        //    char keyindic = 'A';
-        //    char[,] grid = Grid;
-        //    string lastWordAdded = WordsInGrid.Last();  //delete this if works
-        //    CordsLetterTable cl = new CordsLetterTable();
-        //    IndexOutOfRangeException outOfBounds = new IndexOutOfRangeException();
-
-        //    //put the points table into a dictionary
-        //    foreach (var val in Config.IntersectingPointsPerLetter)
-        //    {
-        //        points.Add(keyindic, val);
-        //        keyindic++;
-        //    }
-
-            
-        //    var lastWord = WordsInserted.Find(w => w.Name == lastWordAdded); //delete this 
-        //    Dictionary<char, List<string>> inwords = lastWord.IntersectingWords;
-        //    Dictionary<char, Coordinate> coordsinExistingLetter = lastWord.LetterCoordsForIntersectingWords;
-        //    int i;
-            
-
-        //    for (i = 0; i < inwords.Count; i++)
-        //    {
-        //        var letterInExistingWord = inwords.ElementAt(i).Key;
-        //        wordsThatIntersectOnAChar = inwords.ElementAt(i).Value;
-
-        //        CheckNames(wordsThatIntersectOnAChar, letterInExistingWord, cl, points);
-
-        //        if (lett.Added == false)
-        //        {
-        //            continue;
-                   
-        //        }
-        //        else
-        //        {
-        //            //add the name, letters and coords of each letter to the table
-        //            //add properties to the object
-        //            LetterCordsForWordsInGrid.Add(lett.Name, cl);
-
-        //            var objKey = WordList.Table[lett.Name];
-        //            Dictionary<char, List<string>> objDict = new Dictionary<char, List<string>>();
-
-        //            foreach (var key in objKey)
-        //            {
-        //                objDict.Add(key.Key, key.Value);
-        //            }
-
-        //            var cor = LetterCordsForWordsInGrid[lett.Name];
-        //            Dictionary<Coordinate, char> objCor = new Dictionary<Coordinate, char>();
-        //            foreach (var res in cor)
-        //            {
-        //                objCor.Add(res.Key, res.Value);
-        //            }
-
-        //            LastWordEntered nameWord = new LastWordEntered(lett.Name, objDict, objCor);
-
-        //            WordsInserted.Add(nameWord);
-
-        //            WordList.Table.Remove(lett.Name);
-
-        //            WordsInGrid.Add(lett.Name);
-
-        //            wordsThatIntersectOnAChar.Remove(lett.Name);
-
-        //            Counter++;
-                    
-        //        }
-
-        //    }
-
-        //    WordsInserted.Remove(lastWord);
-        //    return Grid;
-        //}
+        
 
         public LetterCheck CheckNames(List<string> names, char letterInExistingWord, Dictionary<char, int> points, LastWordEntered entry, string testName, List<string> namesInserted, Coordinate cords)
         {
@@ -554,7 +105,7 @@ namespace Crozzle_Project
 
             foreach (var aWord in names)
             {
-                if(namesInserted.Contains(aWord))
+                if(WordsInGrid.Contains(aWord))
                 {
                     continue;
                 }
@@ -621,7 +172,7 @@ namespace Crozzle_Project
 
                     Grid[startX, startY] = c;
                     Coordinate co = new Coordinate(startX, startY);
-                    lett.AllCoordinatesOfLettersInName.Add(co, c); //here cl is global and keeps adding names to it
+                    lett.AllCoordinatesOfLettersInName.Add(co, c); 
                     startX = startX + 1;
 
                 }
@@ -657,8 +208,6 @@ namespace Crozzle_Project
             
             Dictionary<Coordinate, char> coordsinExistingLetter = entry.LetterCords;
 
-
-
              //get the coords of the letter in the existing word so we know where to start
             lett.ExistingLetterRow = cords.Row;
             lett.ExistingLetterColumn = cords.Column;
@@ -675,7 +224,7 @@ namespace Crozzle_Project
             if (lett.IterationsLeftOrAbove == 0) //check if the intersecting letter in the word to be added is at the start
             {
                 //check if word to be inserted is a horizontal word, also lets you know if the existing word in the grid is vertical
-                if (Grid[lett.ExistingLetterRow, c.RightOfLetter] == '\0' && Grid[lett.ExistingLetterRow, c.LeftOfLetter] == '\0')
+                if (c.RightOfLetter < Grid.GetUpperBound(1) && Grid[lett.ExistingLetterRow, c.RightOfLetter] == '\0' && Grid[lett.ExistingLetterRow, c.LeftOfLetter] == '\0')
                 {
                     for (int x = 0; x < lett.IterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
                     {
@@ -696,7 +245,7 @@ namespace Crozzle_Project
                     return lett;
                 }
                 //check if word to be inserted is a vertical word, also lets you know if the existing word in the grid is horizontal
-                if (Grid[c.BelowLetter, lett.ExistingLetterColumn] == '\0' && Grid[c.AboveLetter, lett.ExistingLetterColumn] == '\0')
+                if (lett.ExistingLetterColumn < Grid.GetUpperBound(1) && Grid[c.BelowLetter, lett.ExistingLetterColumn] == '\0' && Grid[c.AboveLetter, lett.ExistingLetterColumn] == '\0')
                 {
                     for (int x = 0; x < lett.IterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
                     {
@@ -719,7 +268,7 @@ namespace Crozzle_Project
             }
 
                 //check if word to be inserted is a horizontal word, also lets you know if the existing word in the grid is vertical
-            if (Grid[lett.ExistingLetterRow, c.LeftOfLetter] == '\0' && Grid[lett.ExistingLetterRow, c.RightOfLetter] == '\0')
+            if (c.RightOfLetter < Grid.GetUpperBound(1) && Grid[lett.ExistingLetterRow, c.LeftOfLetter] == '\0' && Grid[lett.ExistingLetterRow, c.RightOfLetter] == '\0')
             {
                 //check right  of letter the letter
                 for (int x = 0; x < lett.IterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
@@ -761,7 +310,7 @@ namespace Crozzle_Project
 
             }
             //check if word to be inserted is a vertical word, also lets you know if the existing word in the grid is horizontal
-            else if (Grid[c.AboveLetter, lett.ExistingLetterColumn] == '\0' && Grid[c.BelowLetter, lett.ExistingLetterColumn] == '\0')
+            else if (lett.ExistingLetterColumn < Grid.GetUpperBound(1) && Grid[c.AboveLetter, lett.ExistingLetterColumn] == '\0' && Grid[c.BelowLetter, lett.ExistingLetterColumn] == '\0')
             {
                 //check below of the letter
                 for (int x = 0; x < lett.IterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
@@ -896,16 +445,12 @@ namespace Crozzle_Project
 
         }
 
-        
-
-        public char[,] AddRootWord()
-        {
-            var dictList = WordList.Table;
-            Dictionary<string, int> bestWordDict = new Dictionary<string, int>();
+        public char[,] AddFirstWord()
+        {            
             Dictionary<char, int> points = new Dictionary<char, int>();
-            int scoreWords = 0;
-            CordsLetterTable cl = new CordsLetterTable();            
+            Dictionary<string, int> HighestScoreWordList = new Dictionary<string, int>();
             char keyindic = 'A';
+            int scoreWords = 0;
 
             //put the points table into a dictionary
             foreach (var val in Config.IntersectingPointsPerLetter)
@@ -914,8 +459,8 @@ namespace Crozzle_Project
                 keyindic++;
             }
 
-            //add names to dictionary with score of intersecting letters
-            foreach (var k in dictList)
+            //add names to dictionary with the highest score of intersecting letters
+            foreach (var k in WordListInUse)
             {
                 var letters = k.Value;
                 foreach (var l in letters)
@@ -926,29 +471,249 @@ namespace Crozzle_Project
                     }
                 }
 
-                bestWordDict.Add(k.Key, scoreWords);
+                HighestScoreWordList.Add(k.Key, scoreWords);
                 scoreWords = 0;
             }
 
             //find the highest scoring word
-            string highestWord = bestWordDict.Max(s => s.Key);
+            string highestWord = HighestScoreWordList.Max(s => s.Key);
 
-            //create a char arrayu of the name
-            char[] wordCharArray = highestWord.ToCharArray();
+            Word hWord = new Word(highestWord);
+            CreateWord(hWord);
 
             //set the cords of the grid so the word is placed in the centre
             int x = 2;
             int y = 2;
 
-
-
             //add the word to the grid
-            foreach (var letter in wordCharArray)
+            foreach (var letter in hWord.Name)
             {
                 Grid[x, y] = letter;
                 Coordinate c = new Coordinate(x, y);
-                cl.Add(c, letter);                
+                hWord.NameCords.Add(c, letter);
                 y = y + 1;
+            }
+
+            hWord.IsHorizontal = true;
+            WordsInsertedInGrid.Add(hWord);
+            RootWord = hWord.Name;
+
+
+            return Grid;
+        }
+
+        public char[,] AddNameToGrid()
+        {
+            Dictionary<char, int> points = new Dictionary<char, int>();
+            char keyindic = 'A';
+            List<string> ListOfIntersectingNamesPerLetter = new List<string>();
+
+            //put the points table into a dictionary
+            foreach (var val in Config.IntersectingPointsPerLetter)
+            {
+                points.Add(keyindic, val);
+                keyindic++;
+            }
+
+            foreach(var entry in WordsInsertedInGrid)
+            {
+                foreach (var obj in entry.NameCords)
+                {                    
+                    var letter = obj.Value;
+                    var letterCords = obj.Key;
+                    ListOfIntersectingNamesPerLetter = entry.ListOfIntersectingWordsPerLetter[letter];
+                    CheckNameInList(ListOfIntersectingNamesPerLetter, letter, entry, letterCords);
+                }
+            }
+
+
+            return Grid;
+        }
+
+        public Word CheckNameInList(List<string> ListOfIntersectingNamesPerLetter, char letterInExistingWord, Word entry, Coordinate letterCords)
+        {
+            Word aName;
+
+            foreach(var name in ListOfIntersectingNamesPerLetter)
+            {
+                aName = new Word(name);
+                CreateWord(aName);
+                CheckLettersInName(aName, letterInExistingWord, entry, letterCords);
+
+                
+            }
+
+            return entry;
+        }
+
+        public Word CheckLettersInName(Word aName, char letterInExistingWord, Word entry, Coordinate letterCords)
+        {
+            var letterList = aName.LettersInWord.ToList();
+
+            foreach(var letter in letterList)
+            {
+                LetterAttributes lett = new LetterAttributes(letterList.IndexOf(letter), letterList.Count, letter);
+                lett.ExistingLetterRow = letterCords.Row;
+                lett.ExistingLetterColumn = letterCords.Column;
+                CoordsPointer coordsP = new CoordsPointer(letterCords);
+
+                if (lett.Letter == letterInExistingWord)
+                {
+                    TestTheLetterInWord(lett, coordsP, aName, entry);
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return entry;
+        }
+
+        public Word TestTheLetterInWord(LetterAttributes lett, CoordsPointer c, Word aName, Word entry)
+        {
+            //check the grid for empty tiles and space for the word
+            if (lett.IterationsLeftOrAbove == 0) //check if the intersecting letter in the word to be added is at the start
+            {
+                if(entry.IsHorizontal == true)
+                {
+                    for (int x = 0; x < lett.IterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
+                    {
+                        //check below the letter
+                        if (Grid[c.BelowLetter, lett.ExistingLetterColumn] == '\0' && Grid[c.BelowLetter, c.LeftOfLetter] == '\0' && Grid[c.BelowLetter, c.RightOfLetter] == '\0')
+                        {
+                            aName.IsValid = true;
+                            aName.IsVertical = true;
+                            c.BelowLetter++;   //goin down so plus the index by 1
+                            continue;
+                        }
+                        else
+                        {
+                            lett.Valid = false;
+                            return aName;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                
+                if (entry.IsHorizontal == true)
+                {
+                    for (int x = 0; x < lett.IterationsRightOrBelow + 1; x++) //add an extra move to the left for white space around the letter
+                    {
+                        if (Grid[c.BelowLetter, lett.ExistingLetterColumn] == '\0' && Grid[c.BelowLetter, c.LeftOfLetter] == '\0' && Grid[c.BelowLetter, c.RightOfLetter] == '\0')
+                        {
+                            
+                            
+                        }
+                        else
+                        {
+                            lett.Valid = false;
+                            return aName;
+                        }
+                    }
+                }
+            }
+
+            return aName;
+        }
+
+        //public Word GetCoordinatesOfLetter()
+        //{
+
+        //}
+
+        public Word CreateWord(Word name)
+        {
+            
+            //create a char array of the name
+            char[] wordCharArray = name.Name.ToCharArray();
+
+            //add to word
+            name.LettersInWord = wordCharArray;
+
+            name.ListOfIntersectingWordsPerLetter = WordList.Table[name.Name];
+
+            return name;
+        }
+
+        public char[,] AddRootWord()
+        {
+            
+            var dictList = WordList.Table;
+            Dictionary<string, int> bestWordDict = new Dictionary<string, int>();
+            Dictionary<char, int> points = new Dictionary<char, int>();
+            //int scoreWords = 0;
+            CordsLetterTable cl = new CordsLetterTable();
+            char keyindic = 'A';
+            int x = 0;
+            int y = 0;
+            int startX = 0;
+            int startY = 0;
+            string highestWord = "";
+            char[] wordCharArray = new char[0];
+
+            //put the points table into a dictionary
+            foreach (var val in Config.IntersectingPointsPerLetter)
+            {
+                points.Add(keyindic, val);
+                keyindic++;
+            }
+
+            //get random name from wordlist
+            foreach (var n in dictList)
+            {
+                
+                NamesList.Add(n.Key);
+            }
+
+            bool OK = false;
+
+            while(OK == false)
+            {
+                int r = rnd.Next(NamesList.Count);
+                highestWord = NamesList[r];
+                int lengthOfWord = highestWord.Length;
+
+                //set the cords of the grid so the word is placed in the centre
+                
+                int row = Convert.ToInt16(RowsAndColumns.Rows);
+                int col = Convert.ToInt16(RowsAndColumns.Columns);
+                x = rnd.Next(2, row);
+                y = rnd.Next(2, col);
+                startX = x;
+                startY = y;
+
+                //create a char arrayu of the name
+                wordCharArray = highestWord.ToCharArray();
+
+                for(int a = 0; a < wordCharArray.Length; a++)
+                //foreach(var l in wordCharArray)
+                {
+                    if (Grid[x, y] == '*')
+                    {
+                        OK = false;
+                        break;
+                        
+                    }                    
+                    else
+                    {
+                        OK = true;
+                        y = y + 1;
+                        continue;
+                        
+                    }
+                }
+            }
+            
+            //add the word to the grid
+            foreach (var letter in wordCharArray)
+            {
+                Grid[startX, startY] = letter;
+                Coordinate c = new Coordinate(startX, startY);
+                cl.Add(c, letter);
+                startY = startY + 1;
             }
 
             //add the name, letters and coords of each letter to the table
@@ -959,15 +724,15 @@ namespace Crozzle_Project
 
             var objKey = WordList.Table[highestWord];
             Dictionary<char, List<string>> objDict = new Dictionary<char, List<string>>();
-            
-            foreach(var key in objKey)
+
+            foreach (var key in objKey)
             {
                 objDict.Add(key.Key, key.Value);
             }
 
             var cor = LetterCordsForWordsInGrid[highestWord];
             Dictionary<Coordinate, char> objCor = new Dictionary<Coordinate, char>();
-            foreach(var res in cor)
+            foreach (var res in cor)
             {
                 objCor.Add(res.Key, res.Value);
             }
@@ -982,7 +747,8 @@ namespace Crozzle_Project
 
             WordsInGrid.Add(highestWord);
 
-            
+            Counter++;
+
 
             return Grid;
 
@@ -990,7 +756,7 @@ namespace Crozzle_Project
 
         public string DisplayGrid(CrozzleGrid game)
         {
-            char[,] grid = Grid;
+            char[,] grid = game.Grid;
             String crozzleHTML = "";
             String style = Config.Style;
 
@@ -1028,7 +794,7 @@ namespace Crozzle_Project
             }
             crozzleHTML += @"</table>";
 
-            crozzleHTML += @"<p>Score = " + Score + @"</p>";
+            crozzleHTML += @"<p>Score = " + game.Score + @"</p>";
 
             if(game.Counter == 0)
             {
